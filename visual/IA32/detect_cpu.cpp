@@ -13,6 +13,8 @@
 #include "tjsTypes.h"
 #include "tvpgl_ia32_intf.h"
 
+#include <cstring>
+
 #ifdef _MSC_VER
 #include <windows.h>
 #include <intrin.h>
@@ -272,14 +274,14 @@ tjs_uint32 TVPCheckCPU()
 
 tjs_uint64 TVPGetTSC() {
 	if( TVPCPUType & TVP_CPU_HAS_TSC ) {
-		return __rdtsc();
+		// return __rdtsc();
 	}
 	return 0;
 }
 
 tjs_uint64 TVPGetTSCP( tjs_uint32 *aux ) {
 	if( TVPCPUType & TVP_CPU_HAS_TSCP ) {
-		return __rdtscp(aux);
+		// return __rdtscp(aux);
 	}
 	return 0;
 }

@@ -343,17 +343,17 @@ void TJSNativeDebuggerBreak()
 	// debugger, or the program may cause an unhandled debugger breakpoint
 	// exception.
 
-#if defined(__WIN32__)
-	#if defined(_M_IX86)
-		#ifdef __BORLANDC__
-				__emit__ (0xcc); // int 3 (Raise debugger breakpoint exception)
-		#else
-				_asm _emit 0xcc; // int 3 (Raise debugger breakpoint exception)
-		#endif
-	#else
-		__debugbreak();
-	#endif
-#endif
+// #if defined(__WIN32__)
+// 	#if defined(_M_IX86)
+// 		#ifdef __BORLANDC__
+// 				__emit__ (0xcc); // int 3 (Raise debugger breakpoint exception)
+// 		#else
+// 				_asm _emit 0xcc; // int 3 (Raise debugger breakpoint exception)
+// 		#endif
+// 	#else
+// 		__debugbreak();
+// 	#endif
+// #endif
 }
 //---------------------------------------------------------------------------
 
@@ -402,7 +402,7 @@ void TJSSetFPUE()
 // 例外マスクを解除し元に戻す
 void TJSRestoreFPUE()
 {
-	if(!TJSFPUInit) return;
+	// if(!TJSFPUInit) return;
 #if defined(__WIN32__) && !defined(__GNUC__)
 #if defined(_M_X64)
 	_MM_SET_EXCEPTION_MASK(TJSDefaultMMCW);

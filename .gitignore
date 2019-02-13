@@ -1,5 +1,7 @@
 *.pdb
 *.obj
+*.o
+*.exe
 *.lib
 *.exp
 *.log

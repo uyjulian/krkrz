@@ -9,6 +9,7 @@
 #define LayerTreeOwnerImple_H
 
 #include "LayerTreeOwner.h"
+#include "tvpinputdefs.h"
 
 /**
  * 最小限のLayerTreeOwner機能を提供する。

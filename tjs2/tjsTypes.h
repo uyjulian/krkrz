@@ -14,17 +14,17 @@
 
 #include <stdint.h>
 
-#ifdef HAVE_CONFIG_H
- #include "config.h"
+// #ifdef HAVE_CONFIG_H
+//  #include "config.h"
 
- #ifndef HAVE_STRINGIZE
- # error "preprocessor stringize required."
- #endif
+//  #ifndef HAVE_STRINGIZE
+//  # error "preprocessor stringize required."
+//  #endif
 
- #if SIZEOF_INT < 4
- # error "sizeof(int) must be larger than or equal to 4."
- #endif
-#endif /* end of HAVE_CONFIG_H */
+//  #if SIZEOF_INT < 4
+//  # error "sizeof(int) must be larger than or equal to 4."
+//  #endif
+// #endif /* end of HAVE_CONFIG_H */
 
 
 

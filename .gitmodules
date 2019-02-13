@@ -1,21 +1,28 @@
 [submodule "external/baseclasses"]
 	path = external/baseclasses
 	url = https://github.com/krkrz/baseclasses.git
+	ignore = dirty
 [submodule "external/freetype"]
 	path = external/freetype
 	url = https://github.com/krkrz/freetype.git
+	ignore = dirty
 [submodule "external/libjpeg-turbo"]
 	path = external/libjpeg-turbo
 	url = https://github.com/krkrz/libjpeg-turbo.git
+	ignore = dirty
 [submodule "external/lpng"]
 	path = external/lpng
 	url = https://github.com/krkrz/libpng.git
+	ignore = dirty
 [submodule "external/onig"]
 	path = external/onig
 	url = https://github.com/krkrz/oniguruma.git
+	ignore = dirty
 [submodule "external/zlib"]
 	path = external/zlib
 	url = https://github.com/krkrz/zlib.git
+	ignore = dirty
 [submodule "external/jxrlib"]
 	path = external/jxrlib
 	url = https://github.com/krkrz/jxrlib.git
+	ignore = dirty

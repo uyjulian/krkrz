@@ -1914,6 +1914,12 @@ void TTVPWindowForm::UpdateOrientation() {
 		}
 	}
 }
+
+// TODO: constants missing on MinGW
+#ifndef EDS_ROTATEDMODE
+ #define EDS_ROTATEDMODE 0x00000004
+#endif
+
 bool TTVPWindowForm::GetOrientation( int& orientation, int& rotate ) const {
 	DEVMODE mode = {0};
 	mode.dmSize = sizeof(DEVMODE);

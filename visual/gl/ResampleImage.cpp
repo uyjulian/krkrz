@@ -215,7 +215,7 @@ void tTVPResampleClipping::setClipping( const tTVPRect &cliprect, const tTVPRect
 template<typename TWeight=float, int NAlign=4>
 struct AxisParam {
 	typedef TWeight weight_t;
-	typedef std::vector<weight_t,aligned_allocator<weight_t,NAlign> > weight_vector_t;
+	typedef std::vector<weight_t > weight_vector_t;
 	static const int ALIGN_DIV = (NAlign/4);
 	static const int ALIGN_OFFSET = ALIGN_DIV-1;
 
@@ -297,7 +297,7 @@ static void AxisParamCalculateAxis( TParam& param, int srcstart, int srcend, int
 #else
 		param.weight_.reserve( length );
 #endif
-		TParam::weight_t* output = &param.weight_[0];
+		typename TParam::weight_t* output = &param.weight_[0];
 		for( int x = 0; x < dstlength; x++ ) {
 			float cx = (x+0.5f)*(float)srclength/(float)dstlength + srcstart;
 			int left = (int)std::floor(cx-rangex);
@@ -335,7 +335,7 @@ static void AxisParamCalculateAxis( TParam& param, int srcstart, int srcend, int
 #else
 		param.weight_.reserve( length );
 #endif
-		TParam::weight_t* output = &param.weight_[0];
+		typename TParam::weight_t* output = &param.weight_[0];
 		const float delta = (float)dstlength/(float)srclength; // 転送先座標での位置増分
 		for( int x = 0; x < dstlength; x++ ) {
 			float cx = (x+0.5f)*(float)srclength/(float)dstlength + srcstart;
@@ -701,11 +701,11 @@ void TVPResampleImage( const tTVPRect &cliprect, tTVPBaseBitmap *dest, const tTV
 
 	tjs_uint32 CpuFeature = TVPGetCPUType();
 	try {
-		if( (CpuFeature & TVP_CPU_HAS_AVX2) ) {
-			TVPResampleImageAVX2( clip, func, dest, destrect, src, srcrect, type, typeopt );
-		} else if( (CpuFeature & TVP_CPU_HAS_SSE2) ) {
-			TVPResampleImageSSE2( clip, func, dest, destrect, src, srcrect, type, typeopt );
-		} else {
+		// if( (CpuFeature & TVP_CPU_HAS_AVX2) ) {
+		// 	TVPResampleImageAVX2( clip, func, dest, destrect, src, srcrect, type, typeopt );
+		// } else if( (CpuFeature & TVP_CPU_HAS_SSE2) ) {
+		// 	TVPResampleImageSSE2( clip, func, dest, destrect, src, srcrect, type, typeopt );
+		// } else {
 			 // Cバージョンは固定小数点版なし。遅くなる。
 			switch( type ) {
 			case stLinear:
@@ -766,7 +766,7 @@ void TVPResampleImage( const tTVPRect &cliprect, tTVPBaseBitmap *dest, const tTV
 				throw L"Not supported yet.";
 				break;
 			}
-		}
+		// }
 	} catch(...) {
 		if( func ) delete func;
 		throw;

@@ -58,7 +58,7 @@ typedef interface IRendererBufferVideo IRendererBufferVideo;
 extern "C"{
 #endif 
 
-void * __RPC_USER MIDL_user_allocate(size_t);
+void *__RPC_USER MIDL_user_allocate(SIZE_T);
 void __RPC_USER MIDL_user_free( void * ); 
 
 #ifndef __IRendererBufferVideo_INTERFACE_DEFINED__

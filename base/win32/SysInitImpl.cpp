@@ -622,7 +622,7 @@ void TVPDumpOSContext(const CONTEXT &ctx)
 	}
 
 	// -- Cr0NpxState
-	TJS_snprintf(buf, BUF_SIZE,TJS_W("FP CR0 NPX State  : 0x%08X"), ctx.FloatSave.Spare0);
+	TJS_snprintf(buf, BUF_SIZE,TJS_W("FP CR0 NPX State  : 0x%08X"), ctx.FloatSave.Cr0NpxState);
 	TVPAddLog(buf);
 #endif
 
@@ -1338,10 +1338,10 @@ void TVPAfterSystemInit()
 	TVPDumpOptions();
 
 	// initilaize x86 graphic routines
-#ifndef TJS_64BIT_OS
-	TVPGL_IA32_Init();
-#endif
-	TVPGL_SSE2_Init();
+// #ifndef TJS_64BIT_OS
+// 	TVPGL_IA32_Init();
+// #endif
+	// TVPGL_SSE2_Init();
 
 	// timer precision
 	UINT prectick = 1;

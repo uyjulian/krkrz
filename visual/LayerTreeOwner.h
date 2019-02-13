@@ -9,7 +9,7 @@
 //---------------------------------------------------------------------------
 #ifndef LayerTreeOwner_H
 #define LayerTreeOwner_H
-
+#include "drawable.h"
 
 class iTVPLayerTreeOwner
 {

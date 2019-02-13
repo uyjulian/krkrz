@@ -450,9 +450,10 @@ HRESULT tTVPWindow::CreateWnd( const std::wstring& classname, const std::wstring
 			ignore_touch_mouse_ = true;
 #endif
 			// MICROSOFT_TABLETPENSERVICE_PROPERTY プロパティを変更する
-			ATOM atom = ::GlobalAddAtom( MICROSOFT_TABLETPENSERVICE_PROPERTY );
-			::SetProp( window_handle_, MICROSOFT_TABLETPENSERVICE_PROPERTY, reinterpret_cast<HANDLE>( DEFAULT_TABLETPENSERVICE_PROPERTY ) );
-			::GlobalDeleteAtom( atom );
+			// TODO: Fix on MinGW
+			// ATOM atom = ::GlobalAddAtom( MICROSOFT_TABLETPENSERVICE_PROPERTY );
+			// ::SetProp( window_handle_, MICROSOFT_TABLETPENSERVICE_PROPERTY, reinterpret_cast<HANDLE>( DEFAULT_TABLETPENSERVICE_PROPERTY ) );
+			// ::GlobalDeleteAtom( atom );
 		}
 	}
 	return S_OK;
