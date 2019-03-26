@@ -20,6 +20,11 @@
 #include <TCHAR.h>
 #include <tpcshrd.h> // for MICROSOFT_TABLETPENSERVICE_PROPERTY
 
+// TODO: constants missing on MinGW
+#ifndef MICROSOFT_TABLETPENSERVICE_PROPERTY
+ #define MICROSOFT_TABLETPENSERVICE_PROPERTY _T("MicrosoftTabletPenServiceProperty")
+#endif
+
 // touch mouse message extraInfo (cf. http://msdn.microsoft.com/en-us/library/windows/desktop/ms703320(v=vs.85).aspx )
 const DWORD tTVPWindow::MI_WP_SIGNATURE = 0xFF515780;
 const DWORD tTVPWindow::SIGNATURE_MASK  = 0xFFFFFF80;
@@ -450,10 +455,9 @@ HRESULT tTVPWindow::CreateWnd( const std::wstring& classname, const std::wstring
 			ignore_touch_mouse_ = true;
 #endif
 			// MICROSOFT_TABLETPENSERVICE_PROPERTY プロパティを変更する
-			// TODO: Fix on MinGW
-			// ATOM atom = ::GlobalAddAtom( MICROSOFT_TABLETPENSERVICE_PROPERTY );
-			// ::SetProp( window_handle_, MICROSOFT_TABLETPENSERVICE_PROPERTY, reinterpret_cast<HANDLE>( DEFAULT_TABLETPENSERVICE_PROPERTY ) );
-			// ::GlobalDeleteAtom( atom );
+			ATOM atom = ::GlobalAddAtom( MICROSOFT_TABLETPENSERVICE_PROPERTY );
+			::SetProp( window_handle_, MICROSOFT_TABLETPENSERVICE_PROPERTY, reinterpret_cast<HANDLE>( DEFAULT_TABLETPENSERVICE_PROPERTY ) );
+			::GlobalDeleteAtom( atom );
 		}
 	}
 	return S_OK;

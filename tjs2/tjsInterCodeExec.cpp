@@ -56,11 +56,11 @@ static void GetStringProperty(tTJSVariant *result, const tTJSVariant *str,
 		{
 			// get string length
 			const tTJSVariantString * s = str->AsStringNoAddRef();
-#ifdef __CODEGUARD__
+// #ifdef __CODEGUARD__
 			if(!s)
 				*result = tTVInteger(0); // tTJSVariantString::GetLength can return zero if 'this' is NULL
 			else
-#endif
+// #endif
 			*result = tTVInteger(s->GetLength());
 			return;
 		}

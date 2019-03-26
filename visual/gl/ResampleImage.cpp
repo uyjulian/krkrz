@@ -701,11 +701,14 @@ void TVPResampleImage( const tTVPRect &cliprect, tTVPBaseBitmap *dest, const tTV
 
 	tjs_uint32 CpuFeature = TVPGetCPUType();
 	try {
-		// if( (CpuFeature & TVP_CPU_HAS_AVX2) ) {
-		// 	TVPResampleImageAVX2( clip, func, dest, destrect, src, srcrect, type, typeopt );
-		// } else if( (CpuFeature & TVP_CPU_HAS_SSE2) ) {
-		// 	TVPResampleImageSSE2( clip, func, dest, destrect, src, srcrect, type, typeopt );
-		// } else {
+#if 0 && defined(_WIN32)
+		if( (CpuFeature & TVP_CPU_HAS_AVX2) ) {
+			TVPResampleImageAVX2( clip, func, dest, destrect, src, srcrect, type, typeopt );
+		} else if( (CpuFeature & TVP_CPU_HAS_SSE2) ) {
+			TVPResampleImageSSE2( clip, func, dest, destrect, src, srcrect, type, typeopt );
+		} else 
+#endif
+		{
 			 // Cバージョンは固定小数点版なし。遅くなる。
 			switch( type ) {
 			case stLinear:
@@ -766,7 +769,7 @@ void TVPResampleImage( const tTVPRect &cliprect, tTVPBaseBitmap *dest, const tTV
 				throw L"Not supported yet.";
 				break;
 			}
-		// }
+		}
 	} catch(...) {
 		if( func ) delete func;
 		throw;

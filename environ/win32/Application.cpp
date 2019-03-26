@@ -190,12 +190,12 @@ void AcceleratorKey::DelKey( WORD id ) {
 }
 
 int APIENTRY wWinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow ) {
-	// try {
+	try {
 		// CheckMemoryLeaksStart();
 		// ウォッチで _crtBreakAlloc にセットする
 
 		// XP より後で使えるAPIを動的に読み込んで互換性を取る
-		// TVPInitCompatibleNativeFunctions();
+		TVPInitCompatibleNativeFunctions();
 
 		// メッセージ文字列をリソースから読込み
 		TVPLoadMessage();
@@ -216,9 +216,9 @@ int APIENTRY wWinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 #ifndef _DEBUG
 //		::ExitProcess(TVPTerminateCode); // ここで終了させるとメモリリーク表示が行われない
 #endif
-	// } catch (...) {
-	// 	return 2;
-	// }
+	} catch (...) {
+		return 2;
+	}
 	return TVPTerminateCode;
 }
 tTVPApplication::tTVPApplication() : is_attach_console_(false), tarminate_(false), application_activating_(true)

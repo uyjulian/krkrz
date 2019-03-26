@@ -1338,10 +1338,12 @@ void TVPAfterSystemInit()
 	TVPDumpOptions();
 
 	// initilaize x86 graphic routines
-// #ifndef TJS_64BIT_OS
-// 	TVPGL_IA32_Init();
-// #endif
-	// TVPGL_SSE2_Init();
+#if 0 && !defined(TJS_64BIT_OS)
+	TVPGL_IA32_Init();
+#endif
+#if 0
+	TVPGL_SSE2_Init();
+#endif
 
 	// timer precision
 	UINT prectick = 1;

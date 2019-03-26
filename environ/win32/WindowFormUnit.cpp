@@ -30,6 +30,10 @@
 
 #include "CompatibleNativeFuncs.h"
 
+// TODO: constants missing on MinGW
+#ifndef EDS_ROTATEDMODE
+ #define EDS_ROTATEDMODE 0x00000004
+#endif
 
 tjs_uint32 TVP_TShiftState_To_uint32(TShiftState state) {
 	tjs_uint32 result = 0;
@@ -1914,11 +1918,6 @@ void TTVPWindowForm::UpdateOrientation() {
 		}
 	}
 }
-
-// TODO: constants missing on MinGW
-#ifndef EDS_ROTATEDMODE
- #define EDS_ROTATEDMODE 0x00000004
-#endif
 
 bool TTVPWindowForm::GetOrientation( int& orientation, int& rotate ) const {
 	DEVMODE mode = {0};

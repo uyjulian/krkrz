@@ -80,12 +80,12 @@ extern int TJS_wctomb(tjs_nchar *s, tjs_char wc);
 
 #define TJS_strncpy_s		wcsncpy_s
 
-#if defined(__GNUC__)
+#if defined(__GNUC__) && !defined(__WIN32__)
 	#define TJS_cdecl
 	#define TJS_vsnprintf		vswprintf
 	extern tjs_int TJS_sprintf(tjs_char *s, const tjs_char *format, ...);
 	#define TJS_timezone timezone
-	#define TJS_snprintf swprintf_s
+	#define TJS_snprintf wsnprintf
 #elif __WIN32__
 	#define TJS_cdecl __cdecl
 #ifdef _MSC_VER

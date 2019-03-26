@@ -415,9 +415,9 @@ public:
 
 	TJS_CONST_METHOD_DEF(tjs_int, GetLen, ())
 	{
-#ifdef __CODEGUARD__
+// #ifdef __CODEGUARD__
 		if(!Ptr) return 0; // tTJSVariantString::GetLength can return zero if 'this' is NULL
-#endif
+// #endif
 		return Ptr->GetLength();
 	}
 

@@ -41,6 +41,7 @@ static inline int __cpuidex(int CPUInfo[4],int InfoType,int ECXValue) {
 		: "0" (InfoType), "2" (ECXValue));
   return highest;
 }
+#include <x86intrin.h>
 #endif
 
 extern "C" {
@@ -274,14 +275,14 @@ tjs_uint32 TVPCheckCPU()
 
 tjs_uint64 TVPGetTSC() {
 	if( TVPCPUType & TVP_CPU_HAS_TSC ) {
-		// return __rdtsc();
+		return __rdtsc();
 	}
 	return 0;
 }
 
 tjs_uint64 TVPGetTSCP( tjs_uint32 *aux ) {
 	if( TVPCPUType & TVP_CPU_HAS_TSCP ) {
-		// return __rdtscp(aux);
+		return __rdtscp(aux);
 	}
 	return 0;
 }

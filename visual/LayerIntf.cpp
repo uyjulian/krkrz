@@ -5845,7 +5845,7 @@ void tTJSNI_BaseLayer::DrawCompleted(const tTVPRect &destrect,
 {
 	// called from children to notify that the image drawing is completed.
 	// blend the image to the target unless bmp is the same as UpdateBitmapForChild.
-	if(DisplayType == ltBinder || (MainImage == NULL && DirectTransferToParent))
+	if(DisplayType == ltBinder || MainImage == NULL && DirectTransferToParent)
 	{
 		tTVPRect _destrect(destrect);
 		tTVPRect _cliprect(cliprect);
@@ -5863,7 +5863,7 @@ void tTJSNI_BaseLayer::DrawCompleted(const tTVPRect &destrect,
 			tTVPComplexRect nr; // new region
 			nr.Or(destrect);
 			nr.Sub(DrawnRegion);
-			tTVPComplexRect opr; // operation region
+			tTVPComplexRect orr; // operation region
 			// now nr is a client region which is not overlapped by children
 			// at this time
 			if(DisplayType == type && opacity == 255)
@@ -5885,8 +5885,8 @@ void tTJSNI_BaseLayer::DrawCompleted(const tTVPRect &destrect,
 						bmp, sr);
 				}
 				// calculate operation region
-				opr.Or(destrect);
-				opr.Sub(nr);
+				orr.Or(destrect);
+				orr.Sub(nr);
 			}
 			else
 			{
@@ -5903,11 +5903,11 @@ void tTJSNI_BaseLayer::DrawCompleted(const tTVPRect &destrect,
 							// CopySelf of MainImage == NULL actually
 							// fills target rectangle with full transparency
 				}
-				opr.Or(destrect);
+				orr.Or(destrect);
 			}
 
 			// operate r
-			tTVPComplexRect::tIterator it = opr.GetIterator();
+			tTVPComplexRect::tIterator it = orr.GetIterator();
 			while(it.Step())
 			{
 				tTVPRect r(*it);
@@ -5968,11 +5968,11 @@ void tTJSNI_BaseLayer::InternalComplete2(tTVPComplexRect & updateregion,
 			{
 				// split
 				tjs_int rw = r.get_width();
-				if(rw < 40) oh = 256;
-				else if(rw < 80) oh = 128;
-				else if(rw < 160) oh = 64;
-				else if(rw < 320) oh = 32;
-				else oh = 16; // 2 lines per core in modern 8 cores cpu
+				if(rw < 40) oh = 128;
+				else if(rw < 80) oh = 64;
+				else if(rw < 160) oh = 32;
+				else if(rw < 320) oh = 16;
+				else oh = 8;
 			}
 			else
 			{
@@ -5982,27 +5982,27 @@ void tTJSNI_BaseLayer::InternalComplete2(tTVPComplexRect & updateregion,
 
 			// split to some stripes
 			tjs_int y;
-			tTVPRect opr;
-			opr.left = r.left;
-			opr.right = r.right;
+			tTVPRect orr;
+			orr.left = r.left;
+			orr.right = r.right;
 			if(TVPGraphicSplitOperationType == gsotInterlace)
 			{
 				// interlaced split
 				for(y = r.top; y < r.bottom; y+= oh*2)
 				{
-					opr.top = y;
-					opr.bottom = (y+oh < r.bottom) ? y+oh: r.bottom;
+					orr.top = y;
+					orr.bottom = (y+oh < r.bottom) ? y+oh: r.bottom;
 
 					// call "Draw" to draw to the window
-					Draw(drawable, opr, false);
+					Draw(drawable, orr, false);
 				}
 				for(y = r.top + oh; y < r.bottom; y+= oh*2)
 				{
-					opr.top = y;
-					opr.bottom = (y+oh < r.bottom) ? y+oh: r.bottom;
+					orr.top = y;
+					orr.bottom = (y+oh < r.bottom) ? y+oh: r.bottom;
 
 					// call "Draw" to draw to the window
-					Draw(drawable, opr, false);
+					Draw(drawable, orr, false);
 				}
 			}
 			else if(TVPGraphicSplitOperationType == gsotSimple)
@@ -6010,11 +6010,11 @@ void tTJSNI_BaseLayer::InternalComplete2(tTVPComplexRect & updateregion,
 				// non-interlaced
 				for(y = r.top; y < r.bottom; y+=oh)
 				{
-					opr.top = y;
-					opr.bottom = (y+oh < r.bottom) ? y+oh: r.bottom;
+					orr.top = y;
+					orr.bottom = (y+oh < r.bottom) ? y+oh: r.bottom;
 
 					// call "Draw" to draw to the window
-					Draw(drawable, opr, false);
+					Draw(drawable, orr, false);
 				}
 			}
 			else if(TVPGraphicSplitOperationType == gsotBiDirection)
@@ -6025,11 +6025,11 @@ void tTJSNI_BaseLayer::InternalComplete2(tTVPComplexRect & updateregion,
 				{
 					for(y = r.top; y < r.bottom; y+=oh)
 					{
-						opr.top = y;
-						opr.bottom = (y+oh < r.bottom) ? y+oh: r.bottom;
+						orr.top = y;
+						orr.bottom = (y+oh < r.bottom) ? y+oh: r.bottom;
 
 						// call "Draw" to draw to the window
-						Draw(drawable, opr, false);
+						Draw(drawable, orr, false);
 					}
 				}
 				else
@@ -6038,13 +6038,13 @@ void tTJSNI_BaseLayer::InternalComplete2(tTVPComplexRect & updateregion,
 					if(y < r.top) y = r.top;
 					while(1)
 					{
-						opr.top = (y < r.top ? r.top : y);
-						opr.bottom = (y+oh < r.bottom) ? y+oh: r.bottom;
+						orr.top = (y < r.top ? r.top : y);
+						orr.bottom = (y+oh < r.bottom) ? y+oh: r.bottom;
 
-						if(opr.bottom <= r.top) break;
+						if(orr.bottom <= r.top) break;
 
 						// call "Draw" to draw to the window
-						Draw(drawable, opr, false);
+						Draw(drawable, orr, false);
 
 						y-=oh;
 					}

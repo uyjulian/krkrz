@@ -14,17 +14,17 @@
 
 #include <stdint.h>
 
-// #ifdef HAVE_CONFIG_H
-//  #include "config.h"
+#if 0 && defined(HAVE_CONFIG_H)
+ #include "config.h"
 
-//  #ifndef HAVE_STRINGIZE
-//  # error "preprocessor stringize required."
-//  #endif
+ #ifndef HAVE_STRINGIZE
+ # error "preprocessor stringize required."
+ #endif
 
-//  #if SIZEOF_INT < 4
-//  # error "sizeof(int) must be larger than or equal to 4."
-//  #endif
-// #endif /* end of HAVE_CONFIG_H */
+ #if SIZEOF_INT < 4
+ # error "sizeof(int) must be larger than or equal to 4."
+ #endif
+#endif /* end of HAVE_CONFIG_H */
 
 
 
@@ -149,8 +149,16 @@ typedef uintptr_t tjs_uintptr_t;
 	#define TJS_HOST_IS_LITTLE_ENDIAN 1
 #endif
 
-#define TJS_INTF_METHOD
-#define TJS_USERENTRY
+// #define TJS_INTF_METHOD
+// #define TJS_USERENTRY
+
+#ifndef TJS_INTF_METHOD
+#define TJS_INTF_METHOD __cdecl
+	/* TJS_INTF_METHOD is "cdecl" (by default)
+		since TJS2 2.4.14 (kirikir2 2.25 beta 1) */
+#endif
+
+#define TJS_USERENTRY __cdecl
 
 
 #endif /* end of defined(_WIN32) && !defined(__GNUC__) */
