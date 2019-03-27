@@ -5,14 +5,15 @@ AR = i686-w64-mingw32-ar
 ASM = nasm
 WINDRES = i686-w64-mingw32-windres
 #CFLAGS += -O0 -g
-CFLAGS_OPT = -O3 -march=ivybridge -gstabs
+CFLAGS_OPT = -O3 -march=ivybridge
 # GIT_HASH = $(shell git rev-parse --short HEAD)
 GIT_HASH = nothing
 CUR_TIME = $(shell date +%s)
 ASMFLAGS += -fwin32 -DWIN32 -Iexternal/libjpeg-turbo/simd -Iexternal/libjpeg-turbo/win
 # CFLAGS += -gstabs -D_DEBUG -DENABLE_DEBUGGER 
-# CFLAGS += -gstabs
-CFLAGS +=  -Wall -Wno-unused-value -Wno-format -I. -Ivcproj -Iexternal/baseclasses -Imovie/win32 -Ivisual/gl -Iextension -Itjs2 -Ibase -Ibase/win32  -Imsg -Imsg/win32 -Isound -Isound/win32 -Iutils -Iutils/win32 -Ivisual -Ivisual/win32 -Ienviron/win32 -Ivisual/IA32 -Iplatform/win32 -Iexternal -Iexternal/zlib -Iexternal/lpng -Iexternal/libjpeg-turbo -Iexternal/libjpeg-turbo/vcproj -Iexternal/onig/src -Iexternal/onig -Iexternal/freetype/include -Iexternal/freetype/devel -Iexternal/freetype/src -Iexternal/freetype/src/gzip -Iexternal/jxrlib/jxrgluelib -Iexternal/jxrlib/image/sys -DGIT_HASH=L\"$(GIT_HASH)\" -DCUR_TIME=L\"$(CUR_TIME)\" -DNDEBUG -DNO_GZCOMPRESS -DWIN32 -D_WINDOWS -DHAVE_CONFIG_H -DPCRE_STATIC 
+CFLAGS += -gstabs
+# CFLAGS += -flto
+CFLAGS += -Wall -Wno-unused-value -Wno-format -I. -Ivcproj -Iexternal/baseclasses -Imovie/win32 -Ivisual/gl -Iextension -Itjs2 -Ibase -Ibase/win32  -Imsg -Imsg/win32 -Isound -Isound/win32 -Iutils -Iutils/win32 -Ivisual -Ivisual/win32 -Ienviron/win32 -Ivisual/IA32 -Iplatform/win32 -Iexternal -Iexternal/zlib -Iexternal/lpng -Iexternal/libjpeg-turbo -Iexternal/libjpeg-turbo/vcproj -Iexternal/onig/src -Iexternal/onig -Iexternal/freetype/include -Iexternal/freetype/devel -Iexternal/freetype/src -Iexternal/freetype/src/gzip -Iexternal/jxrlib/jxrgluelib -Iexternal/jxrlib/image/sys -DGIT_HASH=L\"$(GIT_HASH)\" -DCUR_TIME=L\"$(CUR_TIME)\" -DNDEBUG -DNO_GZCOMPRESS -DWIN32 -D_WINDOWS -DHAVE_CONFIG_H -DPCRE_STATIC 
 CFLAGS += -DFT2_BUILD_LIBRARY -DMINGW_HAS_SECURE_API -DUNICODE -D_UNICODE -DTVP_REPORT_HW_EXCEPTION -DTVP_LOG_TO_COMMANDLINE_CONSOLE -DNO_STRICT -DTJS_TEXT_OUT_CRLF -DTJS_JP_LOCALIZED -DTJS_DEBUG_DUMP_STRING -DCMAKE_INTDIR=\"Release\" -D_WINDOWS -DWIN32 -DWITH_SIMD
 CXXFLAGS += $(CFLAGS) -fpermissive
 LDFLAGS += -static -static-libstdc++ -static-libgcc -municode
@@ -51,7 +52,7 @@ SOURCES := $(BASE_SOURCES) $(ENVIRON_SOURCES) $(MOVIE_SOURCES) $(MSG_SOURCES) $(
 # BASECLASSES_SOURCES +=  external/baseclasses/amextra.cpp external/baseclasses/amfilter.cpp external/baseclasses/amvideo.cpp external/baseclasses/arithutil.cpp external/baseclasses/combase.cpp external/baseclasses/cprop.cpp external/baseclasses/ctlutil.cpp external/baseclasses/ddmm.cpp external/baseclasses/dllentry.cpp external/baseclasses/dllsetup.cpp external/baseclasses/mtype.cpp external/baseclasses/outputq.cpp external/baseclasses/perflog.cpp external/baseclasses/pstream.cpp external/baseclasses/pullpin.cpp external/baseclasses/refclock.cpp external/baseclasses/renbase.cpp external/baseclasses/schedule.cpp external/baseclasses/seekpt.cpp external/baseclasses/source.cpp external/baseclasses/strmctl.cpp external/baseclasses/sysclock.cpp external/baseclasses/transfrm.cpp external/baseclasses/transip.cpp external/baseclasses/videoctl.cpp external/baseclasses/vtrans.cpp external/baseclasses/winctrl.cpp external/baseclasses/winutil.cpp external/baseclasses/wxdebug.cpp external/baseclasses/wxlist.cpp external/baseclasses/wxutil.cpp
 # DISABLED_SOURCES +=  movie/win32/asyncio.cpp movie/win32/asyncrdr.cpp movie/win32/BufferRenderer.cpp movie/win32/CDemuxOutputPin.cpp movie/win32/CDemuxSource.cpp movie/win32/CMediaSeekingProxy.cpp movie/win32/CVMRCustomAllocatorPresenter9.cpp movie/win32/CWMAllocator.cpp movie/win32/CWMBuffer.cpp movie/win32/CWMReader.cpp movie/win32/DShowException.cpp movie/win32/dslayerd.cpp movie/win32/dsmixer.cpp movie/win32/dsmovie.cpp movie/win32/dsoverlay.cpp movie/win32/IBufferRenderer_i.c movie/win32/IRendererBufferAccess_i.c movie/win32/IRendererBufferVideo_i.c movie/win32/krlmovie.cpp movie/win32/krmmovie.cpp movie/win32/krmovie.cpp movie/win32/MFPlayer.cpp movie/win32/PlayWindow.cpp sound/MathAlgorithms_SSE.cpp sound/RealFFT_SSE.cpp sound/WaveFormatConverter_SSE.cpp sound/xmmlib.cpp visual/gl/blend_function_avx2.cpp visual/gl/blend_function_sse2.cpp visual/gl/boxblur_sse2.cpp visual/gl/colorfill_sse2.cpp visual/gl/colormap_sse2.cpp visual/gl/pixelformat_sse2.cpp visual/gl/ResampleImageAVX2.cpp visual/gl/ResampleImageSSE2.cpp visual/gl/tlg_sse2.cpp visual/gl/univtrans_sse2.cpp visual/IA32/tvpgl_ia32_intf.c visual/gl/adjust_color_sse2.cpp visual/gl/x86simdutil.cpp visual/gl/x86simdutilAVX2.cpp visual/LoadJXR.cpp
 
-$(TJS2_SOURCES:.cpp=.o): CFLAGS_OPT=-O0
+tjs2/tjsVariant.o: CFLAGS_OPT=-O0
 
 OBJECTS := $(SOURCES:.c=.o)
 OBJECTS := $(OBJECTS:.cpp=.o)
