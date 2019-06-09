@@ -1,4 +1,0 @@
-{
-  global: CreateApplication; DestroyApplication;
-  local: *;
-};
