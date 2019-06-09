@@ -347,13 +347,6 @@ const
 /* graphic cache system */
  gcsAuto=-1,
 
-/* Canvas blend mode */
- bmDisable = 0,
- bmOpaque = 1,
- bmAlpha = 2,
- bmAdd = 3,
- bmAddWithAlpha = 4,
-
 /* Textrue color format */
  tcfRGBA = 0,
  tcfAlpha = 1,

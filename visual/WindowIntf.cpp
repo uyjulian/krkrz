@@ -23,7 +23,6 @@
 #include "LayerManager.h"
 #include "VideoOvlIntf.h"
 #include "DrawDevice.h"
-#include "CanvasIntf.h"
 
 #include "Application.h"
 
@@ -130,7 +129,6 @@ tTVPUniqueTagForInputEvent tTVPOnTouchRotateInputEvent        ::Tag;
 tTVPUniqueTagForInputEvent tTVPOnMultiTouchInputEvent         ::Tag;
 tTVPUniqueTagForInputEvent tTVPOnHintChangeInputEvent         ::Tag;
 tTVPUniqueTagForInputEvent tTVPOnDisplayRotateInputEvent      ::Tag;
-tTVPUniqueTagForInputEvent tTVPOnDrawInputEvent               ::Tag;
 //---------------------------------------------------------------------------
 
 
@@ -148,7 +146,6 @@ tTJSNI_BaseWindow::tTJSNI_BaseWindow()
 	WindowExposedRegion.clear();
 	WindowUpdating = false;
 	DrawDevice = NULL;
-	CanvasInstance = nullptr;
 }
 //---------------------------------------------------------------------------
 tTJSNI_BaseWindow::~tTJSNI_BaseWindow()
@@ -188,50 +185,9 @@ tTJSNI_BaseWindow::Construct(tjs_int numparams, tTJSVariant **param,
 	return TJS_S_OK;
 }
 //---------------------------------------------------------------------------
-void tTJSNI_BaseWindow::CreateCanvas( iTJSDispatch2 *tjs_obj )
-{
-	if( TVPIsEnableDrawDevice() == false )
-	{	// Canvas 描画システムで初期化する(DrawDeviceはNullDeviceとなり機能しない)
-		iTJSDispatch2 * cls = NULL;
-		iTJSDispatch2 * newobj = NULL;
-		try
-		{
-			cls = new tTJSNC_Canvas();
-			// Windowクラスをパラメータに渡す(保持はせずWindowハンドルを得るだけ、AndroidではSurfaceハンドル)
-			tTJSVariant param[1] = { tjs_obj };
-			tTJSVariant *pparam[1] = { param };
-			if( TJS_FAILED( cls->CreateNew( 0, nullptr, nullptr, &newobj, 1, pparam, cls ) ) )
-				TVPThrowExceptionMessage( TVPInternalError, TJS_W( "tTJSNI_Canvas::Construct" ) );
-			SetCanvasObject( tTJSVariant( newobj, newobj ) );
-		} catch( ... )
-		{
-			if( cls ) cls->Release();
-			if( newobj ) newobj->Release();
-			throw;
-		}
-		if( cls ) cls->Release();
-		if( newobj ) newobj->Release();
-	}
-}
-//---------------------------------------------------------------------------
-void tTJSNI_BaseWindow::UpdateCanvasSurface() {
-	if( CanvasInstance ) {
-		CanvasInstance->UpdateWindowSurface();
-	}
-}
-//---------------------------------------------------------------------------
-void tTJSNI_BaseWindow::ReleaseCanvasSurface() {
-	if( CanvasInstance ) {
-		CanvasInstance->ReleaseWindowSurface();
-	}
-}
-//---------------------------------------------------------------------------
 void TJS_INTF_METHOD
 tTJSNI_BaseWindow::Invalidate()
 {
-	// stop draw cycle
-	if( DrawCycleTimer ) DrawCycleTimer->Terminate();
-
 	// remove from list
 	TVPUnregisterWindowToList(static_cast<tTJSNI_Window*>(this));
 
@@ -294,9 +250,6 @@ tTJSNI_BaseWindow::Invalidate()
 	// release draw device
 	SetDrawDeviceObject(tTJSVariant());
 
-	// release canvas
-	SetCanvasObject(tTJSVariant());
-
 	inherited::Invalidate();
 
 	/* NOTE: at this point, Owner is still non-null.
@@ -316,17 +269,6 @@ void tTJSNI_BaseWindow::FireOnActivate(bool activate_or_deactivate)
 		new tTVPOnWindowActivateEvent(this, activate_or_deactivate),
 		TVP_EPT_REMOVE_POST // to discard redundant events
 		);
-}
-//---------------------------------------------------------------------------
-void tTJSNI_BaseWindow::StartDrawing()
-{
-	if( DrawCycleTimer ) DrawCycleTimer->ResetDrawCycle();
-	TVPPostInputEvent( new tTVPOnDrawInputEvent(this), TVP_EPT_REMOVE_POST /* to discard redundant events */ );
-}
-//---------------------------------------------------------------------------
-void tTJSNI_BaseWindow::StartDrawingInternal()
-{
-	TVPPostInputEvent( new tTVPOnDrawInputEvent( this ), TVP_EPT_REMOVE_POST /* to discard redundant events */ );
 }
 //---------------------------------------------------------------------------
 void tTJSNI_BaseWindow::SetDrawDeviceObject(const tTJSVariant & val)
@@ -350,28 +292,6 @@ void tTJSNI_BaseWindow::SetDrawDeviceObject(const tTJSVariant & val)
 			reinterpret_cast<iTVPDrawDevice *>((tjs_intptr_t)(tjs_int64)iface_v);
 		DrawDevice->SetWindowInterface(const_cast<tTJSNI_BaseWindow*>(this));
 		ResetDrawDevice();
-	}
-}
-//---------------------------------------------------------------------------
-void tTJSNI_BaseWindow::SetCanvasObject(const tTJSVariant & val)
-{
-	if( CanvasObject.Type() == tvtObject )
-		CanvasObject.AsObjectClosureNoAddRef().Invalidate(0, nullptr, nullptr, CanvasObject.AsObjectNoAddRef());
-
-	CanvasObject = val;
-	CanvasInstance = nullptr;
-
-	// extract interface
-	if(CanvasObject.Type() == tvtObject)
-	{
-		tTJSVariantClosure clo = CanvasObject.AsObjectClosureNoAddRef();
-		if( clo.Object ) {
-			if(TJS_FAILED(clo.Object->NativeInstanceSupport(TJS_NIS_GETINSTANCE, tTJSNC_Canvas::ClassID, (iTJSNativeInstance**)&CanvasInstance)))
-			{
-				CanvasInstance = nullptr;
-				TVPThrowExceptionMessage(TJS_W("Cannot retrive canvas instance."));
-			}
-		}
 	}
 }
 //---------------------------------------------------------------------------
@@ -699,32 +619,6 @@ void tTJSNI_BaseWindow::OnDisplayRotate( tjs_int orientation, tjs_int rotate, tj
 	if(DrawDevice) DrawDevice->OnDisplayRotate(orientation, rotate, bpp, hresolution, vresolution);
 }
 //---------------------------------------------------------------------------
-class TVPFinishDrawing {
-	tTVPDrawCycleTimer* Timer;
-public:
-	TVPFinishDrawing( tTVPDrawCycleTimer* t) : Timer(t) {}
-	~TVPFinishDrawing() {
-		if( Timer ) Timer->FinishDrawing();
-	}
-};
-//---------------------------------------------------------------------------
-void tTJSNI_BaseWindow::OnDraw() {
-	TVPFinishDrawing drawTimer( DrawCycleTimer.get() );
-	if(!CanDeliverEvents()) return;
-	if( CanvasInstance ) CanvasInstance->BeginDrawing();
-	try {
-		if( Owner )
-		{
-			static ttstr eventname( TJS_W( "onDraw" ) );
-			TVPPostEvent( Owner, Owner, eventname, 0, TVP_EPT_IMMEDIATE, 0, nullptr );
-		}
-	} catch( ... ) {
-		if( CanvasInstance ) CanvasInstance->EndDrawing();
-		throw;
-	}
-	if( CanvasInstance ) CanvasInstance->EndDrawing();
-}
-//---------------------------------------------------------------------------
 void tTJSNI_BaseWindow::ClearInputEvents()
 {
 	TVPCancelInputEvents(this);
@@ -748,7 +642,6 @@ void TJS_INTF_METHOD tTJSNI_BaseWindow::UnregisterLayerManager(iTVPLayerManager 
 //---------------------------------------------------------------------------
 void tTJSNI_BaseWindow::NotifyWindowExposureToLayer(const tTVPRect &cliprect)
 {
-	if( CanvasInstance ) StartDrawing();
 	if( DrawDevice ) DrawDevice->RequestInvalidation(cliprect);
 }
 //---------------------------------------------------------------------------
@@ -867,24 +760,6 @@ void tTJSNI_BaseWindow::SetWaitVSync( bool enable )
 bool tTJSNI_BaseWindow::GetWaitVSync() const
 {
 	return WaitVSync;
-}
-//---------------------------------------------------------------------------
-void tTJSNI_BaseWindow::SetDrawCycle( tjs_uint32 cycle ) {
-	if( !CanvasInstance ) return;
-	if( cycle == 0 ) return;
-
-	if( !DrawCycleTimer ) DrawCycleTimer.reset( new tTVPDrawCycleTimer(this) );
-	DrawCycleTimer->SetDrawCycle( cycle );
-}
-//---------------------------------------------------------------------------
-tjs_uint32 tTJSNI_BaseWindow::GetDrawCycle() const {
-	if( !CanvasInstance ) return 0;
-	if( !DrawCycleTimer ) return 0;
-	return DrawCycleTimer->GetDrawCycle();
-}
-//---------------------------------------------------------------------------
-void tTJSNI_BaseWindow::ResetDrawCycle() {
-	if( !CanvasInstance ) return;
 }
 //---------------------------------------------------------------------------
 
@@ -1077,14 +952,6 @@ TJS_BEGIN_NATIVE_METHOD_DECL(/*func. name*/hideMouseCursor)
 	return TJS_S_OK;
 }
 TJS_END_NATIVE_METHOD_DECL(/*func. name*/hideMouseCursor)
-//----------------------------------------------------------------------
-TJS_BEGIN_NATIVE_METHOD_DECL(/*func. name*/fireOnDraw)
-{
-	TJS_GET_NATIVE_INSTANCE(/*var. name*/_this, /*var. type*/tTJSNI_Window);
-	_this->StartDrawing();
-	return TJS_S_OK;
-}
-TJS_END_NATIVE_METHOD_DECL(/*func. name*/fireOnDraw )
 //----------------------------------------------------------------------
 TJS_BEGIN_NATIVE_METHOD_DECL(/*func. name*/postInputEvent)
 {
@@ -2076,20 +1943,6 @@ TJS_BEGIN_NATIVE_PROP_DECL(waitVSync)
 }
 TJS_END_NATIVE_PROP_DECL(waitVSync)
 //---------------------------------------------------------------------------
-TJS_BEGIN_NATIVE_PROP_DECL(canvas)
-{
-	TJS_BEGIN_NATIVE_PROP_GETTER
-	{
-		TJS_GET_NATIVE_INSTANCE(/*var. name*/_this, /*var. type*/tTJSNI_Window);
-		*result = _this->GetCanvasObject();
-		return TJS_S_OK;
-	}
-	TJS_END_NATIVE_PROP_GETTER
-
-	TJS_DENY_NATIVE_PROP_SETTER
-}
-TJS_END_NATIVE_PROP_DECL(canvas)
-//---------------------------------------------------------------------------
 TJS_BEGIN_NATIVE_PROP_DECL(layerTreeOwnerInterface)
 {
 	TJS_BEGIN_NATIVE_PROP_GETTER
@@ -2103,28 +1956,6 @@ TJS_BEGIN_NATIVE_PROP_DECL(layerTreeOwnerInterface)
 	TJS_DENY_NATIVE_PROP_SETTER
 }
 TJS_END_NATIVE_PROP_DECL(layerTreeOwnerInterface)
-//----------------------------------------------------------------------
-TJS_BEGIN_NATIVE_PROP_DECL( drawCycle )
-{
-	TJS_BEGIN_NATIVE_PROP_GETTER
-	{
-		TJS_GET_NATIVE_INSTANCE(/*var. name*/_this, /*var. type*/tTJSNI_Window );
-		*result = (tjs_int)_this->GetDrawCycle();
-		return TJS_S_OK;
-	}
-	TJS_END_NATIVE_PROP_GETTER
-
-	TJS_BEGIN_NATIVE_PROP_SETTER
-	{
-		TJS_GET_NATIVE_INSTANCE(/*var. name*/_this, /*var. type*/tTJSNI_Window );
-		tjs_int cycle = (tjs_int)*param;
-		if( cycle < 0 ) cycle = 0;
-		_this->SetDrawCycle( (tjs_uint32)cycle );
-		return TJS_S_OK;
-	}
-	TJS_END_NATIVE_PROP_SETTER
-}
-TJS_END_NATIVE_PROP_DECL( drawCycle )
 //---------------------------------------------------------------------------
 TJS_BEGIN_NATIVE_PROP_DECL( displayDensity )
 {

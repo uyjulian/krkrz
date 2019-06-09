@@ -26,10 +26,6 @@
 	path = external/jxrlib
 	url = https://github.com/krkrz/jxrlib.git
 	ignore = dirty
-[submodule "external/angle"]
-	path = external/angle
-	url = https://github.com/krkrz/angle.git
-	ignore = dirty
 [submodule "external/libogg"]
 	path = external/libogg
 	url = https://github.com/krkrz/libogg.git
@@ -41,8 +37,4 @@
 [submodule "external/opusfile"]
 	path = external/opusfile
 	url = https://github.com/krkrz/opusfile.git
-	ignore = dirty
-[submodule "external/glm"]
-	path = external/glm
-	url = https://github.com/krkrz/glm.git
 	ignore = dirty

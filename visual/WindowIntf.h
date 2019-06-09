@@ -19,7 +19,6 @@
 #include "ObjectList.h"
 #include "DrawDevice.h"
 #include "LayerTreeOwner.h"
-#include "DrawCycleTimer.h"
 
 #include <memory>
 
@@ -166,8 +165,6 @@ public:
 	bool IsMainWindow() const;
 	virtual bool GetWindowActive() = 0;
 	void FireOnActivate(bool activate_or_deactivate);
-	void StartDrawing();
-	void StartDrawingInternal();
 
 	//-- interface to draw device
 public:
@@ -178,17 +175,6 @@ public:
 	iTVPDrawDevice * GetDrawDevice() const { return DrawDevice ; }
 	virtual void ResetDrawDevice() = 0;
 	virtual iTJSDispatch2 * GetWindowDispatch() { if(Owner) Owner->AddRef(); return Owner; }
-
-	//-- interface to canvas
-public:
-	tTJSVariant CanvasObject; //!< Current Canvas TJS2 Object
-	class tTJSNI_Canvas* CanvasInstance;
-	void SetCanvasObject(const tTJSVariant & val);
-	const tTJSVariant & GetCanvasObject() const { return CanvasObject; }
-	void CreateCanvas( iTJSDispatch2 *tjs_obj );
-
-	void UpdateCanvasSurface();
-	void ReleaseCanvasSurface();
 
 	//----- event dispatching
 public:
@@ -231,9 +217,6 @@ public:
 	void OnHintChange( const ttstr& text, tjs_int x, tjs_int y, bool isshow );
 
 	void OnDisplayRotate( tjs_int orientation, tjs_int rotate, tjs_int bpp, tjs_int hresolution, tjs_int vresolution );
-
-	// onDraw for Canvas
-	void OnDraw();
 
 	void ClearInputEvents();
 
@@ -285,17 +268,12 @@ public:
 
 	//----- vsync
 protected:
-	std::unique_ptr<tTVPDrawCycleTimer> DrawCycleTimer;
 	bool WaitVSync;
 	virtual void UpdateVSyncThread() = 0;
 
 public:
 	void SetWaitVSync( bool enable );
 	bool GetWaitVSync() const;
-
-	void SetDrawCycle( tjs_uint32 cycle );
-	tjs_uint32 GetDrawCycle() const;
-	void ResetDrawCycle();
 };
 //---------------------------------------------------------------------------
 
@@ -688,15 +666,6 @@ public:
 		HorizontalResolution(hresolution), VerticalResolution(vresolution) {};
 	void Deliver() const
 	{ ((tTJSNI_BaseWindow*)GetSource())->OnDisplayRotate( Orientation, Rotate, BPP, HorizontalResolution, VerticalResolution ); }
-};
-//---------------------------------------------------------------------------
-class tTVPOnDrawInputEvent : public tTVPBaseInputEvent
-{
-	static tTVPUniqueTagForInputEvent Tag;
-public:
-	tTVPOnDrawInputEvent(tTJSNI_BaseWindow *win ) :tTVPBaseInputEvent( win, Tag ) {};
-	void Deliver() const
-	{ ((tTJSNI_BaseWindow*)GetSource())->OnDraw(); }
 };
 //---------------------------------------------------------------------------
 

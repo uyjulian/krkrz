@@ -50,15 +50,6 @@
 #include "BitmapLayerTreeOwner.h"
 #include "Extension.h"
 
-#include "CanvasIntf.h"
-#include "OffscreenIntf.h"
-#include "TextureIntf.h"
-#include "Matrix44Intf.h"
-#include "Matrix32Intf.h"
-#include "ShaderProgramIntf.h"
-#include "VertexBufferIntf.h"
-#include "VertexBinderIntf.h"
-
 //---------------------------------------------------------------------------
 // global variables
 //---------------------------------------------------------------------------
@@ -212,14 +203,6 @@ void TVPInitScriptEngine()
 	REGISTER_OBJECT(Bitmap, TVPCreateNativeClass_Bitmap());
 	REGISTER_OBJECT(ImageFunction, TVPCreateNativeClass_ImageFunction());
 	REGISTER_OBJECT(BitmapLayerTreeOwner, TVPCreateNativeClass_BitmapLayerTreeOwner());
-	REGISTER_OBJECT(Canvas, TVPCreateNativeClass_Canvas());
-	REGISTER_OBJECT(Texture, TVPCreateNativeClass_Texture());
-	REGISTER_OBJECT(Offscreen, TVPCreateNativeClass_Offscreen());
-	REGISTER_OBJECT(Matrix44, TVPCreateNativeClass_Matrix44());
-	REGISTER_OBJECT(Matrix32, TVPCreateNativeClass_Matrix32());
-	REGISTER_OBJECT(ShaderProgram, TVPCreateNativeClass_ShaderProgram());
-	REGISTER_OBJECT(VertexBuffer, TVPCreateNativeClass_VertexBuffer());
-	REGISTER_OBJECT(VertexBinder, TVPCreateNativeClass_VertexBinder());
 
 	/* WaveSoundBuffer and its filters */
 	iTJSDispatch2 * waveclass = NULL;

@@ -28,7 +28,7 @@
 // オプション
 //---------------------------------------------------------------------------
 static bool TVPDrawDeviceOptionInit = false;
-static bool TVPEnableDrawDevice = false;
+static bool TVPEnableDrawDevice = true;
 //---------------------------------------------------------------------------
 static void TVPInitDrawDeviceOptions()
 {
