@@ -23,33 +23,20 @@
 
 #if 0
 #define TVP_OPUS_DECODER_IMPLEMENT
-
-extern void TVPQueueSoundSetGlobalVolume(tjs_int v);
-extern tjs_int TVPQueueSoundGetGlobalVolume();
-extern void TVPQueueSoundSetGlobalFocusMode(tTVPSoundGlobalFocusMode b);
-extern tTVPSoundGlobalFocusMode TVPQueueSoundGetGlobalFocusMode();
 #endif
 
 #ifdef _WIN32
 extern tTJSNativeClass * TVPCreateNativeClass_WaveSoundBuffer();
-extern bool TVPHasXAudio2DLL();
 extern void TVPSoundSetGlobalVolume(tjs_int v);
 extern tjs_int TVPSoundGetGlobalVolume();
 extern void TVPSoundSetGlobalFocusMode(tTVPSoundGlobalFocusMode b);
 extern tTVPSoundGlobalFocusMode TVPSoundGetGlobalFocusMode();
 #endif
 
-#if 0
-static void (*TVPSetGlobalVolume)(tjs_int v) = TVPQueueSoundSetGlobalVolume;
-static tjs_int (*TVPGetGlobalVolume)() = TVPQueueSoundGetGlobalVolume;
-static void (*TVPSetGlobalFocusMode)(tTVPSoundGlobalFocusMode b) = TVPQueueSoundSetGlobalFocusMode;
-static tTVPSoundGlobalFocusMode (*TVPGetGlobalFocusMode)() = TVPQueueSoundGetGlobalFocusMode;
-#else
 static void (*TVPSetGlobalVolume)(tjs_int v) = TVPSoundSetGlobalVolume;
 static tjs_int (*TVPGetGlobalVolume)() = TVPSoundGetGlobalVolume;
 static void (*TVPSetGlobalFocusMode)(tTVPSoundGlobalFocusMode b) = TVPSoundSetGlobalFocusMode;
 static tTVPSoundGlobalFocusMode (*TVPGetGlobalFocusMode)() = TVPSoundGetGlobalFocusMode;
-#endif
 
 //---------------------------------------------------------------------------
 // PCM related constants / definitions
@@ -1815,25 +1802,10 @@ extern tTJSNativeClass * TVPCreateNativeClass_QueueSoundBuffer();
 
 tTJSNativeClass * TVPCreateNativeClass_SoundBuffer()
 {
-#if 1 || defined(_WIN32)
-#if 0
-	if( TVPHasXAudio2DLL() ) {
-		TVPSetGlobalVolume = TVPQueueSoundSetGlobalVolume;
-		TVPGetGlobalVolume = TVPQueueSoundGetGlobalVolume;
-		TVPSetGlobalFocusMode = TVPQueueSoundSetGlobalFocusMode;
-		TVPGetGlobalFocusMode = TVPQueueSoundGetGlobalFocusMode;
-		return TVPCreateNativeClass_QueueSoundBuffer();
-	} else 
-#endif
-	{
-		TVPSetGlobalVolume = TVPSoundSetGlobalVolume;
-		TVPGetGlobalVolume = TVPSoundGetGlobalVolume;
-		TVPSetGlobalFocusMode = TVPSoundSetGlobalFocusMode;
-		TVPGetGlobalFocusMode = TVPSoundGetGlobalFocusMode;
-		return TVPCreateNativeClass_WaveSoundBuffer();
-	}
-#else
-	return TVPCreateNativeClass_QueueSoundBuffer();
-#endif
+	TVPSetGlobalVolume = TVPSoundSetGlobalVolume;
+	TVPGetGlobalVolume = TVPSoundGetGlobalVolume;
+	TVPSetGlobalFocusMode = TVPSoundSetGlobalFocusMode;
+	TVPGetGlobalFocusMode = TVPSoundGetGlobalFocusMode;
+	return TVPCreateNativeClass_WaveSoundBuffer();
 }
 //---------------------------------------------------------------------------
