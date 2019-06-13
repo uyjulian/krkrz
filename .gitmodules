@@ -22,10 +22,6 @@
 	path = external/zlib
 	url = https://github.com/krkrz/zlib.git
 	ignore = dirty
-[submodule "external/jxrlib"]
-	path = external/jxrlib
-	url = https://github.com/krkrz/jxrlib.git
-	ignore = dirty
 [submodule "external/libogg"]
 	path = external/libogg
 	url = https://github.com/krkrz/libogg.git
