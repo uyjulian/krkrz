@@ -6,10 +6,6 @@
 	path = external/freetype
 	url = https://github.com/krkrz/freetype.git
 	ignore = dirty
-[submodule "external/libjpeg-turbo"]
-	path = external/libjpeg-turbo
-	url = https://github.com/krkrz/libjpeg-turbo.git
-	ignore = dirty
 [submodule "external/lpng"]
 	path = external/lpng
 	url = https://github.com/krkrz/libpng.git

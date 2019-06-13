@@ -158,12 +158,6 @@ public:
 		Handlers.push_back(tTVPGraphicHandlerType(
 			TJS_W(".dib"), TVPLoadBMP, TVPLoadHeaderBMP, TVPSaveAsBMP, TVPAcceptSaveAsBMP, NULL));
 		Handlers.push_back(tTVPGraphicHandlerType(
-			TJS_W(".jpeg"), TVPLoadJPEG, TVPLoadHeaderJPG, TVPSaveAsJPG, TVPAcceptSaveAsJPG, NULL));
-		Handlers.push_back(tTVPGraphicHandlerType(
-			TJS_W(".jpg"), TVPLoadJPEG, TVPLoadHeaderJPG, TVPSaveAsJPG, TVPAcceptSaveAsJPG, NULL));
-		Handlers.push_back(tTVPGraphicHandlerType(
-			TJS_W(".jif"), TVPLoadJPEG, TVPLoadHeaderJPG, TVPSaveAsJPG, TVPAcceptSaveAsJPG, NULL));
-		Handlers.push_back(tTVPGraphicHandlerType(
 			TJS_W(".png"), TVPLoadPNG, TVPLoadHeaderPNG, TVPSaveAsPNG, TVPAcceptSaveAsPNG, NULL));
 		Handlers.push_back(tTVPGraphicHandlerType(
 			TJS_W(".tlg"), TVPLoadTLG, TVPLoadHeaderTLG, TVPSaveAsTLG, TVPAcceptSaveAsTLG, NULL));
