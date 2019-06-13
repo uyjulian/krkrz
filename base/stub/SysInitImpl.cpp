@@ -34,8 +34,6 @@
 #include "VersionFormUnit.h"
 #include "EmergencyExit.h"
 
-#include "tvpgl_ia32_intf.h"
-
 #include "BinaryStream.h"
 #include "Application.h"
 #include "Exception.h"
@@ -1191,9 +1189,6 @@ void TVPAfterSystemInit()
 
 	// dump option
 	TVPDumpOptions();
-
-	// initilaize x86 graphic routines
-	TVPGL_IA32_Init();
 
 	// timer precision
 	UINT prectick = 1;

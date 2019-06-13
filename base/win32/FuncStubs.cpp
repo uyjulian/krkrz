@@ -2728,7 +2728,6 @@ static void __stdcall TVP_Stub_5f6d263c0d48d03f6eb0dc44c9dd0be2(tjs_uint32 * des
 {
 	return TVPPsExclusionBlend_HDA_o(dest, src, len, opa);
 }
-#include "tvpgl_ia32_intf.h"
 #include "TVPVideoOverlay.h"
 static void __stdcall TVP_Stub_bf363ba3d5b54df9d6df35a518deb6b0(const ttstr & name , void * guid , tTVPCreateDSFilter splitter , tTVPCreateDSFilter video , tTVPCreateDSFilter audio , void * formatdata)
 {

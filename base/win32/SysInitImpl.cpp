@@ -35,8 +35,6 @@
 #include "VersionFormUnit.h"
 #include "EmergencyExit.h"
 
-#include "tvpgl_ia32_intf.h"
-
 #include "BinaryStream.h"
 #include "Application.h"
 #include "Exception.h"
@@ -1229,7 +1227,6 @@ void TVPBeforeSystemInit()
 //---------------------------------------------------------------------------
 static void TVPDumpOptions();
 //---------------------------------------------------------------------------
-extern void TVPGL_SSE2_Init();
 extern void TVPAddGlobalHeapCompactCallback();
 static bool TVPHighTimerPeriod = false;
 static UINT TVPTimeBeginPeriodRes = 0;
@@ -1336,14 +1333,6 @@ void TVPAfterSystemInit()
 
 	// dump option
 	TVPDumpOptions();
-
-	// initilaize x86 graphic routines
-#if 0
-#ifndef TJS_64BIT_OS
-	TVPGL_IA32_Init();
-#endif
-	TVPGL_SSE2_Init();
-#endif
 
 	// timer precision
 	UINT prectick = 1;

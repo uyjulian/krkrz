@@ -20,13 +20,6 @@
 
 #include "tjsCommHead.h"
 #include "tvpgl.h"
-
-#include "tvpgl.h"
-#ifdef _WIN32
-#include "tvpgl_ia32_intf.h"
-#else
-#include "DetectCPU.h"
-#endif
 #include "tvpgl_mathutil.h"
 
 extern "C" {
@@ -510,10 +503,6 @@ TVP##DEST_FUNC##_HDA_o = TVP_##FUNC##_HDA_o;
 static void (*TVPAdditiveAlphaBlend_d)(tjs_uint32*,const tjs_uint32*,tjs_int);
 static void (*TVPAdditiveAlphaBlend_do)(tjs_uint32*,const tjs_uint32*,tjs_int,tjs_int);
 
-extern void TVP_ch_blur_add_mul_copy65_sse2_c( tjs_uint8 *dest, const tjs_uint8 *src, tjs_int len, tjs_int opa );
-extern void TVP_ch_blur_add_mul_copy_sse2_c( tjs_uint8 *dest, const tjs_uint8 *src, tjs_int len, tjs_int opa );
-extern void TVP_ch_blur_mul_copy65_sse2_c( tjs_uint8 *dest, const tjs_uint8 *src, tjs_int len, tjs_int opa );
-extern void TVP_ch_blur_mul_copy_sse2_c( tjs_uint8 *dest, const tjs_uint8 *src, tjs_int len, tjs_int opa );
 /**
  * GL初期化。関数ポインタを設定する
  */
