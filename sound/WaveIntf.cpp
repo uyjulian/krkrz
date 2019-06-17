@@ -21,9 +21,6 @@
 
 
 
-#if 0
-#define TVP_OPUS_DECODER_IMPLEMENT
-#endif
 
 #ifdef _WIN32
 extern tTJSNativeClass * TVPCreateNativeClass_WaveSoundBuffer();
@@ -718,9 +715,6 @@ tTVPWaveDecoder * tTVPWDC_RIFFWave::Create(const ttstr & storagename,
 }
 //---------------------------------------------------------------------------
 
-#ifdef TVP_OPUS_DECODER_IMPLEMENT
-extern void TVPRegisterOpusDecoderCreator();
-#endif
 //---------------------------------------------------------------------------
 // tTVPWaveDecoder interface management
 //---------------------------------------------------------------------------
@@ -734,9 +728,6 @@ struct tTVPWaveDecoderManager
 	{
 		TVPWaveDecoderManagerAvail = true;
 		TVPRegisterWaveDecoderCreator(&RIFFWaveDecoderCreator);
-#ifdef TVP_OPUS_DECODER_IMPLEMENT
-		TVPRegisterOpusDecoderCreator();
-#endif
 	}
 
 	~tTVPWaveDecoderManager()

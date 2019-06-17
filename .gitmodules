@@ -14,15 +14,3 @@
 	path = external/zlib
 	url = https://github.com/krkrz/zlib.git
 	ignore = dirty
-[submodule "external/libogg"]
-	path = external/libogg
-	url = https://github.com/krkrz/libogg.git
-	ignore = dirty
-[submodule "external/opus"]
-	path = external/opus
-	url = https://github.com/krkrz/opus.git
-	ignore = dirty
-[submodule "external/opusfile"]
-	path = external/opusfile
-	url = https://github.com/krkrz/opusfile.git
-	ignore = dirty
