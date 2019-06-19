@@ -358,6 +358,12 @@ typedef struct
 #define TVP_GL_FUNC_PTR_DECL(rettype, funcname, arg) rettype (__cdecl * funcname) arg
 #define TVP_GL_FUNC_PTR_EXTERN_DECL_(rettype, funcname, arg) extern rettype (__cdecl * funcname) arg
 #define TVP_GL_FUNC_PTR_EXTERN_DECL TVP_GL_FUNC_PTR_EXTERN_DECL_
+#elif defined(__GNUC__)
+#define TVP_GL_FUNC_DECL(rettype, funcname, arg)  rettype funcname arg
+#define TVP_GL_FUNC_EXTERN_DECL(rettype, funcname, arg)  extern rettype funcname arg
+#define TVP_GL_FUNC_PTR_DECL(rettype, funcname, arg) rettype (*funcname) arg
+#define TVP_GL_FUNC_PTR_EXTERN_DECL_(rettype, funcname, arg) extern rettype (*funcname) arg
+#define TVP_GL_FUNC_PTR_EXTERN_DECL TVP_GL_FUNC_PTR_EXTERN_DECL_
 #endif
 
 extern unsigned char TVPDivTable[256*256];
@@ -388,6 +394,8 @@ $cnt =  <<EOF;
 /* add here compiler specific inline directives */
 #if defined( __BORLANDC__ ) || ( _MSC_VER )
 	#define TVP_INLINE_FUNC __inline
+#elif defined(__GNUC__)
+	#define TVP_INLINE_FUNC inline
 #else
 	#define TVP_INLINE_FUNC 
 #endif
@@ -5735,6 +5743,31 @@ EOF
 &loop_unroll_c_int_2($content, $content2, 'len', 4);
 
 print FC <<EOF;
+}
+
+EOF
+
+;#-----------------------------------------------------------------
+;# BGRA to RGBA
+;#-----------------------------------------------------------------
+
+print FC <<EOF;
+/*export*/
+TVP_GL_FUNC_DECL(void, TVPRedBlueSwap_c, (tjs_uint32 *dest, tjs_int len))
+{
+	for( int i = 0; i < len; i++ ) {
+		tjs_uint32 s = dest[i];
+		dest[i] = ( ( ( s & 0xff0000 ) >> 16 ) | ( s & 0xff00ff00 ) | ( ( s & 0xff ) << 16 ) ); 
+	}
+}
+
+/*export*/
+TVP_GL_FUNC_DECL(void, TVPRedBlueSwapCopy_c, (tjs_uint32 *dest, const tjs_uint32 *src, tjs_int len))
+{
+	for( int i = 0; i < len; i++ ) {
+		tjs_uint32 s = src[i];
+		dest[i] = ( ( ( s & 0xff0000 ) >> 16 ) | ( s & 0xff00ff00 ) | ( ( s & 0xff ) << 16 ) ); 
+	}
 }
 
 EOF
