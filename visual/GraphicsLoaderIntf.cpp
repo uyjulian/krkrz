@@ -157,12 +157,6 @@ public:
 			TJS_W(".bmp"), TVPLoadBMP, TVPLoadHeaderBMP, TVPSaveAsBMP, TVPAcceptSaveAsBMP, NULL));
 		Handlers.push_back(tTVPGraphicHandlerType(
 			TJS_W(".dib"), TVPLoadBMP, TVPLoadHeaderBMP, TVPSaveAsBMP, TVPAcceptSaveAsBMP, NULL));
-		Handlers.push_back(tTVPGraphicHandlerType(
-			TJS_W(".tlg"), TVPLoadTLG, TVPLoadHeaderTLG, TVPSaveAsTLG, TVPAcceptSaveAsTLG, NULL));
-		Handlers.push_back(tTVPGraphicHandlerType(
-			TJS_W(".tlg5"), TVPLoadTLG, TVPLoadHeaderTLG, TVPSaveAsTLG, TVPAcceptSaveAsTLG, NULL));
-		Handlers.push_back(tTVPGraphicHandlerType(
-			TJS_W(".tlg6"), TVPLoadTLG, TVPLoadHeaderTLG, TVPSaveAsTLG, TVPAcceptSaveAsTLG, NULL));
 		ReCreateHash();
 		Avail = true;
 	}

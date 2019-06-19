@@ -18,62 +18,7 @@ static const tjs_uint8 TVPDither4x4[4][4] = {
  {   3, 15,  1, 13   },
  {  11,  7,  9,  5   }};
 
-#define TVP_TLG6_GOLOMB_HALF_THRESHOLD 8
-
-
-#define TVP_TLG6_GOLOMB_N_COUNT  4
-#define TVP_TLG6_LeadingZeroTable_BITS 12
-#define TVP_TLG6_LeadingZeroTable_SIZE  (1<<TVP_TLG6_LeadingZeroTable_BITS)
-tjs_uint8 TVPTLG6LeadingZeroTable[TVP_TLG6_LeadingZeroTable_SIZE];
-short int TVPTLG6GolombCompressed[TVP_TLG6_GOLOMB_N_COUNT][9] = {
-		{3,7,15,27,63,108,223,448,130,},
-		{3,5,13,24,51,95,192,384,257,},
-		{2,5,12,21,39,86,155,320,384,},
-		{2,3,9,18,33,61,129,258,511,},
-	/* Tuned by W.Dee, 2004/03/25 */
-};
-char TVPTLG6GolombBitLengthTable
-	[TVP_TLG6_GOLOMB_N_COUNT*2*128][TVP_TLG6_GOLOMB_N_COUNT] =
-	{ { 0 } };
-
-
 static void TVPPsMakeTable(void);
-
-static void TVPTLG6InitLeadingZeroTable(void)
-{
-	/* table which indicates first set bit position + 1. */
-	/* this may be replaced by BSF (IA32 instrcution). */
-
-	int i;
-	for(i = 0; i < TVP_TLG6_LeadingZeroTable_SIZE; i++)
-	{
-		int cnt = 0;
-		int j;
-		for(j = 1; j != TVP_TLG6_LeadingZeroTable_SIZE && !(i & j);
-			j <<= 1, cnt++);
-		cnt ++;
-		if(j == TVP_TLG6_LeadingZeroTable_SIZE) cnt = 0;
-		TVPTLG6LeadingZeroTable[i] = cnt;
-	}
-}
-
-void TVPTLG6InitGolombTable(void)
-{
-	int n, i, j;
-	for(n = 0; n < TVP_TLG6_GOLOMB_N_COUNT; n++)
-	{
-		int a = 0;
-		for(i = 0; i < 9; i++)
-		{
-			for(j = 0; j < TVPTLG6GolombCompressed[n][i]; j++)
-				TVPTLG6GolombBitLengthTable[a++][n] = (char)i;
-		}
-		if(a != TVP_TLG6_GOLOMB_N_COUNT*2*128)
-			*(char*)0 = 0;   /* THIS MUST NOT BE EXECUETED! */
-				/* (this is for compressed table data check) */
-	}
-}
-
 
 static void TVPInitDitherTable(void)
 {
@@ -238,8 +183,6 @@ static void TVPCreateTable(void)
 
 
 	TVPInitDitherTable();
-	TVPTLG6InitLeadingZeroTable();
-	TVPTLG6InitGolombTable();
 	TVPPsMakeTable();
 }
 
