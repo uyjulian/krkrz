@@ -71,7 +71,7 @@ extern unsigned char TVP252DitherPalette[3][256];
 #elif defined(__GNUC__)
 	#define TVP_INLINE_FUNC inline
 #else
-	#define TVP_INLINE_FUNC
+	#define TVP_INLINE_FUNC 
 #endif
 
 static tjs_uint32 TVP_INLINE_FUNC TVPSaturatedAdd(tjs_uint32 a, tjs_uint32 b)
