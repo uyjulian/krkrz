@@ -153,10 +153,6 @@ extern void TVPLoadBMP(void* formatdata, void *callbackdata, tTVPGraphicSizeCall
 	tTVPGraphicScanLineCallback scanlinecallback, tTVPMetaInfoPushCallback metainfopushcallback,
 	tTJSBinaryStream *src, tjs_int keyidx,  tTVPGraphicLoadMode mode);
 
-extern void TVPLoadPNG(void* formatdata, void *callbackdata, tTVPGraphicSizeCallback sizecallback,
-	tTVPGraphicScanLineCallback scanlinecallback, tTVPMetaInfoPushCallback metainfopushcallback,
-	tTJSBinaryStream *src, tjs_int keyidx,  tTVPGraphicLoadMode mode);
-
 extern void TVPLoadTLG(void* formatdata, void *callbackdata, tTVPGraphicSizeCallback sizecallback,
 	tTVPGraphicScanLineCallback scanlinecallback, tTVPMetaInfoPushCallback metainfopushcallback,
 	tTJSBinaryStream *src, tjs_int keyidx, tTVPGraphicLoadMode mode);
@@ -176,7 +172,6 @@ extern void TVPLoadTLG(void* formatdata, void *callbackdata, tTVPGraphicSizeCall
 // ]
 //---------------------------------------------------------------------------
 extern void TVPLoadHeaderBMP(void* formatdata, tTJSBinaryStream *src, iTJSDispatch2** dic );
-extern void TVPLoadHeaderPNG(void* formatdata, tTJSBinaryStream *src, iTJSDispatch2** dic );
 extern void TVPLoadHeaderTLG(void* formatdata, tTJSBinaryStream *src, iTJSDispatch2** dic );
 //---------------------------------------------------------------------------
 
@@ -185,7 +180,6 @@ extern void TVPLoadHeaderTLG(void* formatdata, tTJSBinaryStream *src, iTJSDispat
 // Image saving handler
 //---------------------------------------------------------------------------
 extern void TVPSaveAsBMP(void* formatdata, tTJSBinaryStream* dst, const tTVPBaseBitmap* image, const ttstr & mode, iTJSDispatch2* meta );
-extern void TVPSaveAsPNG(void* formatdata, tTJSBinaryStream* dst, const tTVPBaseBitmap* image, const ttstr & mode, iTJSDispatch2* meta );
 extern void TVPSaveAsTLG(void* formatdata, tTJSBinaryStream* dst, const tTVPBaseBitmap* image, const ttstr & mode, iTJSDispatch2* meta );
 //---------------------------------------------------------------------------
 
@@ -194,7 +188,6 @@ extern void TVPSaveAsTLG(void* formatdata, tTJSBinaryStream* dst, const tTVPBase
 // is accept
 //---------------------------------------------------------------------------
 extern bool TVPAcceptSaveAsBMP(void* formatdata, const ttstr & type, iTJSDispatch2** dic );
-extern bool TVPAcceptSaveAsPNG(void* formatdata, const ttstr & type, iTJSDispatch2** dic );
 extern bool TVPAcceptSaveAsTLG(void* formatdata, const ttstr & type, iTJSDispatch2** dic );
 //---------------------------------------------------------------------------
 

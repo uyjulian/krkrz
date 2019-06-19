@@ -2,10 +2,6 @@
 	path = external/freetype
 	url = https://github.com/krkrz/freetype.git
 	ignore = dirty
-[submodule "external/lpng"]
-	path = external/lpng
-	url = https://github.com/krkrz/libpng.git
-	ignore = dirty
 [submodule "external/onig"]
 	path = external/onig
 	url = https://github.com/krkrz/oniguruma.git
