@@ -35,97 +35,6 @@ IDI_TVPWIN32            ICON                    "tvpwin32.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Dialog
-//
-
-IDD_VERSION_DIALOG DIALOGEX 0, 0, 381, 193
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "バージョン・著作権・環境情報"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    DEFPUSHBUTTON   "閉じる",IDOK,324,172,50,14
-    PUSHBUTTON      "環境情報をクリップボードへコピー",IDC_COPY_INFO_BUTTON,7,172,171,14
-    EDITTEXT        IDC_INFOMATION_EDIT,7,7,367,161,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
-END
-
-IDD_CONFIG_DIALOG DIALOGEX 0, 0, 511, 303
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "設定"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,403,282,50,14
-    PUSHBUTTON      "キャンセル",IDCANCEL,454,282,50,14
-    GROUPBOX        "オプション",IDC_STATIC,7,7,497,272
-    LTEXT           "オプションの名前 : ",IDC_STATIC,15,17,61,8
-    CONTROL         "",IDC_OPTIONS_TREE,"SysTreeView32",TVS_HASBUTTONS | TVS_HASLINES | WS_BORDER | WS_HSCROLL | WS_TABSTOP,18,30,266,243
-    LTEXT           "オプションの値 : ",IDC_STATIC,293,18,51,8
-    COMBOBOX        IDC_OPTION_COMBO,294,30,203,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "デフォルトに戻す",IDC_DEFAULT_BUTTON,413,47,84,14
-    LTEXT           "オプションの説明 : ",IDC_STATIC,293,62,59,8
-    EDITTEXT        IDC_DESCRIPTION_EDIT,297,73,200,200,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO
-BEGIN
-    IDD_VERSION_DIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 374
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 186
-    END
-
-    IDD_CONFIG_DIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 504
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 296
-    END
-END
-#endif    // APSTUDIO_INVOKED
-
-
-#ifdef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// TEXTINCLUDE
-//
-
-1 TEXTINCLUDE 
-BEGIN
-    "resource.h\0"
-END
-
-2 TEXTINCLUDE 
-BEGIN
-    "#ifndef APSTUDIO_INVOKED\r\n"
-    "#include ""targetver.h""\r\n"
-    "#endif\r\n"
-    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
-    "#include ""windows.h""\r\n"
-    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
-    "\0"
-END
-
-3 TEXTINCLUDE 
-BEGIN
-    "\r\n"
-    "\0"
-END
-
-#endif    // APSTUDIO_INVOKED
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // Version
 //
 
@@ -211,14 +120,4 @@ LANGUAGE LANG_CHINESE, SUBLANG_NEUTRAL
 
 #endif    // Chinese (Simplified) resources
 /////////////////////////////////////////////////////////////////////////////
-
-#ifndef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// Generated from the TEXTINCLUDE 3 resource.
-//
-
-
-/////////////////////////////////////////////////////////////////////////////
-#endif    // not APSTUDIO_INVOKED
 
