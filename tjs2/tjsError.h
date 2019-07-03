@@ -328,6 +328,7 @@ namespace TJS
 #include "tjsErrorInc.h"
 
 #undef TJS_MSG_DECL
+#undef TJS_MSG_DECL_CONST
 #undef TJS_MSG_DECL_NULL
 //---------------------------------------------------------------------------
 
