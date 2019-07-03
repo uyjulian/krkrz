@@ -1441,52 +1441,6 @@ void TVPMainWindowClosed()
 //---------------------------------------------------------------------------
 // GetCommandLine
 //---------------------------------------------------------------------------
-static std::vector<std::string> * TVPGetEmbeddedOptions()
-{
-	HMODULE hModule = ::GetModuleHandle(NULL);
-	const char *buf = NULL;
-	unsigned int size = 0;
-	HRSRC hRsrc = ::FindResource(NULL, MAKEINTRESOURCE(IDR_OPTION), TEXT("TEXT"));
-	if( hRsrc != NULL ) {
-		size = ::SizeofResource( hModule, hRsrc );
-		HGLOBAL hGlobal = ::LoadResource( hModule, hRsrc );
-		if( hGlobal != NULL ) {
-			buf = reinterpret_cast<const char*>(::LockResource(hGlobal));
-		}
-	}
-	if( buf == NULL ) return NULL;
-
-	std::vector<std::string> *ret = NULL;
-	try {
-		ret = new std::vector<std::string>();
-		const char *tail = buf + size;
-		const char *start = buf;
-		while( buf < tail ) {
-			if( buf[0] == 0x0D && buf[1] == 0x0A ) {	// CR LF
-				ret->push_back( std::string(start,buf) );
-				start = buf + 2;
-				buf++;
-			} else if( buf[0] == 0x0D || buf[0] == 0x0A ) {	// CR or LF
-				ret->push_back( std::string(start,buf) );
-				start = buf + 1;
-			} else if( buf[0] == '\0' ) {
-				ret->push_back( std::string(start,buf) );
-				start = buf + 1;
-				break;
-			}
-			buf++;
-		}
-		if( start < buf ) {
-			ret->push_back( std::string(start,buf) );
-		}
-	} catch(...) {
-		if(ret) delete ret;
-		throw;
-	}
-	TVPAddImportantLog( (const tjs_char*)TVPInfoLoadingExecutableEmbeddedOptionsSucceeded );
-	return ret;
-}
-//---------------------------------------------------------------------------
 static std::vector<std::string> * TVPGetConfigFileOptions(const tjs_string& filename)
 {
 	// load .cf file
@@ -1632,14 +1586,13 @@ static void TVPInitProgramArgumentsAndDataPath(bool stop_after_datapath_got)
 
 
 		// find options from self executable image
-		const int num_option_layers = 3;
+		const int num_option_layers = 2;
 		std::vector<std::string> * options[num_option_layers];
 		for(int i = 0; i < num_option_layers; i++) options[i] = NULL;
 		try
 		{
-			// read embedded options and default configuration file
-			options[0] = TVPGetEmbeddedOptions();
-			options[1] = TVPGetConfigFileOptions(ApplicationSpecialPath::GetConfigFileName(ExePath()));
+			// read default configuration file
+			options[0] = TVPGetConfigFileOptions(ApplicationSpecialPath::GetConfigFileName(ExePath()));
 
 			// at this point, we need to push all exsting known options
 			// to be able to see datapath
@@ -1657,14 +1610,13 @@ static void TVPInitProgramArgumentsAndDataPath(bool stop_after_datapath_got)
 			if(stop_after_datapath_got) return;
 
 			// read per-user configuration file
-			options[2] = TVPGetConfigFileOptions(ApplicationSpecialPath::GetUserConfigFileName(config_datapath, ExePath()));
+			options[1] = TVPGetConfigFileOptions(ApplicationSpecialPath::GetUserConfigFileName(config_datapath, ExePath()));
 
 			// push each options into option stock
 			// we need to clear TVPProgramArguments first because of the
 			// option priority order.
 			TVPProgramArguments.clear();
 			PushAllCommandlineArguments();
-			PushConfigFileOptions(options[2]); // has more priority
 			PushConfigFileOptions(options[1]); // has more priority
 			PushConfigFileOptions(options[0]); // has lesser priority
 		} catch(...) {

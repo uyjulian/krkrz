@@ -76,7 +76,6 @@ END
 // TEXT
 //
 
-IDR_OPTION              TEXT                    "optionarea.txt"
 IDR_SYS_INIT_SCRIPT     TEXT                    "SysInitScript.tjs"
 
 /////////////////////////////////////////////////////////////////////////////
