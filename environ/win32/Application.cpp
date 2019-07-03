@@ -82,7 +82,6 @@ void TVPOnError();
 int _argc;
 tjs_char ** _wargv;
 extern void TVPInitCompatibleNativeFunctions();
-extern void TVPLoadMessage();
 
 AcceleratorKeyTable::AcceleratorKeyTable() {
 	// デフォルトを読み込む
@@ -198,9 +197,6 @@ int APIENTRY wWinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 
 		// XP より後で使えるAPIを動的に読み込んで互換性を取る
 		TVPInitCompatibleNativeFunctions();
-
-		// メッセージ文字列をリソースから読込み
-		TVPLoadMessage();
 
 		_argc = __argc;
 		_wargv = __wargv;
