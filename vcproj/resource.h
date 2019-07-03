@@ -12,7 +12,6 @@
 #define IDD_VERSION_DIALOG              130
 #define IDR_OPTION                      139
 #define IDD_CONFIG_DIALOG               140
-#define IDR_OPTION_DESC_JSON            141
 #define IDR_SYS_INIT_SCRIPT             143
 #define IDC_COPY_INFO_BUTTON            1002
 #define IDC_OPTIONS_TREE                1004

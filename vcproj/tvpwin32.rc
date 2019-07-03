@@ -168,7 +168,6 @@ END
 //
 
 IDR_OPTION              TEXT                    "optionarea.txt"
-IDR_OPTION_DESC_JSON    TEXT                    "option_desc_ja.json"
 IDR_SYS_INIT_SCRIPT     TEXT                    "SysInitScript.tjs"
 
 /////////////////////////////////////////////////////////////////////////////

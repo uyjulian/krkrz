@@ -344,7 +344,6 @@ bool tTVPApplication::StartApplication( int argc, tjs_char* argv[] ) {
 		Initialize();
 
 		if(TVPCheckPrintDataPath()) return true;
-		if(TVPExecuteUserConfig()) return true;
 		
 		image_load_thread_ = new tTVPAsyncImageLoader();
 

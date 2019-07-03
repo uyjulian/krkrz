@@ -39,7 +39,6 @@
 #include "Exception.h"
 #include "ApplicationSpecialPath.h"
 #include "resource.h"
-#include "ConfigFormUnit.h"
 
 //---------------------------------------------------------------------------
 // global data
@@ -1851,51 +1850,6 @@ static bool TVPWaitWritePermit(const tjs_string& fn)
 	}
 }
 //---------------------------------------------------------------------------
-
-
-#if 0
-//---------------------------------------------------------------------------
-// TVPShowUserConfig
-//---------------------------------------------------------------------------
-static void TVPShowUserConfig(std::string orgexe)
-{
-	TVPEnsureDataPathDirectory();
-
-	Application->SetTitle( ChangeFileExt(ExtractFileName(orgexe), "") );
-	TConfSettingsForm *form = new TConfSettingsForm(Application, true);
-	form->InitializeConfig(orgexe);
-	form->ShowModal();
-	delete form;
-}
-//---------------------------------------------------------------------------
-#endif
-
-//---------------------------------------------------------------------------
-// TVPExecuteUserConfig
-//---------------------------------------------------------------------------
-bool TVPExecuteUserConfig()
-{
-	// check command line argument
-
-	tjs_int i;
-	bool process = false;
-	for(i=1; i<_argc; i++)
-	{
-		if(!TJS_strcmp(_wargv[i], TJS_W("-userconf"))) // this does not refer TVPGetCommandLine
-			process = true;
-	}
-
-	if(!process) return false;
-
-	// execute user config mode
-	//TVPShowUserConfig(ExePath());
-	TVPShowUserConfig();
-
-	// exit
-	return true;
-}
-//---------------------------------------------------------------------------
-
 
 
 
