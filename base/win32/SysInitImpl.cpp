@@ -32,7 +32,6 @@
 #include "XP3Archive.h"
 #include "ScriptMgnIntf.h"
 #include "XP3Archive.h"
-#include "VersionFormUnit.h"
 #include "EmergencyExit.h"
 
 #include "BinaryStream.h"
@@ -1787,29 +1786,6 @@ bool TVPCheckPrintDataPath()
 	return false;
 }
 //---------------------------------------------------------------------------
-
-
-
-//---------------------------------------------------------------------------
-// TVPCheckAbout
-//---------------------------------------------------------------------------
-bool TVPCheckAbout(void)
-{
-	if(TVPGetCommandLine(TJS_W("-about")))
-	{
-		Sleep(600);
-		tjs_char msg[80];
-		TJS_snprintf(msg, sizeof(msg)/sizeof(tjs_char), TVPInfoCpuClockRoughly, (int)TVPCPUClock);
-		TVPAddImportantLog(msg);
-
-		TVPShowVersionForm();
-		return true;
-	}
-
-	return false;
-}
-//---------------------------------------------------------------------------
-
 
 
 

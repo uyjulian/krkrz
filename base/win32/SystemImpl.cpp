@@ -30,7 +30,6 @@
 #include "TVPScreen.h"
 #include "CompatibleNativeFuncs.h"
 #include "DebugIntf.h"
-#include "VersionFormUnit.h"
 #include "PluginImpl.h"
 
 //---------------------------------------------------------------------------
@@ -949,7 +948,6 @@ TJS_END_NATIVE_STATIC_METHOD_DECL_OUTER(/*object to register*/cls,
 //----------------------------------------------------------------------
 TJS_BEGIN_NATIVE_METHOD_DECL(/*func. name*/showVersion)
 {
-	TVPShowVersionForm();
 	return TJS_S_OK;
 }
 TJS_END_NATIVE_STATIC_METHOD_DECL_OUTER(/*object to register*/cls,

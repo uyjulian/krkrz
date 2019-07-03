@@ -76,7 +76,6 @@ tjs_string ExePath() {
 	return tjs_string(szFull);
 }
 
-bool TVPCheckAbout();
 bool TVPCheckPrintDataPath();
 void TVPOnError();
 
@@ -350,8 +349,6 @@ bool tTVPApplication::StartApplication( int argc, tjs_char* argv[] ) {
 		image_load_thread_ = new tTVPAsyncImageLoader();
 
 		TVPSystemInit();
-
-		if(TVPCheckAbout()) return true; // version information dialog box;
 
 		SetTitle( tjs_string(TVPKirikiri) );
 		TVPSystemControl = new tTVPSystemControl();

@@ -39,7 +39,7 @@ CXXFLAGS += -Wno-reorder
 	$(WINDRES) --codepage=65001 $< $@
 
 BASE_SOURCES += base/BinaryStream.cpp base/CharacterSet.cpp base/EventIntf.cpp base/PluginIntf.cpp base/ScriptMgnIntf.cpp base/StorageIntf.cpp base/SysInitIntf.cpp base/SystemIntf.cpp base/TextStream.cpp base/UtilStreams.cpp base/XP3Archive.cpp base/win32/EventImpl.cpp base/win32/FileSelector.cpp base/win32/FuncStubs.cpp base/win32/NativeEventQueue.cpp base/win32/PluginImpl.cpp base/win32/ScriptMgnImpl.cpp base/win32/StorageImpl.cpp base/win32/SusieArchive.cpp base/win32/SysInitImpl.cpp base/win32/SystemImpl.cpp
-ENVIRON_SOURCES += environ/TouchPoint.cpp environ/win32/Application.cpp environ/win32/CompatibleNativeFuncs.cpp environ/win32/ConfigFormUnit.cpp environ/win32/DetectCPU.cpp environ/win32/EmergencyExit.cpp environ/win32/MouseCursor.cpp environ/win32/SystemControl.cpp environ/win32/TVPWindow.cpp environ/win32/VersionFormUnit.cpp environ/win32/WindowFormUnit.cpp environ/win32/WindowsUtil.cpp
+ENVIRON_SOURCES += environ/TouchPoint.cpp environ/win32/Application.cpp environ/win32/CompatibleNativeFuncs.cpp environ/win32/ConfigFormUnit.cpp environ/win32/DetectCPU.cpp environ/win32/EmergencyExit.cpp environ/win32/MouseCursor.cpp environ/win32/SystemControl.cpp environ/win32/TVPWindow.cpp environ/win32/WindowFormUnit.cpp environ/win32/WindowsUtil.cpp
 EXTENSION_SOURCES += extension/Extension.cpp
 MOVIE_SOURCES += movie/win32/TVPVideoOverlay.cpp
 MSG_SOURCES += vcproj/tvpwin32.rc msg/MsgIntf.cpp msg/win32/MsgImpl.cpp msg/win32/MsgLoad.cpp msg/win32/ReadOptionDesc.cpp

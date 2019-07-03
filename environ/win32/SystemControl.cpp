@@ -14,7 +14,6 @@
 #include "StorageIntf.h"
 #include "EmergencyExit.h" // for TVPCPUClock
 #include "DebugIntf.h"
-#include "VersionFormUnit.h"
 #include "WaveImpl.h"
 #include "SystemImpl.h"
 #include "UserEvent.h"
