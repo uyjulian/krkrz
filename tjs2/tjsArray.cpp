@@ -21,10 +21,6 @@
 #include "tjsBinarySerializer.h"
 #include "tjsOctPack.h"
 
-#ifndef TJS_NO_REGEXP
-#include "tjsRegExp.h"
-#endif
-
 #include <ctype.h>
 // TODO: Check the deque's exception handling on deleting
 
@@ -501,29 +497,6 @@ TJS_BEGIN_NATIVE_METHOD_DECL(/* func.name */split)
 
 	if(numparams >= 4 && param[3]->Type() != tvtVoid)
 		purgeempty = param[3]->operator bool();
-
-#ifndef TJS_NO_REGEXP
-	if(param[0]->Type() == tvtObject)
-	{
-		tTJSNI_RegExp * re = NULL;
-		tTJSVariantClosure clo = param[0]->AsObjectClosureNoAddRef();
-		if(clo.Object)
-		{
-			if(TJS_SUCCEEDED(clo.Object->NativeInstanceSupport(
-				TJS_NIS_GETINSTANCE,
-				tTJSNC_RegExp::ClassID, (iTJSNativeInstance**)&re)))
-			{
-				// param[0] is regexp
-				iTJSDispatch2 *array = objthis;
-				re->Split(&array, string, purgeempty);
-
-				if(result) *result = tTJSVariant(objthis, objthis);
-
-				return TJS_S_OK;
-			}
-		}
-	}
-#endif
 
 	tTJSString pattern = *param[0];
 

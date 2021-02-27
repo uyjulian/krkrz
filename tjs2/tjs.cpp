@@ -29,14 +29,9 @@
 #include "tjsDebug.h"
 #include "tjsByteCodeLoader.h"
 #include "tjsBinarySerializer.h"
-#include "tjsRegExp.h"
 
 namespace TJS
 {
-#ifndef TJS_NO_REGEXP
-extern iTJSDispatch2 * TJSCreateRegExpClass();
-	// to avoid to include large regexp library header
-#endif
 //---------------------------------------------------------------------------
 // TJS Version
 //---------------------------------------------------------------------------
@@ -186,13 +181,6 @@ tTJS::tTJS()
 		val = tTJSVariant(dsp, NULL);
 		dsp->Release();
 		Global->PropSet(TJS_MEMBERENSURE, TJS_W("Exception"), NULL, &val, Global);
-#ifndef TJS_NO_REGEXP
-		// RegExp
-		dsp = TJSCreateRegExpClass(); // the body is implemented in tjsRegExp.cpp
-		val = tTJSVariant(dsp, NULL);
-		dsp->Release();
-		Global->PropSet(TJS_MEMBERENSURE, TJS_W("RegExp"), NULL, &val, Global);
-#endif
 	}
 	catch(...)
 	{
@@ -221,8 +209,6 @@ void tTJS::Cleanup()
 	TJSReservedWordsHashRelease();
 
 	TJSReleaseGlobalStringMap();
-
-	TJSReleaseRegex();
 
 	if(TJSEnableDebugMode)
 	{
