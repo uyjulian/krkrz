@@ -149,7 +149,6 @@ private:
 	
 	bool AttentionPointEnabled;
 	POINT AttentionPoint;
-	tTVPSysFont *AttentionFont;
 
 	//-- mouse cursor
 	tTVPMouseCursorState MouseCursorState;
@@ -321,7 +320,7 @@ public:
 	tTVPImeMode GetDefaultImeMode() const { return  DefaultImeMode; }
 	void ResetImeMode();
 	
-	void SetAttentionPoint(tjs_int left, tjs_int top, const struct tTVPFont * font );
+	void SetAttentionPoint(tjs_int left, tjs_int top);
 	void DisableAttentionPoint();
 	
 	void InvokeShowVisible();

@@ -4,7 +4,6 @@
 #define __IME_CONTROL_H__
 
 #include <imm.h>
-#include "TVPSysFont.h"
 
 class ImeControl {
 public:
@@ -95,14 +94,6 @@ public:
 			::ImmAssociateContext(hWnd_,hOldImc_);
 			hOldImc_ = INVALID_HANDLE_VALUE;
 		}
-	}
-	// この関数を呼び出すと、アプリケーションに IMN_SETCOMPOSITIONFONT メッセージが送信されます。
-	void SetCompositionFont( tTVPSysFont* font ) {
-		LOGFONT logfont={0};
-		font->GetFont(&logfont);
-		HIMC hImc = ::ImmGetContext(hWnd_);
-		::ImmSetCompositionFont( hImc, &logfont );
-		::ImmReleaseContext(hWnd_,hImc);
 	}
 	void SetCompositionWindow( int x, int y ) {
 		COMPOSITIONFORM pos;

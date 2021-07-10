@@ -521,9 +521,6 @@ process_exp_stub("../../sound/win32/WaveImpl.h");
 print OFH "#include \"GraphicsLoaderIntf.h\"\n";
 process_exp_stub("../../visual/GraphicsLoaderIntf.h");
 
-print OFH "#include \"tvpfontstruc.h\"\n";
-process_exp_stub("../../visual/tvpfontstruc.h");
-
 print OFH "#include \"tvpinputdefs.h\"\n";
 process_exp_stub("../../visual/tvpinputdefs.h");
 

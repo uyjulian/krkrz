@@ -24,7 +24,6 @@
 #include "tvpinputdefs.h"
 
 #include "Application.h"
-#include "TVPSysFont.h"
 #include "TickCount.h"
 #include "WindowsUtil.h"
 
@@ -210,7 +209,6 @@ TTVPWindowForm::TTVPWindowForm( tTVPApplication* app, tTJSNI_Window* ni, tTJSNI_
 	AttentionPointEnabled = false;
 	AttentionPoint.x = 0;
 	AttentionPoint.y = 0;
-	AttentionFont = new tTVPSysFont();
 
 	ZoomDenom = ActualZoomDenom = 1;
 	ZoomNumer = ActualZoomNumer = 1;
@@ -255,10 +253,6 @@ TTVPWindowForm::~TTVPWindowForm() {
 		delete HintTimer;
 		HintTimer = NULL;
 	}
-	if( AttentionFont ) {
-		delete AttentionFont;
-		AttentionFont = NULL;
-	}
 	if( DIWheelDevice ) {
 		delete DIWheelDevice;
 		DIWheelDevice = NULL;
@@ -279,10 +273,6 @@ void TTVPWindowForm::OnDestroy() {
 	TVPRemoveModalWindow(this);
 
 	FreeDirectInputDevice();
-
-	if( AttentionFont ) {
-		delete AttentionFont, AttentionFont = NULL;
-	}
 
 	tjs_int count = WindowMessageReceivers.GetCount();
 	for(tjs_int i = 0 ; i < count; i++)
@@ -1466,7 +1456,6 @@ void TTVPWindowForm::AcquireImeControl() {
 			::SetCaretPos( trapper->AttentionPoint.x, trapper->AttentionPoint.y );
 			if( trapper == this ) {
 				GetIME()->SetCompositionWindow( AttentionPoint.x, AttentionPoint.y );
-				GetIME()->SetCompositionFont( AttentionFont);
 			} else 			{
 				// disable IMM composition window
 				GetIME()->Disable();
@@ -1486,20 +1475,13 @@ void TTVPWindowForm::ResetImeMode() {
 	SetImeMode(DefaultImeMode);
 }
 
-void TTVPWindowForm::SetAttentionPoint(tjs_int left, tjs_int top, const tTVPFont * font) {
+void TTVPWindowForm::SetAttentionPoint(tjs_int left, tjs_int top) {
 	TranslateDrawAreaToWindow( left, top );
 
 	// set attention point information
 	AttentionPoint.x = left;
 	AttentionPoint.y = top;
 	AttentionPointEnabled = true;
-	bool assignedfont = false;
-	if( font ) {
-		assignedfont = AttentionFont->Assign(*font);
-	}
-	if( assignedfont == false ) {
-		AttentionFont->AssignDefaultUIFont();
-	}
 	AcquireImeControl();
 }
 void TTVPWindowForm::DisableAttentionPoint() {

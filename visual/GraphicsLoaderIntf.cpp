@@ -1419,7 +1419,7 @@ struct tTVPClearGraphicCacheCallback : public tTVPCompactEventCallbackIntf
 	{
 		if(level >= TVP_COMPACT_LEVEL_MINIMIZE)
 		{
-			// clear the font cache on application minimize
+			// clear the cache on application minimize
 			TVPClearGraphicCache();
 		}
 	}

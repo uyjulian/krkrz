@@ -1605,7 +1605,6 @@ static void __stdcall TVP_Stub_5b1fa785e397e643dd09cb43c2f2f4db()
 {
 	return TVPClearGraphicCache();
 }
-#include "tvpfontstruc.h"
 #include "tvpinputdefs.h"
 #include "LayerBitmapIntf.h"
 #include "drawable.h"

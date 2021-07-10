@@ -1285,9 +1285,6 @@ void TVPAfterSystemInit()
 	if( TVPGraphicCacheSystemLimit >= 512*1024*1024 )
 		TVPGraphicCacheSystemLimit = 512*1024*1024;
 
-	if(totalMemory <= 64*1024*1024)
-		TVPSetFontCacheForLowMem();
-
 //	TVPGraphicCacheSystemLimit = 1*1024*1024; // DEBUG 
 
 

@@ -186,7 +186,6 @@ void TVPInitScriptEngine()
 
 	/* classes */
 	REGISTER_OBJECT(Debug, TVPCreateNativeClass_Debug());
-	REGISTER_OBJECT(Font, TVPCreateNativeClass_Font());
 	REGISTER_OBJECT(Layer, TVPCreateNativeClass_Layer());
 	REGISTER_OBJECT(Timer, TVPCreateNativeClass_Timer());
 	REGISTER_OBJECT(AsyncTrigger, TVPCreateNativeClass_AsyncTrigger());

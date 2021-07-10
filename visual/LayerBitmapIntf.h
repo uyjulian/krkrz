@@ -464,8 +464,6 @@ public:
 	void ConvertAddAlphaToAlpha();
 	void ConvertAlphaToAddAlpha();
 
-	// font and text related functions are implemented in each platform.
-
 public:
 };
 //---------------------------------------------------------------------------
