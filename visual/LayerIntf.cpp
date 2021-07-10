@@ -1374,8 +1374,6 @@ void tTJSNI_BaseLayer::UpdateDrawFace()
 		case ltAdditive:			DrawFace = dfOpaque;			break;
 		case ltSubtractive:			DrawFace = dfOpaque;			break;
 		case ltMultiplicative:		DrawFace = dfOpaque;			break;
-	//	case ltEffect:
-	//	case ltFilter:
 		case ltDodge:				DrawFace = dfOpaque;			break;
 		case ltDarken:				DrawFace = dfOpaque;			break;
 		case ltLighten:				DrawFace = dfOpaque;			break;
@@ -1419,8 +1417,6 @@ tTVPBlendOperationMode tTJSNI_BaseLayer::GetOperationModeFromType() const
 	case ltAdditive:		return omAdditive;
 	case ltSubtractive:		return omSubtractive;
 	case ltMultiplicative:	return omMultiplicative;	 
-//	case ltEffect:
-//	case ltFilter:
 	case ltDodge:			return omDodge;
 	case ltDarken:			return omDarken;
 	case ltLighten:			return omLighten;
@@ -1497,20 +1493,6 @@ void tTJSNI_BaseLayer::SetType(tTVPLayerType type)
 			DisplayType = Type;
 			CanHaveImage = true;
 			AllocateImage();
-			break;
-
-		case ltEffect:
-			NeutralColor = TransparentColor = TVP_RGBA2COLOR(255, 255, 255, 0);
-			DisplayType = ltBinder;  // TODO: retrieve actual DrawType
-			CanHaveImage = false;
-			DeallocateImage();
-			break;
-
-		case ltFilter:
-			NeutralColor = TransparentColor = TVP_RGBA2COLOR(255, 255, 255, 0);
-			DisplayType = ltBinder;  // TODO: retrieve actual DisplayType
-			CanHaveImage = false;
-			DeallocateImage();
 			break;
 
 		case ltDodge:
@@ -1678,8 +1660,6 @@ const tjs_char * tTJSNI_BaseLayer::GetTypeNameString()
 	case ltAdditive:		return TJS_W("ltAdditive");
 	case ltSubtractive:		return TJS_W("ltSubtractive");
 	case ltMultiplicative:	return TJS_W("ltMultiplicative");
-	case ltEffect:			return TJS_W("ltEffect");
-	case ltFilter:			return TJS_W("ltFilter");
 	case ltDodge:			return TJS_W("ltDodge");
 	case ltDarken:			return TJS_W("ltDarken");
 	case ltLighten:			return TJS_W("ltLighten");
@@ -5173,16 +5153,6 @@ void tTJSNI_BaseLayer::BltImage(tTVPBaseBitmap *dest, tTVPLayerType destlayertyp
 	tTVPLayerType drawtype, tjs_int opacity)
 {
 	// draw src to dest according with layer type
-/*
-	// do the effect
-	tTVPRect destrect;
-	destrect.left = destx;
-	destrect.top = desty;
-	destrect.right = destx + srcrect.get_width();
-	destrect.bottom = desty + srcrect.get_height();
-	EffectImage(dest, destrect);
-*/
-
 	// blt to the target
 	bool hda = false;
 	tTVPBBBltMethod met;
@@ -5517,18 +5487,6 @@ void tTJSNI_BaseLayer::CopySelf(tTVPBaseBitmap *dest, tjs_int destx, tjs_int des
 		{
 			CopySelfForRect(dest, destx, desty, r);
 		}
-	}
-}
-//---------------------------------------------------------------------------
-void tTJSNI_BaseLayer::EffectImage(tTVPBaseBitmap *dest, const tTVPRect & destrect)
-{
-	if(Type == ltFilter)
-	{
-		// TODO: do filtering
-	}
-	else if(Type == ltEffect)
-	{
-		// TODO: do effect
 	}
 }
 //---------------------------------------------------------------------------

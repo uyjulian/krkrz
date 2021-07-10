@@ -27,8 +27,6 @@ enum tTVPLayerType
 	ltAdditive = 3,
 	ltSubtractive = 4,
 	ltMultiplicative = 5,
-	ltEffect = 6,
-	ltFilter = 7,
 	ltDodge = 8,
 	ltDarken = 9,
 	ltLighten = 10,

@@ -340,7 +340,6 @@ public:
 private:
 	tTVPLayerType Type; // user set Type
 	tTVPLayerType DisplayType; // actual Type
-		// note that Type and DisplayType are different when Type = {ltEffect|ltFilter}
 
 	void NotifyLayerTypeChange();
 
@@ -888,7 +887,6 @@ private:
 		const tTVPRect &srcrect);
 	void CopySelf(tTVPBaseBitmap *dest, tjs_int destx, tjs_int desty,
 		const tTVPRect &r);
-	void EffectImage(tTVPBaseBitmap *dest, const tTVPRect & destrect);
 
 	void Draw(tTVPDrawable *target, const tTVPRect &r, bool visiblecheck = true);
 
