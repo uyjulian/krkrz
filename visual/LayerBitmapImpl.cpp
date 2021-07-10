@@ -40,7 +40,6 @@
 #include "FreeTypeFontRasterizer.h"
 #ifdef _WIN32
 #include "TVPSysFont.h"
-#include "GDIFontRasterizer.h"
 #endif
 #include "BitmapBitsAlloc.h"
 
@@ -65,9 +64,6 @@ static tjs_int TVPGlobalFontStateMagic = 0;
 
 enum {
 	FONT_RASTER_FREE_TYPE,
-#ifdef _WIN32
-	FONT_RASTER_GDI,
-#endif
 	FONT_RASTER_EOT
 };
 static FontRasterizer* TVPFontRasterizers[FONT_RASTER_EOT];
@@ -77,9 +73,6 @@ static tjs_int TVPCurrentFontRasterizers = FONT_RASTER_FREE_TYPE;
 void TVPInializeFontRasterizers() {
 	if( TVPFontRasterizersInit == false ) {
 		TVPFontRasterizers[FONT_RASTER_FREE_TYPE] = new FreeTypeFontRasterizer();
-#ifdef _WIN32
-		TVPFontRasterizers[FONT_RASTER_GDI] = new GDIFontRasterizer();
-#endif
 
 		TVPFontSystem = new FontSystem();
 		TVPFontRasterizersInit = true;
