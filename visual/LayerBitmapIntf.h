@@ -325,9 +325,6 @@ private:
 			const tjs_uint8 * refp, tjs_int refpitch);
 
 public:
-	bool StretchBlt(tTVPRect cliprect, tTVPRect destrect, const tTVPBaseBitmap *ref,
-		tTVPRect refrect, tTVPBBBltMethod method, tjs_int opa,
-			bool hda = true, tTVPBBStretchType type = stNearest, tjs_real typeopt=0.0);
 
 private:
 	template <typename tFuncStretch, typename tFuncAffine>

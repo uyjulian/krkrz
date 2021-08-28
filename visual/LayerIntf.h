@@ -744,9 +744,6 @@ public:
 	void CopyRect(tjs_int dx, tjs_int dy, tTVPBaseBitmap *src, tTVPBaseBitmap *provincesrc,
 		const tTVPRect &rect);
 	
-	void StretchCopy(const tTVPRect &destrect, tTVPBaseBitmap *src,
-		const tTVPRect &rect, tTVPBBStretchType mode = stNearest, tjs_real typeopt = 0.0);
-
 	void AffineCopy(const t2DAffineMatrix &matrix, tTVPBaseBitmap *src,
 		const tTVPRect &srcrect, tTVPBBStretchType mode = stNearest, bool clear = false);
 
@@ -756,10 +753,6 @@ public:
 	void OperateRect(tjs_int dx, tjs_int dy, tTVPBaseBitmap *src,
 		const tTVPRect &rect, tTVPBlendOperationMode mode = omAuto,
 			tjs_int opacity = 255);
-
-	void OperateStretch(const tTVPRect &destrect, tTVPBaseBitmap *src,
-		const tTVPRect &srcrect, tTVPBlendOperationMode mode = omAuto, tjs_int opacity = 255,
-			tTVPBBStretchType type = stNearest, tjs_real typeopt = 0.0);
 
 	void OperateAffine(const t2DAffineMatrix &matrix, tTVPBaseBitmap *src,
 		const tTVPRect &srcrect, tTVPBlendOperationMode mode = omAuto, tjs_int opacity = 255,
