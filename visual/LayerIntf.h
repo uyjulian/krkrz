@@ -727,15 +727,6 @@ public:
 	void FillRect(const tTVPRect &rect, tjs_uint32 color);
 	void ColorRect(const tTVPRect &rect, tjs_uint32 color, tjs_int opa);
 
-	void DrawText(tjs_int x, tjs_int y, const ttstr &text, tjs_uint32 color,
-		tjs_int opa, bool aa, tjs_int shadowlevel, tjs_uint32 shadowcolor,
-			tjs_int shadowwidth,
-		tjs_int shadowofsx, tjs_int shadowofsy);
-
-	void DrawGlyph(tjs_int x, tjs_int y, iTJSDispatch2* glyph, tjs_uint32 color,
-		tjs_int opa, bool aa, tjs_int shadowlevel, tjs_uint32 shadowcolor,
-		tjs_int shadowwidth, tjs_int shadowofsx, tjs_int shadowofsy);
-
 	void PiledCopy(tjs_int dx, tjs_int dy, tTJSNI_BaseLayer *src,
 		const tTVPRect &rect);
 
