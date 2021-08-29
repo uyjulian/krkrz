@@ -746,8 +746,6 @@ public:
 		const tTVPRect &rect, tTVPBlendOperationMode mode = omAuto,
 			tjs_int opacity = 255);
 
-	void DoBoxBlur(tjs_int xblur = 1, tjs_int yblur = 1);
-
 	void DoGrayScale();
 	void LRFlip();
 	void UDFlip();

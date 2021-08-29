@@ -286,62 +286,6 @@ TJS_BEGIN_NATIVE_METHOD_DECL(/*func. name*/flipUD)
 }
 TJS_END_NATIVE_STATIC_METHOD_DECL(/*func. name*/flipUD)
 //----------------------------------------------------------------------
-TJS_BEGIN_NATIVE_METHOD_DECL(/*func. name*/doBoxBlur)
-{
-	// bmp, xblur=1, yblur=1, clipRect=null, isalpha=true
-	if( numparams < 1 ) return TJS_E_BADPARAMCOUNT;
-	tTJSNI_Bitmap * dst = NULL;
-	tTJSVariantClosure clo = param[0]->AsObjectClosureNoAddRef();
-	if(clo.Object) {
-		if(TJS_FAILED(clo.Object->NativeInstanceSupport(TJS_NIS_GETINSTANCE,
-			tTJSNC_Bitmap::ClassID, (iTJSNativeInstance**)&dst)))
-			return TJS_E_INVALIDPARAM;
-	}
-	if( !dst ) return TJS_E_INVALIDPARAM;
-
-	tjs_int xblur = 1;
-	tjs_int yblur = 1;
-
-	if(numparams >= 2 && param[1]->Type() != tvtVoid)
-		xblur = (tjs_int)*param[1];
-	
-	if(numparams >= 3 && param[2]->Type() != tvtVoid)
-		yblur = (tjs_int)*param[2];
-
-	tTVPRect clipRect( 0, 0, dst->GetWidth(), dst->GetHeight() );
-	if(numparams >= 4 && param[3]->Type() == tvtObject ) {
-		tTJSNI_Rect * rect = NULL;
-		clo = param[3]->AsObjectClosureNoAddRef();
-		if(clo.Object) {
-			if(TJS_FAILED(clo.Object->NativeInstanceSupport(TJS_NIS_GETINSTANCE,
-				tTJSNC_Rect::ClassID, (iTJSNativeInstance**)&rect)))
-				return TJS_E_INVALIDPARAM;
-			clipRect = rect->Get();
-		}
-	}
-	bool isalpha = true;
-	if(numparams >= 5 && param[4]->Type() != tvtVoid)
-		isalpha = ((tjs_int)*param[4]) ? true : false;
-
-	bool updated = false;
-	if( isalpha == false )
-		updated = dst->GetBitmap()->DoBoxBlur(clipRect, tTVPRect(-xblur, -yblur, xblur, yblur));
-	else
-		updated = dst->GetBitmap()->DoBoxBlurForAlpha(clipRect, tTVPRect(-xblur, -yblur, xblur, yblur));
-
-	if( result ) {
-		if( updated ) {
-			iTJSDispatch2 *ret = TVPCreateRectObject( clipRect.left, clipRect.top, clipRect.right, clipRect.bottom );
-			*result = tTJSVariant(ret, ret);
-			ret->Release();
-		} else {
-			result->Clear();
-		}
-	}
-	return TJS_S_OK;
-}
-TJS_END_NATIVE_STATIC_METHOD_DECL(/*func. name*/doBoxBlur)
-//----------------------------------------------------------------------
 TJS_BEGIN_NATIVE_METHOD_DECL(/*func. name*/doGrayScale)
 {
 	// bmp, clipRect=null

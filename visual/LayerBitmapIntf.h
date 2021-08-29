@@ -276,16 +276,7 @@ public:
 		tTVPRect refrect, tTVPBBBltMethod method, tjs_int opa,
 			bool hda = true);
 
-private:
-	template <typename tARGB>
-	void DoBoxBlurLoop(const tTVPRect &rect, const tTVPRect & area);
-
-	bool InternalDoBoxBlur(tTVPRect rect, tTVPRect area, bool hasalpha);
-
 public:
-	bool DoBoxBlur(const tTVPRect & rect, const tTVPRect & area);
-	bool DoBoxBlurForAlpha(const tTVPRect & rect, const tTVPRect & area);
-
 	void UDFlip(const tTVPRect &rect);
 	void LRFlip(const tTVPRect &rect);
 
