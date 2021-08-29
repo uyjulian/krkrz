@@ -295,8 +295,6 @@ public:
 	void AdjustGammaForAdditiveAlpha(tTVPRect rect, const tTVPGLGammaAdjustData & data);
 
 
-	void ConvertAddAlphaToAlpha();
-	void ConvertAlphaToAddAlpha();
 
 public:
 };

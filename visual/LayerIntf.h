@@ -353,8 +353,6 @@ public:
 
 	const tjs_char * GetTypeNameString();
 
-	void ConvertLayerType(tTVPDrawFace fromtype);
-
 	//-------------------------------------------- geographical management --
 private:
 	tTVPRect Rect;

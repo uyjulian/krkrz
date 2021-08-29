@@ -1666,32 +1666,6 @@ const tjs_char * tTJSNI_BaseLayer::GetTypeNameString()
 	}
 }
 //---------------------------------------------------------------------------
-void tTJSNI_BaseLayer::ConvertLayerType(tTVPDrawFace fromtype)
-{
-	// convert layer pixel representation method
-
-	if(DrawFace == dfAddAlpha && fromtype == dfAlpha)
-	{
-		// alpha -> additive alpha
-		if(MainImage) MainImage->ConvertAlphaToAddAlpha();
-	}
-	else if(DrawFace == dfAlpha && fromtype == dfAddAlpha)
-	{
-		// additive alpha -> alpha
-		// this may loose additive stuff
-		if(MainImage) MainImage->ConvertAddAlphaToAlpha();
-	}
-	else
-	{
-		// throw an error
-		TVPThrowExceptionMessage(TVPCannotConvertLayerTypeUsingGivenDirection);
-	}
-
-	ImageModified = true;
-
-	Update();
-}
-//---------------------------------------------------------------------------
 
 
 
@@ -6610,20 +6584,6 @@ TJS_BEGIN_NATIVE_METHOD_DECL(/*func. name*/flipUD) // not UDFlip
 	return TJS_S_OK;
 }
 TJS_END_NATIVE_METHOD_DECL(/*func. name*/flipUD)
-//----------------------------------------------------------------------
-TJS_BEGIN_NATIVE_METHOD_DECL(/*func. name*/convertType)
-{
-	TJS_GET_NATIVE_INSTANCE(/*var. name*/_this, /*var. type*/tTJSNI_Layer);
-
-	if(numparams < 1) return TJS_E_BADPARAMCOUNT;
-
-	tTVPDrawFace fromtype = (tTVPDrawFace)(tjs_int)*param[0];
-
-	_this->ConvertLayerType(fromtype);
-
-	return TJS_S_OK;
-}
-TJS_END_NATIVE_METHOD_DECL(/*func. name*/convertType)
 //----------------------------------------------------------------------
 TJS_BEGIN_NATIVE_METHOD_DECL(/*func. name*/update)
 {
