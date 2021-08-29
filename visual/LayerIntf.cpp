@@ -4105,32 +4105,6 @@ void tTJSNI_BaseLayer::DoGrayScale()
 	Update();
 }
 //---------------------------------------------------------------------------
-void tTJSNI_BaseLayer::LRFlip()
-{
-	// this is not affected by DrawFace
-	if(!MainImage) TVPThrowExceptionMessage(TVPNotDrawableLayerType);
-
-	tTVPRect r(0, 0, MainImage->GetWidth(), MainImage->GetHeight());
-	MainImage->LRFlip(r);
-	if(ProvinceImage) ProvinceImage->LRFlip(r);
-
-	ImageModified = true;
-	Update();
-}
-//---------------------------------------------------------------------------
-void tTJSNI_BaseLayer::UDFlip()
-{
-	// this is not affected by DrawFace
-	if(!MainImage) TVPThrowExceptionMessage(TVPNotDrawableLayerType);
-
-	tTVPRect r(0, 0, MainImage->GetWidth(), MainImage->GetHeight());
-	MainImage->UDFlip(r);
-	if(ProvinceImage) ProvinceImage->UDFlip(r);
-
-	ImageModified = true;
-	Update();
-}
-//---------------------------------------------------------------------------
 
 
 
@@ -6471,26 +6445,6 @@ TJS_BEGIN_NATIVE_METHOD_DECL(/*func. name*/doGrayScale)
 	return TJS_S_OK;
 }
 TJS_END_NATIVE_METHOD_DECL(/*func. name*/doGrayScale)
-//----------------------------------------------------------------------
-TJS_BEGIN_NATIVE_METHOD_DECL(/*func. name*/flipLR) // not LRFlip
-{
-	TJS_GET_NATIVE_INSTANCE(/*var. name*/_this, /*var. type*/tTJSNI_Layer);
-
-	_this->LRFlip();
-
-	return TJS_S_OK;
-}
-TJS_END_NATIVE_METHOD_DECL(/*func. name*/flipLR)
-//----------------------------------------------------------------------
-TJS_BEGIN_NATIVE_METHOD_DECL(/*func. name*/flipUD) // not UDFlip
-{
-	TJS_GET_NATIVE_INSTANCE(/*var. name*/_this, /*var. type*/tTJSNI_Layer);
-
-	_this->UDFlip();
-
-	return TJS_S_OK;
-}
-TJS_END_NATIVE_METHOD_DECL(/*func. name*/flipUD)
 //----------------------------------------------------------------------
 TJS_BEGIN_NATIVE_METHOD_DECL(/*func. name*/update)
 {

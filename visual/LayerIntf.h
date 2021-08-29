@@ -747,8 +747,6 @@ public:
 			tjs_int opacity = 255);
 
 	void DoGrayScale();
-	void LRFlip();
-	void UDFlip();
 
 	bool GetImageModified() const { return ImageModified; }
 	void SetImageModified(bool b) { ImageModified = b; }

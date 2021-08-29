@@ -277,9 +277,6 @@ public:
 			bool hda = true);
 
 public:
-	void UDFlip(const tTVPRect &rect);
-	void LRFlip(const tTVPRect &rect);
-
 	void DoGrayScale(tTVPRect rect);
 
 
