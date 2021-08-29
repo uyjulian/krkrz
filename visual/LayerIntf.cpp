@@ -4116,24 +4116,6 @@ void tTJSNI_BaseLayer::DoBoxBlur(tjs_int xblur, tjs_int yblur)
 	}
 }
 //---------------------------------------------------------------------------
-void tTJSNI_BaseLayer::AdjustGamma(const tTVPGLGammaAdjustData & data)
-{
-	// this is not affected by DrawFace
-	if(!MainImage) TVPThrowExceptionMessage(TVPNotDrawableLayerType);
-
-	if(DrawFace == dfAddAlpha)
-		MainImage->AdjustGammaForAdditiveAlpha(
-			ClipRect,
-			data);
-	else
-		MainImage->AdjustGamma(
-			ClipRect,
-			data);
-
-	ImageModified = true;
-	Update();
-}
-//---------------------------------------------------------------------------
 void tTJSNI_BaseLayer::DoGrayScale()
 {
 	// this is not affected by DrawFace
@@ -6520,40 +6502,6 @@ TJS_BEGIN_NATIVE_METHOD_DECL(/*func. name*/doBoxBlur)
 	return TJS_S_OK;
 }
 TJS_END_NATIVE_METHOD_DECL(/*func. name*/doBoxBlur)
-//----------------------------------------------------------------------
-TJS_BEGIN_NATIVE_METHOD_DECL(/*func. name*/adjustGamma)
-{
-	TJS_GET_NATIVE_INSTANCE(/*var. name*/_this, /*var. type*/tTJSNI_Layer);
-
-	if(numparams == 0) return TJS_S_OK;
-
-	tTVPGLGammaAdjustData data;
-	memcpy(&data, &TVPIntactGammaAdjustData, sizeof(data));
-
-	if(numparams >= 1 && param[0]->Type() != tvtVoid)
-		data.RGamma = static_cast<float>((double)*param[0]);
-	if(numparams >= 2 && param[1]->Type() != tvtVoid)
-		data.RFloor = *param[1];
-	if(numparams >= 3 && param[2]->Type() != tvtVoid)
-		data.RCeil  = *param[2];
-	if(numparams >= 4 && param[3]->Type() != tvtVoid)
-		data.GGamma = static_cast<float>((double)*param[3]);
-	if(numparams >= 5 && param[4]->Type() != tvtVoid)
-		data.GFloor = *param[4];
-	if(numparams >= 6 && param[5]->Type() != tvtVoid)
-		data.GCeil  = *param[5];
-	if(numparams >= 7 && param[6]->Type() != tvtVoid)
-		data.BGamma = static_cast<float>((double)*param[6]);
-	if(numparams >= 8 && param[7]->Type() != tvtVoid)
-		data.BFloor = *param[7];
-	if(numparams >= 9 && param[8]->Type() != tvtVoid)
-		data.BCeil  = *param[8];
-
-	_this->AdjustGamma(data);
-
-	return TJS_S_OK;
-}
-TJS_END_NATIVE_METHOD_DECL(/*func. name*/adjustGamma)
 //----------------------------------------------------------------------
 TJS_BEGIN_NATIVE_METHOD_DECL(/*func. name*/doGrayScale)
 {

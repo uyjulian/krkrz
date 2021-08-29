@@ -748,7 +748,6 @@ public:
 
 	void DoBoxBlur(tjs_int xblur = 1, tjs_int yblur = 1);
 
-	void AdjustGamma(const tTVPGLGammaAdjustData & data);
 	void DoGrayScale();
 	void LRFlip();
 	void UDFlip();

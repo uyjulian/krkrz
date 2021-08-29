@@ -291,8 +291,6 @@ public:
 
 	void DoGrayScale(tTVPRect rect);
 
-	void AdjustGamma(tTVPRect rect, const tTVPGLGammaAdjustData & data);
-	void AdjustGammaForAdditiveAlpha(tTVPRect rect, const tTVPGLGammaAdjustData & data);
 
 
 
