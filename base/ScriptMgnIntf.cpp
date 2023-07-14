@@ -21,6 +21,7 @@
 #include "WindowIntf.h"
 #include "LayerIntf.h"
 #include "WaveIntf.h"
+#include "MIDIIntf.h"
 #include "TimerIntf.h"
 #include "EventIntf.h"
 #include "SystemIntf.h"
@@ -200,6 +201,7 @@ void TVPInitScriptEngine()
 	REGISTER_OBJECT(Debug, TVPCreateNativeClass_Debug());
 	REGISTER_OBJECT(Font, TVPCreateNativeClass_Font());
 	REGISTER_OBJECT(Layer, TVPCreateNativeClass_Layer());
+	REGISTER_OBJECT(MIDISoundBuffer, TVPCreateNativeClass_MIDISoundBuffer());
 	REGISTER_OBJECT(Timer, TVPCreateNativeClass_Timer());
 	REGISTER_OBJECT(AsyncTrigger, TVPCreateNativeClass_AsyncTrigger());
 	REGISTER_OBJECT(System, TVPCreateNativeClass_System());
