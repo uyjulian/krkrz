@@ -10,6 +10,10 @@
 //---------------------------------------------------------------------------
 #include "tjsCommHead.h"
 
+#include <cderr.h>
+#include <objbase.h>
+#include <shlobj.h>
+
 #include "SystemControl.h"
 #include "WindowIntf.h"
 #include "ScriptMgnIntf.h"

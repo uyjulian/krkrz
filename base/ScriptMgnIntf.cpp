@@ -12,6 +12,9 @@
 #include "tjsCommHead.h"
 #include <string>
 
+#include <cderr.h>
+#include <objbase.h>
+
 #include "tjs.h"
 #include "tjsDebug.h"
 #include "tjsArray.h"
