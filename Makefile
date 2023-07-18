@@ -5,14 +5,14 @@ AR := i686-w64-mingw32-ar
 ASM := nasm
 WINDRES := i686-w64-mingw32-windres
 # CFLAGS_OPT := -O0
-CFLAGS_OPT := -Ofast
+CFLAGS_OPT := -O1
 GIT_TAG := $(shell git describe --abbrev=0 --tags)
 INCFLAGS += -I. -Ibase -Ibase/win32 -Ienviron -Ienviron/win32 -Iextension -Iexternal -Iexternal/zlib -Imovie/win32 -Imsg -Imsg/win32 -Iplatform/win32 -Isound -Isound/win32 -Itjs2 -Iutils -Iutils/win32 -Ivcproj -Ivisual -Ivisual/IA32 -Ivisual/gl -Ivisual/win32
 ASMFLAGS += $(INCFLAGS) -fwin32 -DWIN32
 # CFLAGS += -gstabs -D_DEBUG -DDEBUG -DENABLE_DEBUGGER 
 CFLAGS += -march=ivybridge -mfpmath=sse
-CFLAGS += -gstabs -DNDEBUG -D_NDEBUG
-CFLAGS += -flto -fno-delete-null-pointer-checks -fno-strict-aliasing
+CFLAGS += -gdwarf-4 -DNDEBUG -D_NDEBUG
+CFLAGS += -fno-delete-null-pointer-checks -fno-strict-aliasing
 CFLAGS += $(INCFLAGS) -DGIT_TAG=L\"$(GIT_TAG)\" -DWIN32 -D_WINDOWS -DNO_STRICT -DHAVE_CONFIG_H -DFT2_BUILD_LIBRARY -DMINGW_HAS_SECURE_API -DUNICODE -D_UNICODE -DWITH_SIMD
 CFLAGS += -DTVP_REPORT_HW_EXCEPTION -DTVP_LOG_TO_COMMANDLINE_CONSOLE -DTJS_TEXT_OUT_CRLF -DTJS_JP_LOCALIZED -DTJS_DEBUG_DUMP_STRING
 CXXFLAGS += $(CFLAGS) -fpermissive
