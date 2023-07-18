@@ -54,12 +54,16 @@
 #include <stdio.h>
 #include <malloc.h>
 
+#ifdef __cplusplus
+#include <memory>
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <algorithm>
 
 #include "tjsConfig.h"
 #include "tjs.h"
+#endif
 
 //---------------------------------------------------------------------------
 #endif
