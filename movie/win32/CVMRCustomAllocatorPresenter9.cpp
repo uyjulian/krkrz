@@ -28,10 +28,12 @@
 
 ATOM CVMRCustomAllocatorPresenter9::m_ChildAtom = 0;
 
+#if 0
 /* IID_IDirect3DTexture9 */
 /* {85C31227-3DE5-4f00-9B3A-F11AC38C18B5} */
 static const GUID IID_IDirect3DTexture9 = 
 { 0x85c31227, 0x3de5, 0x4f00, { 0x9b, 0x3a, 0xf1, 0x1a, 0xc3, 0x8c, 0x18, 0xb5} };
+#endif
 
 //----------------------------------------------------------------------------
 //! @brief	  	CVMRCustomAllocatorPresenter9 constructor

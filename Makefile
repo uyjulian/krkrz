@@ -56,7 +56,7 @@ CFLAGS += -DTVP_LOG_TO_COMMANDLINE_CONSOLE -DTJS_TEXT_OUT_CRLF -DTJS_JP_LOCALIZE
 CFLAGS += -MMD -MF $(patsubst %$(OBJECT_EXTENSION),%$(DEP_EXTENSION),$@)
 CXXFLAGS += $(CFLAGS) -fpermissive -std=gnu++14
 LDFLAGS += -static -static-libstdc++ -static-libgcc -municode -fPIC -flto
-LDLIBS += -lwinmm -lws2_32 -lcomctl32 -lgdi32 -lwinhttp -lpsapi -luser32 -lcomdlg32 -lole32 -lshell32 -ladvapi32 -loleaut32 -limm32 -lversion -lshlwapi -ldbghelp -luuid -lmpr -lquartz -ldmoguids -lmfplat -lstrmiids -lmf -lpropsys -lmfuuid -lamstrmid
+LDLIBS += -lwinmm -lws2_32 -lcomctl32 -lgdi32 -lwinhttp -lpsapi -luser32 -lcomdlg32 -lole32 -lshell32 -ladvapi32 -loleaut32 -limm32 -lversion -lshlwapi -ldbghelp -luuid -lmpr -lquartz -ldmoguids -lmfplat -lstrmiids -lmf -lpropsys -lmfuuid -lamstrmid -ldxguid
 
 CFLAGS += -Wall -Wno-unused-value -Wno-unused-variable -Wno-format
 CXXFLAGS += -Wno-reorder
