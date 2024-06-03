@@ -1,6 +1,6 @@
 [submodule "external/baseclasses"]
 	path = external/baseclasses
-	url = https://github.com/krkrz/baseclasses.git
+	url = https://github.com/uyjulian/baseclasses.git
 	ignore = dirty
 [submodule "external/freetype"]
 	path = external/freetype
