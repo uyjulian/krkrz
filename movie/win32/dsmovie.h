@@ -27,6 +27,7 @@
 #include <dmodshow.h>
 #include <dmoreg.h>
 #include <comdef.h>
+#include <strmif.h>
 _COM_SMARTPTR_TYPEDEF(IGraphBuilder,__uuidof(IGraphBuilder));
 _COM_SMARTPTR_TYPEDEF(IMediaControl,__uuidof(IMediaControl));
 _COM_SMARTPTR_TYPEDEF(IMediaPosition,__uuidof(IMediaPosition));
