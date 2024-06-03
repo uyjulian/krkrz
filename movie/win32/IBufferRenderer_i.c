@@ -66,6 +66,7 @@ MIDL_DEFINE_GUID(IID, CLSID_BufferRenderer,0xc633562d, 0x248d, 0x4558, 0x95, 0xd
 
 
 
+#if 0
 #endif /* !defined(_M_IA64) && !defined(_M_AMD64)*/
 
 
@@ -89,6 +90,8 @@ MIDL_DEFINE_GUID(IID, CLSID_BufferRenderer,0xc633562d, 0x248d, 0x4558, 0x95, 0xd
 //@@MIDL_FILE_HEADING(  )
 
 #if defined(_M_IA64) || defined(_M_AMD64)
+#endif
+#else
 
 
 #pragma warning( disable: 4049 )  /* more than 64k source lines */
