@@ -16,6 +16,9 @@
 #include "DebugIntf.h"
 #include "DShowException.h"
 
+#if defined(__arm__) || defined(_M_ARM) || defined(__aarch64__) || defined(_M_ARM64)
+#define AMGetErrorText(hr, pbuffer, MaxLen)
+#endif
 
 //----------------------------------------------------------------------------
 //! @brief	  	DShowException constructor
