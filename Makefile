@@ -28,7 +28,7 @@ DEP_EXTENSION ?= .dep.make
 # CFLAGS_OPT := -O0
 CFLAGS_OPT := -Ofast
 export GIT_TAG := $(shell git describe --abbrev=0 --tags)
-INCFLAGS += -I. -Ibase -Ibase/win32 -Ienviron -Ienviron/win32 -Iextension -Iexternal -Iexternal/angle/include -Iexternal/baseclasses -Iexternal/freetype/include -Iexternal/freetype/src -Iexternal/freetype/devel -Iexternal/glm -Iexternal/jxrlib/image/sys -Iexternal/jxrlib/jxrgluelib -Iexternal/libjpeg-turbo -Iexternal/libjpeg-turbo/vcproj -Iexternal/libjpeg-turbo/win -Iexternal/libogg/include -Iexternal/lpng -Iexternal/onig -Iexternal/onig/src -Iexternal/libogg/include -Iexternal/opus/celt -Iexternal/opus/include -Iexternal/opus/win32 -Iexternal/opus/silk -Iexternal/opus/silk/fixed -Iexternal/opus/silk/float -Iexternal/opusfile/include -Iexternal/opusfile/src -Iexternal/zlib -Imovie/win32 -Imsg -Imsg/win32 -Iplatform/win32 -Isound -Isound/win32 -Itjs2 -Iutils -Iutils/win32 -Ivcproj -Ivisual -Ivisual/IA32 -Ivisual/gl -Ivisual/opengl -Ivisual/win32
+INCFLAGS += -I. -Ibase -Ibase/win32 -Ienviron -Ienviron/win32 -Iextension -Iexternal -Iexternal/angle/include -Iexternal/baseclasses -Iexternal/freetype/include -Iexternal/freetype/src -Iexternal/freetype/devel -Iexternal/glm -Iexternal/jxrlib/image/sys -Iexternal/jxrlib/jxrgluelib -Iexternal/libjpeg-turbo -Iexternal/libjpeg-turbo/vcproj -Iexternal/libjpeg-turbo/win -Iexternal/libogg/include -Iexternal/lpng -Iexternal/onig -Iexternal/onig/src -Iexternal/libogg/include -Iexternal/opus/celt -Iexternal/opus/include -Iexternal/opus/win32 -Iexternal/opusfile/include -Iexternal/opusfile/src -Iexternal/zlib -Imovie/win32 -Imsg -Imsg/win32 -Iplatform/win32 -Isound -Isound/win32 -Itjs2 -Iutils -Iutils/win32 -Ivcproj -Ivisual -Ivisual/IA32 -Ivisual/gl -Ivisual/opengl -Ivisual/win32
 # INCFLAGS += -Iexternal/libjpeg-turbo/simd
 ASMFLAGS += $(INCFLAGS) -fwin32 -DWIN32
 # CFLAGS += -gstabs -D_DEBUG -DDEBUG -DENABLE_DEBUGGER 
@@ -111,6 +111,7 @@ LIBOPUSFILE_SOURCES += external/opusfile/src/http.c external/opusfile/src/info.c
 SOURCES := $(BASE_SOURCES) $(ENVIRON_SOURCES) $(EXTENSION_SOURCES) $(MOVIE_SOURCES) $(MSG_SOURCES) $(SOUND_SOURCES) $(SOUND_SSE2_SOURCES) $(TJS2_SOURCES) $(UTILS_SOURCES) $(VISUAL_SOURCES) $(VISUAL_OPENGL_SOURCES) $(VISUAL_WIN32_SOURCES) $(VISUAL_X86_SIMD_SOURCES) $(LIBZ_SOURCES) $(LIBPNG_SOURCES) $(LIBONIG_SOURCES) $(LIBJPEG_SOURCES) $(LIBJPEG_SIMD_SOURCES) $(LIBFREETYPE_SOURCES) $(BASECLASSES_SOURCES) $(LIBOGG_SOURCES) $(LIBOPUS_SOURCES) $(LIBOPUSFILE_SOURCES)
 
 visual/LoadPNG$(OBJECT_EXTENSION): CFLAGS_OPT = -O1
+$(LIBOPUS_SOURCES:.c=$(OBJECT_EXTENSION)): INCFLAGS += -Iexternal/opus/silk -Iexternal/opus/silk/fixed -Iexternal/opus/silk/float
 
 OBJECTS := $(SOURCES:.c=$(OBJECT_EXTENSION))
 OBJECTS := $(OBJECTS:.cpp=$(OBJECT_EXTENSION))
