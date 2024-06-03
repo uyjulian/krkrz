@@ -21,7 +21,9 @@
 #include <streams.h>
 #include <dshow.h>
 #include <wmsdk.h>
+#if 0
 #include <wmdxva.h>
+#endif
 
 //----------------------------------------------------------------------------
 //! @brief Demuxの出力ストリーム インターフェイス

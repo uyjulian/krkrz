@@ -17,6 +17,11 @@
 #include "dsmovie.h"
 #include "IRendererBufferAccess.h"
 #include "IRendererBufferVideo.h"
+#if 1
+#include <comdef.h>
+_COM_SMARTPTR_TYPEDEF(IRendererBufferAccess,IID_IRendererBufferAccess);
+_COM_SMARTPTR_TYPEDEF(IRendererBufferVideo,IID_IRendererBufferVideo);
+#endif
 
 class tTVPBaseBitmap;
 //----------------------------------------------------------------------------
@@ -25,8 +30,8 @@ class tTVPBaseBitmap;
 class tTVPDSLayerVideo : public tTVPDSMovie
 {
 private:
-	CComPtr<IRendererBufferAccess>	m_BuffAccess;
-	CComPtr<IRendererBufferVideo>	m_BuffVideo;
+	IRendererBufferAccessPtr	m_BuffAccess;
+	IRendererBufferVideoPtr	m_BuffVideo;
 
 	BYTE			*m_BmpBits[2];
 	//----------------------------------------------------------------------------
@@ -35,7 +40,7 @@ private:
 	//----------------------------------------------------------------------------
 	IRendererBufferAccess *BufferAccess()
 	{
-		assert( m_BuffAccess.p );
+		assert( m_BuffAccess );
 		return m_BuffAccess;
 	}
 	//----------------------------------------------------------------------------
@@ -44,7 +49,7 @@ private:
 	//----------------------------------------------------------------------------
 	IRendererBufferVideo *BufferVideo()
 	{
-		assert( m_BuffVideo.p );
+		assert( m_BuffVideo );
 		return m_BuffVideo;
 	}
 

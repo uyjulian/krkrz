@@ -26,6 +26,10 @@ https://www.timbreofprogram.info/blog/archives/458
 #include <list>
 #include <mfobjects.h>
 #include "AsyncCB.h"
+#if 1
+#include <comdef.h>
+_COM_SMARTPTR_TYPEDEF(IMFAttributes,__uuidof(IMFAttributes));
+#endif
 
 class tTVPMFByteStream : public CUnknown, public IMFByteStream {
 public:
@@ -101,7 +105,7 @@ private:
 
 	CCritSec  CSStream;
 
-	CComPtr<IMFAttributes> MFAttributes;
+	IMFAttributesPtr MFAttributes;
 
 
 	class AsyncReader : public IUnknown {

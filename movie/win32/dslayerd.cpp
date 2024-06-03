@@ -61,7 +61,7 @@ void __stdcall tTVPDSLayerVideo::BuildGraph( HWND callbackwin, IStream *stream,
 	// detect CMediaType from stream's extension ('type')
 	try {
 		// create IFilterGraph instance
-		if( FAILED(hr = m_GraphBuilder.CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_INPROC)) )
+		if( FAILED(hr = m_GraphBuilder.CreateInstance(CLSID_FilterGraph, NULL, CLSCTX_INPROC)) )
 			ThrowDShowException(TJS_W("Failed to create FilterGraph."), hr);
 
 // ログを書き出す時に有効にする。でも、あんまり役に立たないような。。。
@@ -83,7 +83,7 @@ void __stdcall tTVPDSLayerVideo::BuildGraph( HWND callbackwin, IStream *stream,
 		}
 
 		// Create the Buffer Renderer object
-		CComPtr<IBaseFilter>	pBRender;	// for buffer renderer filter
+		IBaseFilterPtr	pBRender;	// for buffer renderer filter
 		TBufferRenderer			*pCBR;
 		pCBR = new TBufferRenderer( NAME("Buffer Renderer"), NULL, &hr );
 		if( FAILED(hr) )
@@ -126,15 +126,15 @@ void __stdcall tTVPDSLayerVideo::BuildGraph( HWND callbackwin, IStream *stream,
 				if( FAILED(hr = GraphBuilder()->Render(m_Reader->GetPin(0))) )
 					ThrowDShowException(TJS_W("Failed to call IGraphBuilder::Render."), hr);
 	
-				CComPtr<IBaseFilter>	pRender;
+				IBaseFilterPtr	pRender;
 				if( FAILED(hr = FindVideoRenderer( &pRender ) ) )
 					ThrowDShowException(TJS_W("Failed to call FindVideoRenderer( &pRender )."), hr);
 	
-				CComPtr<IPin>	pRenderPin;
+				IPinPtr	pRenderPin;
 				pRenderPin = GetInPin(pRender, 0);
 	
 				// get decoder output pin
-				CComPtr<IPin>			pDecoderPinOut;
+				IPinPtr			pDecoderPinOut;
 				if( FAILED(hr = pRenderPin->ConnectedTo( &pDecoderPinOut )) )
 					ThrowDShowException(TJS_W("Failed to call pRenderPin->ConnectedTo( &pDecoderPinOut )."), hr);
 	
@@ -151,32 +151,32 @@ void __stdcall tTVPDSLayerVideo::BuildGraph( HWND callbackwin, IStream *stream,
 				if( FAILED(hr = GraphBuilder()->AddFilter( pBRender, TJS_W("Buffer Renderer"))) )
 					ThrowDShowException(TJS_W("Failed to call GraphBuilder()->AddFilter( pBRender, L\"Buffer Renderer\")."), hr);
 	
-				CComPtr<IPin>	pRdrPinIn;
+				IPinPtr	pRdrPinIn;
 				pRdrPinIn = GetInPin(pBRender, 0);
 	
 				if( FAILED(hr = GraphBuilder()->ConnectDirect( pDecoderPinOut, pRdrPinIn, NULL )) )
 					ThrowDShowException(TJS_W("Failed to call GraphBuilder()->ConnectDirect( pDecoderPinOut, pRdrPinIn, NULL )."), hr);
 #else
-				CComPtr<IPin>			pRdrPinIn;
-				CComPtr<IPin>			pSrcPinOut;
+				IPinPtr			pRdrPinIn;
+				IPinPtr			pSrcPinOut;
 				if( FAILED(hr = pBRender->FindPin( TJS_W("In"), &pRdrPinIn )) )
 					ThrowDShowException(TJS_W("Failed to call pBRender->FindPin( L\"In\", &pRdrPinIn )."), hr);
 				pSrcPinOut = m_Reader->GetPin(0);
 				if( FAILED(hr = GraphBuilder()->Connect( pSrcPinOut, pRdrPinIn )) )
 					ThrowDShowException(TJS_W("Failed to call GraphBuilder()->Connect( pSrcPinOut, pRdrPinIn )."), hr);
 		
-				CComPtr<IPin>			pSpliterPinIn;
+				IPinPtr			pSpliterPinIn;
 				if( FAILED(hr = pSrcPinOut->ConnectedTo( &pSpliterPinIn )) )
 					ThrowDShowException(TJS_W("Failed to call pSrcPinOut->ConnectedTo( &pSpliterPinIn )."), hr);
 		
 				{	// Connect to DDS render filter
-					CComPtr<IBaseFilter>	pDDSRenderer;	// for sound renderer filter
-					if( FAILED(hr = pDDSRenderer.CoCreateInstance(CLSID_DSoundRender, NULL, CLSCTX_INPROC_SERVER)) )
+					IBaseFilterPtr	pDDSRenderer;	// for sound renderer filter
+					if( FAILED(hr = pDDSRenderer.CreateInstance(CLSID_DSoundRender, NULL, CLSCTX_INPROC_SERVER)) )
 						ThrowDShowException(TJS_W("Failed to create sound render filter object."), hr);
 					if( FAILED(hr = GraphBuilder()->AddFilter(pDDSRenderer, TJS_W("Sound Renderer"))) )
 						ThrowDShowException(TJS_W("Failed to call GraphBuilder()->AddFilter(pDDSRenderer, L\"Sound Renderer\")."), hr);
 		
-					CComPtr<IBaseFilter>	pSpliter;
+					IBaseFilterPtr	pSpliter;
 					PIN_INFO	pinInfo;
 					if( FAILED(hr = pSpliterPinIn->QueryPinInfo( &pinInfo )) )
 						ThrowDShowException(TJS_W("Failed to call pSpliterPinIn->QueryPinInfo( &pinInfo )."), hr);
@@ -219,10 +219,10 @@ void __stdcall tTVPDSLayerVideo::BuildGraph( HWND callbackwin, IStream *stream,
 #if 0	// 吉里吉里のBitmapは上下逆の形式らしいので、上下反転のための再接続は必要ない
 		{	// Reconnect buffer render filter
 			// get decoder output pin
-			CComPtr<IPin>	pRdrPinIn;
+			IPinPtr	pRdrPinIn;
 			pRdrPinIn = GetInPin( pBRender, 0 );
 
-			CComPtr<IPin>			pDecoderPinOut;
+			IPinPtr			pDecoderPinOut;
 			if( FAILED(hr = pRdrPinIn->ConnectedTo( &pDecoderPinOut )) )
 				ThrowDShowException(TJS_W("Failed to call pRdrPinIn->ConnectedTo( &pDecoderPinOut )."), hr);
 
@@ -251,19 +251,19 @@ void __stdcall tTVPDSLayerVideo::BuildGraph( HWND callbackwin, IStream *stream,
 #endif
 
 		// query each interfaces
-		if( FAILED(hr = m_GraphBuilder.QueryInterface( &m_MediaControl )) )
+		if( FAILED(hr = m_GraphBuilder.QueryInterface( IID_IMediaControl, &m_MediaControl )) )
 			ThrowDShowException(TJS_W("Failed to query IMediaControl"), hr);
-		if( FAILED(hr = m_GraphBuilder.QueryInterface( &m_MediaPosition )) )
+		if( FAILED(hr = m_GraphBuilder.QueryInterface( IID_IMediaPosition, &m_MediaPosition )) )
 			ThrowDShowException(TJS_W("Failed to query IMediaPosition"), hr);
-		if( FAILED(hr = m_GraphBuilder.QueryInterface( &m_MediaSeeking )) )
+		if( FAILED(hr = m_GraphBuilder.QueryInterface( IID_IMediaSeeking, &m_MediaSeeking )) )
 			ThrowDShowException(TJS_W("Failed to query IMediaSeeking"), hr);
-		if( FAILED(hr = m_GraphBuilder.QueryInterface( &m_MediaEventEx )) )
+		if( FAILED(hr = m_GraphBuilder.QueryInterface( IID_IMediaEventEx, &m_MediaEventEx )) )
 			ThrowDShowException(TJS_W("Failed to query IMediaEventEx"), hr);
 
-		if( FAILED(hr = m_GraphBuilder.QueryInterface( &m_BasicVideo )) )
+		if( FAILED(hr = m_GraphBuilder.QueryInterface( IID_IBasicVideo, &m_BasicVideo )) )
 			ThrowDShowException(TJS_W("Failed to query IBasicVideo"), hr);
 //		m_GraphBuilder.QueryInterface( &m_BasicAudio );
-		if( FAILED(hr = m_GraphBuilder.QueryInterface( &m_BasicAudio )) )
+		if( FAILED(hr = m_GraphBuilder.QueryInterface( IID_IBasicAudio, &m_BasicAudio )) )
 			ThrowDShowException(TJS_W("Failed to query IBasicAudio"), hr);
 
 		if( FAILED(hr = pBRender->QueryInterface( &m_BuffAccess )) )
@@ -305,15 +305,15 @@ void __stdcall tTVPDSLayerVideo::BuildGraph( HWND callbackwin, IStream *stream,
 //----------------------------------------------------------------------------
 void __stdcall tTVPDSLayerVideo::ReleaseAll()
 {
-	if( m_MediaControl.p != NULL )
+	if( m_MediaControl )
 	{
 		m_MediaControl->Stop();
 	}
 
-	if( m_BuffAccess.p )
+	if( m_BuffAccess )
 		m_BuffAccess.Release();
 
-	if( m_BuffVideo.p )
+	if( m_BuffVideo )
 		m_BuffVideo.Release();
 
 	tTVPDSMovie::ReleaseAll();

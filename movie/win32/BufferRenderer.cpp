@@ -14,7 +14,12 @@
 
 #include "tjsCommHead.h"
 #include <streams.h>
+#if 0
 #include <atlbase.h>
+#else
+#include <comdef.h>
+_COM_SMARTPTR_TYPEDEF(IMediaSeeking,__uuidof(IMediaSeeking));
+#endif
 #include "BufferRenderer.h"
 
 #ifdef _DEBUG
@@ -545,7 +550,7 @@ HRESULT TBufferRenderer::get_VideoHeight( long *pVideoHeight )
 HRESULT TBufferRenderer::OnStartStreaming(void)
 {
 	HRESULT		hr;
-	CComPtr<IMediaSeeking>	mediaSeeking;
+	IMediaSeekingPtr	mediaSeeking;
 	
 	if( m_pGraph )
 	{
@@ -555,7 +560,7 @@ HRESULT TBufferRenderer::OnStartStreaming(void)
 
 	bool		bGetTime = false;
 	LONGLONG	Current = 0;
-	if( mediaSeeking.p != NULL )
+	if( mediaSeeking )
 	{	// IMediaSeekingを使って時間の取得を試みる
 		GUID	Format;
 		if( SUCCEEDED(hr = mediaSeeking->GetTimeFormat( &Format ) ) )

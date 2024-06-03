@@ -96,7 +96,7 @@ STDMETHODIMP CVMRCustomAllocatorPresenter9::NonDelegatingQueryInterface( REFIID 
 void CVMRCustomAllocatorPresenter9::ReleaseAll()
 {
 	CAutoLock Lock(m_Lock);
-	if( m_VMR9SurfAllocNotify.p )
+	if( m_VMR9SurfAllocNotify )
 		m_VMR9SurfAllocNotify.Release();
 
 	ReleaseSurfaces();
@@ -162,7 +162,7 @@ HRESULT STDMETHODCALLTYPE CVMRCustomAllocatorPresenter9::InitializeDevice( DWORD
 				return hr;
 
 			if( D3D_OK != ( hr = D3DDevice()->CreateTexture(lpAllocInfo->dwWidth, lpAllocInfo->dwHeight, 1, D3DUSAGE_RENDERTARGET, dm.Format, 
-								D3DPOOL_DEFAULT, &m_Texture.p, NULL) ) )
+								D3DPOOL_DEFAULT, &m_Texture, NULL) ) )
 				return hr;
 			TVPAddLog( ttstr("krmovie : Use offscreen and YUV surface.") );
 		} else {
@@ -242,7 +242,7 @@ HRESULT CVMRCustomAllocatorPresenter9::CreateVertexBuffer( int texWidth, int tex
 	m_Vtx[3].tv = video_h / tex_h;
 
 	m_VertexBuffer = NULL;
-	if( FAILED( hr = D3DDevice()->CreateVertexBuffer( sizeof(m_Vtx) ,D3DUSAGE_WRITEONLY, D3DFVF_XYZRHW|D3DFVF_TEX1, D3DPOOL_MANAGED, &m_VertexBuffer.p, NULL ) ) )
+	if( FAILED( hr = D3DDevice()->CreateVertexBuffer( sizeof(m_Vtx) ,D3DUSAGE_WRITEONLY, D3DFVF_XYZRHW|D3DFVF_TEX1, D3DPOOL_MANAGED, &m_VertexBuffer, NULL ) ) )
 		return hr;
 
 	void* pData;
@@ -335,10 +335,10 @@ HRESULT STDMETHODCALLTYPE CVMRCustomAllocatorPresenter9::GetSurface( DWORD_PTR d
 		if( SurfaceIndex < m_Surfaces.size() )
 		{
 			CAutoLock Lock(m_Lock);
-			m_Surfaces[SurfaceIndex].CopyTo( lplpSurface );
+			*lplpSurface = m_Surfaces[SurfaceIndex];
 			if( *lplpSurface == NULL )
 				return E_FAIL;
-//			ULONG cnt = (*lplpSurface)->AddRef();
+			ULONG cnt = (*lplpSurface)->AddRef();
 			return S_OK;
 		}
 		else
@@ -372,13 +372,13 @@ HRESULT STDMETHODCALLTYPE CVMRCustomAllocatorPresenter9::AdviseNotify( IVMRSurfa
 HRESULT CVMRCustomAllocatorPresenter9::ReleaseD3D()
 {
 	CAutoLock Lock(m_Lock);
-	if( m_VertexBuffer.p )
+	if( m_VertexBuffer )
 		m_VertexBuffer.Release();
 
-	if( m_D3DDevice.p )
+	if( m_D3DDevice )
 		m_D3DDevice.Release();
 
-	if( m_D3D.p )
+	if( m_D3D )
 		m_D3D.Release();
 	return S_OK;
 }
@@ -408,7 +408,7 @@ HRESULT CVMRCustomAllocatorPresenter9::ReleaseSurfaces()
 HRESULT STDMETHODCALLTYPE CVMRCustomAllocatorPresenter9::StartPresenting( DWORD_PTR dwUserID )
 {
 	CAutoLock Lock(m_Lock);
-	if( m_D3DDevice.p == NULL )
+	if( !m_D3DDevice )
 		return E_FAIL;
     return S_OK;
 }
@@ -434,7 +434,7 @@ HRESULT CVMRCustomAllocatorPresenter9::DrawVideoPlane( IDirect3DDevice9* device,
 			CAutoEndSceneCall	autoEnd(device);
 			if( FAILED( hr = device->SetTexture( 0, tex ) ) )
 				return hr;
-			if( FAILED( hr = device->SetStreamSource(0, m_VertexBuffer.p, 0, sizeof(VideoVertex) ) ) )
+			if( FAILED( hr = device->SetStreamSource(0, m_VertexBuffer, 0, sizeof(VideoVertex) ) ) )
 				return hr;
 			if( FAILED( hr = device->SetFVF( D3DFVF_XYZRHW|D3DFVF_TEX1 ) ) )
 				return hr;
@@ -492,15 +492,15 @@ HRESULT CVMRCustomAllocatorPresenter9::PresentHelper( VMR9PresentationInfo *lpPr
 {
 	HRESULT hr;
 	CAutoLock Lock(m_Lock);
-	CComPtr<IDirect3DDevice9> device;
-	if( FAILED(hr = lpPresInfo->lpSurf->GetDevice(&device.p )) )
+	IDirect3DDevice9Ptr device;
+	if( FAILED(hr = lpPresInfo->lpSurf->GetDevice(&device )) )
 		return hr;
 
 	if( FAILED(hr = device->SetRenderTarget( 0, m_RenderTarget ) ) )
 		return hr;
 	if( m_Texture != NULL )
 	{
-		CComPtr<IDirect3DSurface9> pSurf;
+		IDirect3DSurface9Ptr pSurf;
 		if( SUCCEEDED(hr = m_Texture->GetSurfaceLevel(0, &pSurf)) ) {
 			if( FAILED(hr = device->StretchRect( lpPresInfo->lpSurf, NULL, pSurf, NULL, D3DTEXF_NONE )) ) {
 				return hr;
@@ -508,13 +508,13 @@ HRESULT CVMRCustomAllocatorPresenter9::PresentHelper( VMR9PresentationInfo *lpPr
 		} else {
 			return hr;
 		}
-		if( FAILED(hr = DrawVideoPlane( device, m_Texture.p ) ) )
+		if( FAILED(hr = DrawVideoPlane( device, m_Texture ) ) )
 			return hr;
 	} else {
-		CComPtr<IDirect3DTexture9> texture;
-		if( FAILED(hr = lpPresInfo->lpSurf->GetContainer( IID_IDirect3DTexture9, (LPVOID*)&texture.p ) ) )
+		IDirect3DTexture9Ptr texture;
+		if( FAILED(hr = lpPresInfo->lpSurf->GetContainer( IID_IDirect3DTexture9, (LPVOID*)&texture ) ) )
 			return hr;
-		if( FAILED(hr = DrawVideoPlane( device, texture.p ) ) )
+		if( FAILED(hr = DrawVideoPlane( device, texture ) ) )
 			return hr;
 	}
 
@@ -526,7 +526,7 @@ HRESULT CVMRCustomAllocatorPresenter9::PresentHelper( VMR9PresentationInfo *lpPr
 void CVMRCustomAllocatorPresenter9::PresentVideoImage()
 {
 	CAutoLock Lock(m_Lock);
-	if( m_D3DDevice.p ) {
+	if( m_D3DDevice ) {
 		HRESULT hr = S_OK;
 		hr = m_D3DDevice->Present( &m_SrcRect, NULL, m_ChildWnd, NULL );
 //		hr = m_D3DDevice->Present( NULL, NULL, m_ChildWnd, NULL );
@@ -548,7 +548,7 @@ void CVMRCustomAllocatorPresenter9::PresentVideoImage()
 UINT CVMRCustomAllocatorPresenter9::GetMonitorNumber()
 {
 	CAutoLock Lock(m_Lock);
-	if( m_D3D.p == NULL || m_ChildWnd == NULL ) return D3DADAPTER_DEFAULT;
+	if( !m_D3D || m_ChildWnd == NULL ) return D3DADAPTER_DEFAULT;
 	HMONITOR windowMonitor = MonitorFromWindow( m_ChildWnd, MONITOR_DEFAULTTOPRIMARY );
 	UINT iCurrentMonitor = 0;
 	UINT numOfMonitor = D3D()->GetAdapterCount();
@@ -648,13 +648,13 @@ HRESULT CVMRCustomAllocatorPresenter9::CreateD3D()
 
 	UINT iCurrentMonitor = GetMonitorNumber();
 	DWORD	BehaviorFlags = D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED;
-	if( D3D_OK != ( hr = D3D()->CreateDevice( iCurrentMonitor, D3DDEVTYPE_HAL, NULL, BehaviorFlags, &d3dpp, &m_D3DDevice.p ) ) )
+	if( D3D_OK != ( hr = D3D()->CreateDevice( iCurrentMonitor, D3DDEVTYPE_HAL, NULL, BehaviorFlags, &d3dpp, &m_D3DDevice ) ) )
 		return hr;
 
 	m_ThreadID = ::GetCurrentThreadId();
 
 	m_RenderTarget = NULL;
-	if( FAILED( hr = D3DDevice()->GetRenderTarget( 0, &m_RenderTarget.p ) ) )
+	if( FAILED( hr = D3DDevice()->GetRenderTarget( 0, &m_RenderTarget ) ) )
 		return hr;
 
 	if( FAILED( hr = InitializeDirect3DState() ) )
@@ -722,7 +722,7 @@ HRESULT CVMRCustomAllocatorPresenter9::ChangeD3DDevice()
 	if( FAILED( hr = D3DDevice()->GetCreationParameters(  &Parameters ) ) )
 		return hr;
 
-	CComPtr<IDirect3D9>			pD3D;
+	IDirect3D9Ptr			pD3D;
 	if( FAILED( hr = D3DDevice()->GetDirect3D(&pD3D) ) )
 		return hr;
 

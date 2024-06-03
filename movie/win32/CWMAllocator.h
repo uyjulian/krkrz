@@ -18,7 +18,13 @@ DirectShowのアロケーターをラップしたWindows Media Format SDK用の�
 #include <assert.h>
 #include <windows.h>
 //#include <dshow.h>
+#if 0
 #include <atlcomcli.h>
+#else
+#include <strmif.h>
+#include <comdef.h>
+_COM_SMARTPTR_TYPEDEF(IMemAllocator,__uuidof(IMemAllocator));
+#endif
 #include <wmsdk.h>
 #include <streams.h>
 #include <dshow.h>
@@ -28,11 +34,11 @@ DirectShowのアロケーターをラップしたWindows Media Format SDK用の�
 //----------------------------------------------------------------------------
 class CWMAllocator : public IWMReaderAllocatorEx, public CUnknown
 {
-	CComPtr<IMemAllocator>	m_MemAlloc;
+	IMemAllocatorPtr	m_MemAlloc;
 
 	IMemAllocator *Allocator()
 	{
-		assert( m_MemAlloc.p );
+		assert( m_MemAlloc );
 		return m_MemAlloc;
 	}
 

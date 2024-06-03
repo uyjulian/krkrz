@@ -25,7 +25,7 @@
 class tTVPDSVideoOverlay : public tTVPDSMovie
 {
 protected:
-	CComPtr<IVideoWindow>	m_VideoWindow;
+	IVideoWindowPtr	m_VideoWindow;
 
 	//----------------------------------------------------------------------------
 	//! @brief	  	IVideoWindowを取得する
@@ -33,7 +33,7 @@ protected:
 	//----------------------------------------------------------------------------
 	IVideoWindow *VideoWindow()
 	{
-		assert( m_VideoWindow.p );
+		assert( m_VideoWindow );
 		return m_VideoWindow;
 	}
 

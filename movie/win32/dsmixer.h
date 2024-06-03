@@ -28,9 +28,9 @@
 class tTVPDSMixerVideoOverlay : public tTVPDSMovie
 {
 private:
-	CComPtr<IVMRMixerControl9>		m_VMR9MixerCtrl;
-	CComPtr<IVMRMixerBitmap9>		m_VMR9MixerBmp;
-	CComPtr<IVMRSurfaceAllocatorNotify9>	m_VMR9SurfAllocNotify;
+	IVMRMixerControl9Ptr		m_VMR9MixerCtrl;
+	IVMRMixerBitmap9Ptr		m_VMR9MixerBmp;
+	IVMRSurfaceAllocatorNotify9Ptr	m_VMR9SurfAllocNotify;
 	CVMRCustomAllocatorPresenter9	*m_AllocatorPresenter;
 	REFERENCE_TIME					m_AvgTimePerFrame;
 	long							m_Width;
@@ -43,17 +43,17 @@ private:
 
 	IVMRMixerControl9 *MixerControl()
 	{
-		assert( m_VMR9MixerCtrl.p );
+		assert( m_VMR9MixerCtrl );
 		return m_VMR9MixerCtrl;
 	}
 	IVMRMixerBitmap9 *MixerBmp()
 	{
-		assert(m_VMR9MixerBmp.p);
+		assert(m_VMR9MixerBmp);
 		return m_VMR9MixerBmp;
 	}
 	IVMRSurfaceAllocatorNotify9 *AllocatorNotify()
 	{
-		assert( m_VMR9SurfAllocNotify.p );
+		assert( m_VMR9SurfAllocNotify );
 		return m_VMR9SurfAllocNotify;
 	}
 	IVMRSurfaceAllocator9 *Allocator()
@@ -133,7 +133,7 @@ public:
 	virtual void __stdcall GetSaturation( float *v );
 	virtual void __stdcall SetSaturation( float v );
 
-	void AddVMR9Filer( CComPtr<IBaseFilter> &pVMR9 );
+	void AddVMR9Filer( IBaseFilterPtr &pVMR9 );
 
 	friend class CVMRCustomAllocatorPresenter9;
 };

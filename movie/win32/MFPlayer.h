@@ -43,16 +43,16 @@ protected:
 	UINT32		FPSDenominator;
 
 	tTVPPlayerCallback* PlayerCallback;
-	CComPtr<IMFByteStream>			ByteStream;
-	CComPtr<IMFVideoDisplayControl>	VideoDisplayControl;
-	CComPtr<IMFMediaSession>		MediaSession;
-	CComPtr<IMFTopology>			Topology;
-	CComPtr<IMFRateControl>			RateControl;
-	CComPtr<IMFRateSupport>			RateSupport;
-	CComPtr<IMFPresentationClock>	PresentationClock;
-	CComPtr<IMFAudioStreamVolume>	AudioVolume;
-	CComPtr<IMFSimpleAudioVolume>	SimpleAudioVolume;
-	CComPtr<IMFMediaSource>			MediaSource;
+	IMFByteStreamPtr			ByteStream;
+	IMFVideoDisplayControlPtr	VideoDisplayControl;
+	IMFMediaSessionPtr		MediaSession;
+	IMFTopologyPtr			Topology;
+	IMFRateControlPtr			RateControl;
+	IMFRateSupportPtr			RateSupport;
+	IMFPresentationClockPtr	PresentationClock;
+	IMFAudioStreamVolumePtr	AudioVolume;
+	IMFSimpleAudioVolumePtr	SimpleAudioVolume;
+	IMFMediaSourcePtr			MediaSource;
 
 	MFTIME				HnsDuration;
 

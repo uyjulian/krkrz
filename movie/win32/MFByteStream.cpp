@@ -29,8 +29,10 @@ https://www.timbreofprogram.info/blog/archives/460
 #include <mfapi.h>
 #include <mferror.h>
 #include <streams.h>
+#if 0
 #include <atlbase.h>
 #include <atlcom.h>
+#endif
 #include "MFByteStream.h"
 
 
@@ -50,7 +52,7 @@ tTVPMFByteStream::tTVPMFByteStream( HRESULT *lphr, IStream* lpIStream, const tjs
 tTVPMFByteStream::~tTVPMFByteStream()
 {
 	Close();
-	if( MFAttributes.p ) {
+	if( MFAttributes ) {
 		MFAttributes.Release();
 	}
 }
@@ -58,7 +60,7 @@ tTVPMFByteStream::~tTVPMFByteStream()
 STDMETHODIMP tTVPMFByteStream::NonDelegatingQueryInterface(REFIID riid,void **ppv)
 {
 	if(IsEqualIID(riid,IID_IMFByteStream)) return GetInterface(static_cast<IMFByteStream *>(this),ppv);
-	else if(IsEqualIID(riid,IID_IMFAttributes)) return GetInterface(MFAttributes.p,ppv);
+	else if(IsEqualIID(riid,IID_IMFAttributes)) return GetInterface(MFAttributes,ppv);
 	return CUnknown::NonDelegatingQueryInterface(riid,ppv);
 }
 // ストリームを開く

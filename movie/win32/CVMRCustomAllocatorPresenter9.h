@@ -13,13 +13,29 @@
 #ifndef __VMR_CUSTOM_ALLOCATOR_PRESENTER_H__
 #define __VMR_CUSTOM_ALLOCATOR_PRESENTER_H__
 
+#if 0
 #include <atlbase.h>
+#endif
+
 #include <streams.h>
 #include <d3d9.h>
 #include <vmr9.h>
 #include <assert.h>
 #include <ctlutil.h>
 #include <vector>
+#if 1
+#include <comdef.h>
+_COM_SMARTPTR_TYPEDEF(IDirect3D9,__uuidof(IDirect3D9));
+_COM_SMARTPTR_TYPEDEF(IDirect3DTexture9,__uuidof(IDirect3DTexture9));
+_COM_SMARTPTR_TYPEDEF(IDirect3DSurface9,__uuidof(IDirect3DSurface9));
+_COM_SMARTPTR_TYPEDEF(IDirect3DVertexBuffer9,__uuidof(IDirect3DVertexBuffer9));
+_COM_SMARTPTR_TYPEDEF(IDirect3DDevice9,__uuidof(IDirect3DDevice9));
+_COM_SMARTPTR_TYPEDEF(IVMRSurfaceAllocatorNotify9,__uuidof(IVMRSurfaceAllocatorNotify9));
+_COM_SMARTPTR_TYPEDEF(IVMRSurfaceAllocator9,__uuidof(IVMRSurfaceAllocator9));
+_COM_SMARTPTR_TYPEDEF(IVMRMixerControl9,__uuidof(IVMRMixerControl9));
+_COM_SMARTPTR_TYPEDEF(IVMRFilterConfig9,__uuidof(IVMRFilterConfig9));
+_COM_SMARTPTR_TYPEDEF(IVMRMixerBitmap9,__uuidof(IVMRMixerBitmap9));
+#endif
 #include "CDLLLoader.h"
 
 class tTVPDSMixerVideoOverlay;
@@ -35,10 +51,10 @@ class CVMRCustomAllocatorPresenter9 : public CUnknown, public IVMRSurfaceAllocat
 	bool		m_Visible;
 	RECT		m_Rect;			//!< 指定されたムービーの表示矩形領域を保持
 
-	CComPtr<IDirect3D9>			m_D3D;
-	CComPtr<IDirect3DDevice9>	m_D3DDevice;
-	CComPtr<IVMRSurfaceAllocatorNotify9>	m_VMR9SurfAllocNotify;
-	std::vector<CComPtr<IDirect3DSurface9> >     m_Surfaces;
+	IDirect3D9Ptr			m_D3D;
+	IDirect3DDevice9Ptr	m_D3DDevice;
+	IVMRSurfaceAllocatorNotify9Ptr	m_VMR9SurfAllocNotify;
+	std::vector<IDirect3DSurface9Ptr >     m_Surfaces;
 	CDLLLoader					m_D3DDll;
 	SIZE						m_VideoSize;
 	SIZE						m_BackBufferSize;
@@ -49,9 +65,9 @@ class CVMRCustomAllocatorPresenter9 : public CUnknown, public IVMRSurfaceAllocat
 	CCritSec				*m_Lock;
 	bool					m_RebuildingWindow;
 
-	CComPtr<IDirect3DTexture9>	m_Texture;
-    CComPtr<IDirect3DSurface9>	m_RenderTarget;
-    CComPtr<IDirect3DVertexBuffer9> m_VertexBuffer;
+	IDirect3DTexture9Ptr	m_Texture;
+    IDirect3DSurface9Ptr	m_RenderTarget;
+    IDirect3DVertexBuffer9Ptr m_VertexBuffer;
 	RECT						m_SrcRect;		//!< 実際に描画される領域の大きさを保持、m_ChildRect から割り出せるけど…
 	RECT						m_ChildRect;	//!< 実際に描画される矩形領域を保持
 
@@ -66,17 +82,17 @@ class CVMRCustomAllocatorPresenter9 : public CUnknown, public IVMRSurfaceAllocat
 
 	IVMRSurfaceAllocatorNotify9 *AllocatorNotify()
 	{
-		assert( m_VMR9SurfAllocNotify.p );
+		assert( m_VMR9SurfAllocNotify );
 		return m_VMR9SurfAllocNotify;
 	}
 	IDirect3D9 *D3D()
 	{
-		assert( m_D3D.p );
+		assert( m_D3D );
 		return m_D3D;
 	}
 	IDirect3DDevice9 *D3DDevice()
 	{
-		assert(m_D3DDevice.p);
+		assert(m_D3DDevice);
 		return m_D3DDevice;
 	}
 	tTVPDSMixerVideoOverlay* Owner()

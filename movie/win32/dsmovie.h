@@ -20,7 +20,28 @@
 //#define _CRTDBG_MAP_ALLOC
 
 #include <assert.h>
+#if 0
 #include <atlbase.h>
+#else
+#include <control.h>
+#include <dmodshow.h>
+#include <dmoreg.h>
+#include <comdef.h>
+_COM_SMARTPTR_TYPEDEF(IGraphBuilder,__uuidof(IGraphBuilder));
+_COM_SMARTPTR_TYPEDEF(IMediaControl,__uuidof(IMediaControl));
+_COM_SMARTPTR_TYPEDEF(IMediaPosition,__uuidof(IMediaPosition));
+_COM_SMARTPTR_TYPEDEF(IMediaSeeking,__uuidof(IMediaSeeking));
+_COM_SMARTPTR_TYPEDEF(IMediaEventEx,__uuidof(IMediaEventEx));
+_COM_SMARTPTR_TYPEDEF(IBasicVideo,__uuidof(IBasicVideo));
+_COM_SMARTPTR_TYPEDEF(IBasicAudio,__uuidof(IBasicAudio));
+_COM_SMARTPTR_TYPEDEF(IAMStreamSelect,__uuidof(IAMStreamSelect));
+_COM_SMARTPTR_TYPEDEF(IVideoWindow,__uuidof(IVideoWindow));
+_COM_SMARTPTR_TYPEDEF(IBaseFilter,__uuidof(IBaseFilter));
+_COM_SMARTPTR_TYPEDEF(IPin,__uuidof(IPin));
+_COM_SMARTPTR_TYPEDEF(IDMOWrapperFilter,__uuidof(IDMOWrapperFilter));
+_COM_SMARTPTR_TYPEDEF(IEnumMediaTypes,__uuidof(IEnumMediaTypes));
+_COM_SMARTPTR_TYPEDEF(IEnumPins,__uuidof(IEnumPins));
+#endif
 #include <streams.h>
 #include "krmovie.h"
 #include <vector>
@@ -50,15 +71,15 @@ protected:
 	CIStreamProxy			*m_Proxy;
 	CIStreamReader			*m_Reader;
 
-	CComPtr<IGraphBuilder>	m_GraphBuilder;		//!< Graph Builder
-	CComPtr<IMediaControl>	m_MediaControl;		//!< Media Control
-	CComPtr<IMediaPosition>	m_MediaPosition;	//!< Media Postion
-	CComPtr<IMediaSeeking >	m_MediaSeeking;		//!< Media Seeking
-	CComPtr<IMediaEventEx>	m_MediaEventEx;		//!< Media Event
-	CComPtr<IBasicVideo>	m_BasicVideo;		//!< Basic Video
-	CComPtr<IBasicAudio>	m_BasicAudio;		//!< Basic Audio
+	IGraphBuilderPtr	m_GraphBuilder;		//!< Graph Builder
+	IMediaControlPtr	m_MediaControl;		//!< Media Control
+	IMediaPositionPtr	m_MediaPosition;	//!< Media Postion
+	IMediaSeekingPtr	m_MediaSeeking;		//!< Media Seeking
+	IMediaEventExPtr	m_MediaEventEx;		//!< Media Event
+	IBasicVideoPtr	m_BasicVideo;		//!< Basic Video
+	IBasicAudioPtr	m_BasicAudio;		//!< Basic Audio
 
-	CComPtr<IAMStreamSelect>	m_StreamSelect;	//!< Stream selector
+	IAMStreamSelectPtr	m_StreamSelect;	//!< Stream selector
 
 	struct StreamInfo {
 		DWORD	groupNum;
@@ -72,9 +93,9 @@ protected:
 	//----------------------------------------------------------------------------
 	IMediaSeeking *MediaSeeking()
 	{
-		//assert( m_MediaSeeking.p );
-		if( !m_MediaSeeking.p )
-			assert( m_MediaSeeking.p );
+		//assert( m_MediaSeeking != NULL );
+		if( !m_MediaSeeking )
+			assert( m_MediaSeeking );
 		return m_MediaSeeking;
 	}
 	//----------------------------------------------------------------------------
@@ -83,7 +104,7 @@ protected:
 	//----------------------------------------------------------------------------
 	IMediaPosition *Position()
 	{
-		assert( m_MediaPosition.p );
+		assert( m_MediaPosition );
 		return m_MediaPosition;
 	}
 	//----------------------------------------------------------------------------
@@ -92,7 +113,7 @@ protected:
 	//----------------------------------------------------------------------------
 	IMediaControl *Controller()
 	{ 
-		assert( m_MediaControl.p );
+		assert( m_MediaControl );
 		return m_MediaControl;
 	}
 	//----------------------------------------------------------------------------
@@ -101,7 +122,7 @@ protected:
 	//----------------------------------------------------------------------------
 	IMediaEventEx *Event()
 	{
-		assert( m_MediaEventEx.p );
+		assert( m_MediaEventEx );
 		return m_MediaEventEx;
 	}
 	//----------------------------------------------------------------------------
@@ -110,7 +131,7 @@ protected:
 	//----------------------------------------------------------------------------
 	IGraphBuilder *GraphBuilder()
 	{
-		assert( m_GraphBuilder.p );
+		assert( m_GraphBuilder );
 		return m_GraphBuilder;
 	}
 	//----------------------------------------------------------------------------
@@ -119,7 +140,7 @@ protected:
 	//----------------------------------------------------------------------------
 	IBasicVideo *Video()
 	{
-		assert( m_BasicVideo.p );
+		assert( m_BasicVideo );
 		return m_BasicVideo;
 	}
 	//----------------------------------------------------------------------------
@@ -130,7 +151,7 @@ protected:
 	//----------------------------------------------------------------------------
 	IBasicAudio *Audio()
 	{
-//		assert( m_BasicAudio.p );
+//		assert( m_BasicAudio );
 		return m_BasicAudio;
 	}
 	//----------------------------------------------------------------------------

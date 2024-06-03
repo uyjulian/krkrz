@@ -18,7 +18,9 @@ IMediaSeekingの呼び出しを代理する。
 
 #include <streams.h>
 #include <assert.h>
+#if 0
 #include <atlcomcli.h>
+#endif
 
 //! IMediaSeekingへの操作を単にアップストリームへ渡して処理する場合は、CPosPassThruを使用するが、
 //! ソースフィルタのピンでIMediaSeekingを実装する必要がある場合、ソースフィルタのIMediaSeeking
@@ -27,7 +29,6 @@ IMediaSeekingの呼び出しを代理する。
 class CMediaSeekingProxy : public IMediaSeeking
 {
 private:
-//	CComPtr<IMediaSeeking>	m_Delegate;
 	IMediaSeeking*			m_Delegate;	// CComPtr で持つと自身を持つことになって開放できなくなることがある
 	//----------------------------------------------------------------------------
 	//! @brief	  	IMediaSeekingを取得する

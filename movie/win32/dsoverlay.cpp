@@ -58,7 +58,7 @@ void __stdcall tTVPDSVideoOverlay::BuildGraph( HWND callbackwin, IStream *stream
 			ThrowDShowException(TJS_W("Failed to call CoInitializeEx."), hr);
 
 		// create IFilterGraph instance
-		if( FAILED(hr = m_GraphBuilder.CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_INPROC)) )
+		if( FAILED(hr = m_GraphBuilder.CreateInstance(CLSID_FilterGraph, NULL, CLSCTX_INPROC)) )
 			ThrowDShowException(TJS_W("Failed to create FilterGraph."), hr);
 
 		// Register to ROT
@@ -69,8 +69,8 @@ void __stdcall tTVPDSVideoOverlay::BuildGraph( HWND callbackwin, IStream *stream
 
 		if( IsWindowsMediaFile(type) )
 		{
-			CComPtr<IBaseFilter>	pVRender;	// for video renderer filter
-			if( FAILED(hr = pVRender.CoCreateInstance(CLSID_VideoRenderer, NULL, CLSCTX_INPROC_SERVER)) )
+			IBaseFilterPtr	pVRender;	// for video renderer filter
+			if( FAILED(hr = pVRender.CreateInstance(CLSID_VideoRenderer, NULL, CLSCTX_INPROC_SERVER)) )
 				ThrowDShowException(TJS_W("Failed to create video renderer filter object."), hr);
 			if( FAILED(hr = GraphBuilder()->AddFilter(pVRender, TJS_W("Video Renderer"))) )
 				ThrowDShowException(TJS_W("Failed to call IFilterGraph::AddFilter."), hr);
@@ -108,8 +108,8 @@ void __stdcall tTVPDSVideoOverlay::BuildGraph( HWND callbackwin, IStream *stream
 #ifdef ENABLE_THEORA
 			else if( mt.subtype == MEDIASUBTYPE_Ogg )
 			{
-				CComPtr<IBaseFilter>	pVRender;	// for video renderer filter
-				if( FAILED(hr = pVRender.CoCreateInstance(CLSID_VideoRenderer, NULL, CLSCTX_INPROC_SERVER)) )
+				IBaseFilterPtr	pVRender;	// for video renderer filter
+				if( FAILED(hr = pVRender.CreateInstance(CLSID_VideoRenderer, NULL, CLSCTX_INPROC_SERVER)) )
 					ThrowDShowException(TJS_W("Failed to create video renderer filter object."), hr);
 				if( FAILED(hr = GraphBuilder()->AddFilter(pVRender, TJS_W("Video Renderer"))) )
 					ThrowDShowException(TJS_W("Failed to call IFilterGraph::AddFilter."), hr);
@@ -122,8 +122,8 @@ void __stdcall tTVPDSVideoOverlay::BuildGraph( HWND callbackwin, IStream *stream
 				tTVPDSFilterHandlerType* handler = TVPGetDSFilterHandler( mt.subtype );
 				if( handler )
 				{
-					CComPtr<IBaseFilter>	pVRender;	// for video renderer filter
-					if( FAILED(hr = pVRender.CoCreateInstance(CLSID_VideoRenderer, NULL, CLSCTX_INPROC_SERVER)) )
+					IBaseFilterPtr	pVRender;	// for video renderer filter
+					if( FAILED(hr = pVRender.CreateInstance(CLSID_VideoRenderer, NULL, CLSCTX_INPROC_SERVER)) )
 						ThrowDShowException(TJS_W("Failed to create video renderer filter object."), hr);
 					if( FAILED(hr = GraphBuilder()->AddFilter(pVRender, TJS_W("Video Renderer"))) )
 						ThrowDShowException(TJS_W("Failed to call IFilterGraph::AddFilter."), hr);
@@ -132,8 +132,8 @@ void __stdcall tTVPDSVideoOverlay::BuildGraph( HWND callbackwin, IStream *stream
 				}
 				else
 				{
-					CComPtr<IBaseFilter>	pVRender;	// for video renderer filter
-					if( FAILED(hr = pVRender.CoCreateInstance(CLSID_VideoRenderer, NULL, CLSCTX_INPROC_SERVER)) )
+					IBaseFilterPtr	pVRender;	// for video renderer filter
+					if( FAILED(hr = pVRender.CreateInstance(CLSID_VideoRenderer, NULL, CLSCTX_INPROC_SERVER)) )
 						ThrowDShowException(TJS_W("Failed to create video renderer filter object."), hr);
 					if( FAILED(hr = GraphBuilder()->AddFilter(pVRender, TJS_W("Video Renderer"))) )
 						ThrowDShowException(TJS_W("Failed to call IFilterGraph::AddFilter."), hr);
@@ -144,21 +144,21 @@ void __stdcall tTVPDSVideoOverlay::BuildGraph( HWND callbackwin, IStream *stream
 		}
 
 		// query each interfaces
-		if( FAILED(hr = m_GraphBuilder.QueryInterface( &m_MediaControl )) )
+		if( FAILED(hr = m_GraphBuilder.QueryInterface( IID_IMediaControl, &m_MediaControl )) )
 			ThrowDShowException(TJS_W("Failed to query IMediaControl"), hr);
-		if( FAILED(hr = m_GraphBuilder.QueryInterface( &m_MediaPosition )) )
+		if( FAILED(hr = m_GraphBuilder.QueryInterface( IID_IMediaPosition, &m_MediaPosition )) )
 			ThrowDShowException(TJS_W("Failed to query IMediaPosition"), hr);
-		if( FAILED(hr = m_GraphBuilder.QueryInterface( &m_MediaSeeking )) )
+		if( FAILED(hr = m_GraphBuilder.QueryInterface( IID_IMediaSeeking, &m_MediaSeeking )) )
 			ThrowDShowException(TJS_W("Failed to query IMediaSeeking"), hr);
-		if( FAILED(hr = m_GraphBuilder.QueryInterface( &m_MediaEventEx )) )
+		if( FAILED(hr = m_GraphBuilder.QueryInterface( IID_IMediaEventEx, &m_MediaEventEx )) )
 			ThrowDShowException(TJS_W("Failed to query IMediaEventEx"), hr);
 
-		if( FAILED(hr = m_GraphBuilder.QueryInterface( &m_BasicVideo )) )
+		if( FAILED(hr = m_GraphBuilder.QueryInterface( IID_IBasicVideo, &m_BasicVideo )) )
 			ThrowDShowException(TJS_W("Failed to query IBasicVideo"), hr);
 
-		if( FAILED(hr = m_GraphBuilder.QueryInterface( &m_VideoWindow )) )
+		if( FAILED(hr = m_GraphBuilder.QueryInterface( IID_IVideoWindow, &m_VideoWindow )) )
 			ThrowDShowException(TJS_W("Failed to query IVideoWindow"), hr);
-		if( FAILED(hr = m_GraphBuilder.QueryInterface( &m_BasicAudio )) )
+		if( FAILED(hr = m_GraphBuilder.QueryInterface( IID_IBasicAudio, &m_BasicAudio )) )
 			ThrowDShowException(TJS_W("Failed to query IBasicAudio"), hr);
 
 		// check whether the stream has video 
@@ -208,12 +208,12 @@ void __stdcall tTVPDSVideoOverlay::ReleaseAll()
 	// Reset owner window
 //	VideoWindow()->put_Owner(NULL);
 
-	if( m_MediaControl.p != NULL )
+	if( m_MediaControl )
 	{
 		m_MediaControl->Stop();
 	}
 
-	if( m_VideoWindow.p )
+	if( m_VideoWindow )
 		m_VideoWindow.Release();
 
 	tTVPDSMovie::ReleaseAll();

@@ -18,10 +18,24 @@ Windows Mediaファイルを読み込む
 #include <tchar.h>
 #include <streams.h>
 #include <dshow.h>
+#if 0
 #include <atlcomcli.h>
+#else
+#include <wmsdk.h>
+#include <comdef.h>
+_COM_SMARTPTR_TYPEDEF(IWMSyncReader,__uuidof(IWMSyncReader));
+_COM_SMARTPTR_TYPEDEF(IWMHeaderInfo,__uuidof(IWMHeaderInfo));
+_COM_SMARTPTR_TYPEDEF(IWMMediaProps,__uuidof(IWMMediaProps));
+_COM_SMARTPTR_TYPEDEF(IWMProfile,__uuidof(IWMProfile));
+_COM_SMARTPTR_TYPEDEF(IWMReaderAllocatorEx,__uuidof(IWMReaderAllocatorEx));
+_COM_SMARTPTR_TYPEDEF(IWMStreamConfig,__uuidof(IWMStreamConfig));
+_COM_SMARTPTR_TYPEDEF(IWMSyncReader2,__uuidof(IWMSyncReader2));
+#endif
 #include <assert.h>
 #include <wmsdk.h>
+#if 0
 #include <wmdxva.h>
+#endif
 #include <vector>
 #include "IDemuxReader.h"
 #include "CDLLLoader.h"
@@ -74,8 +88,8 @@ public:
 //----------------------------------------------------------------------------
 class CWMReader : public IDemuxReader
 {
-	CComPtr<IWMSyncReader>	m_WMReader;
-	CComPtr<IWMHeaderInfo>	m_HeaderInfo;
+	IWMSyncReaderPtr	m_WMReader;
+	IWMHeaderInfoPtr	m_HeaderInfo;
 	CWMOutput			m_AudioOut;
 	CWMOutput			m_VideoOut;
 	CDLLLoader			m_WmvDll;
@@ -87,12 +101,12 @@ class CWMReader : public IDemuxReader
 private:
 	IWMSyncReader *Reader(void)
 	{
-		assert( m_WMReader.p );
+		assert( m_WMReader );
 		return m_WMReader;
 	}
 	IWMHeaderInfo *HeaderInf(void)
 	{
-		assert( m_HeaderInfo.p );
+		assert( m_HeaderInfo );
 		return m_HeaderInfo;
 	}
 	HRESULT GetStreamNumbers( IWMProfile* pProfile );

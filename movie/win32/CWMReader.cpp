@@ -70,16 +70,16 @@ HRESULT CWMOutput::GetMediaType( int iPosition, CMediaType *pmt )
 	if( iPosition != 0 ) return VFW_S_NO_MORE_ITEMS;
 
 	HRESULT	hr;
-	CComPtr<IWMProfile>	readerProfile;
+	IWMProfilePtr	readerProfile;
 	if( FAILED( hr = WMReader()->QueryInterface( IID_IWMProfile, (void **)&readerProfile ) ) )
         return( hr );
 
-	CComPtr<IWMStreamConfig>	streamConfig;
+	IWMStreamConfigPtr	streamConfig;
 	if( FAILED(hr = readerProfile->GetStreamByNumber( m_StreamNum, &streamConfig )) )
 		return hr;
 
-	CComPtr<IWMMediaProps> pMediaProps;
-	if( FAILED(hr = streamConfig.QueryInterface( &pMediaProps ) ) )
+	IWMMediaPropsPtr pMediaProps;
+	if( FAILED(hr = streamConfig.QueryInterface( __uuidof(IWMMediaProps), &pMediaProps ) ) )
 		return hr;
 
 	DWORD	mediaTypeSize;
@@ -210,12 +210,12 @@ HRESULT CWMOutput::SetAllocator( IMemAllocator *alloc )
 	if( alloc == NULL )
 		return E_INVALIDARG;
 
-	CComPtr<IWMSyncReader2>	reader2;
+	IWMSyncReader2Ptr	reader2;
 	if( FAILED(hr = WMReader()->QueryInterface( &reader2 ) ) )
 		return hr;
 
 	CWMAllocator *wmAlloc = new CWMAllocator( alloc );
-	CComPtr<IWMReaderAllocatorEx>	pWMRAE;
+	IWMReaderAllocatorExPtr	pWMRAE;
 	pWMRAE = wmAlloc;
 
 	hr = reader2->SetAllocateForStream( m_StreamNum, pWMRAE );
@@ -259,10 +259,10 @@ CWMReader::CWMReader()
 //----------------------------------------------------------------------------
 CWMReader::~CWMReader()
 {
-	if( m_HeaderInfo.p )
+	if( m_HeaderInfo )
 		m_HeaderInfo.Release();
 
-	if( m_WMReader.p )
+	if( m_WMReader )
 		m_WMReader.Release();
 }
 //----------------------------------------------------------------------------
@@ -313,7 +313,7 @@ HRESULT CWMReader::OpenStream( IStream *stream )
 	if( stream == NULL )
 		return E_INVALIDARG;
 
-	if( m_WMReader.p == NULL )
+	if( !m_WMReader )
 	{	// DLLからWMCreateSyncReaderを読み込んで使用する
 		if( m_WmvDll.IsLoaded() == false )
 			m_WmvDll.Load(_T("wmvcore.dll"));
@@ -331,7 +331,7 @@ HRESULT CWMReader::OpenStream( IStream *stream )
 	if( FAILED( hr = Reader()->OpenStream( stream ) ) )
 		return hr;
 
-	CComPtr<IWMProfile>	pProfile;
+	IWMProfilePtr	pProfile;
 	if( FAILED(hr = Reader()->QueryInterface( &pProfile ) ) )
 		return hr;
 
@@ -534,7 +534,7 @@ HRESULT CWMReader::GetStreamNumbers( IWMProfile* pProfile )
 
 	for( DWORD i = 0; i < numOfStreams; i++ )
 	{
-		CComPtr<IWMStreamConfig>	pStream;
+		IWMStreamConfigPtr	pStream;
 		if( FAILED(hr = pProfile->GetStream( i, &pStream ) ) )
 			break;
 

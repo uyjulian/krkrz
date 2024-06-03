@@ -18,7 +18,13 @@ DirectShowのMedia SampleをラップしたWindows Media Format SDK用のBuffer
 #include <assert.h>
 #include <windows.h>
 //#include <dshow.h>
+#if 0
 #include <atlcomcli.h>
+#else
+#include <strmif.h>
+#include <comdef.h>
+_COM_SMARTPTR_TYPEDEF(IMediaSample,__uuidof(IMediaSample));
+#endif
 #include <wmsdk.h>
 #include <streams.h>
 #include <dshow.h>
@@ -31,11 +37,11 @@ DirectShowのMedia SampleをラップしたWindows Media Format SDK用のBuffer
 //----------------------------------------------------------------------------
 class CWMBuffer : public INSSBuffer, public CUnknown
 {
-	CComPtr<IMediaSample>	m_Sample;
+	IMediaSamplePtr	m_Sample;
 
 	IMediaSample *Sample()
 	{
-		assert( m_Sample.p );
+		assert( m_Sample );
 		return m_Sample;
 	}
 public:

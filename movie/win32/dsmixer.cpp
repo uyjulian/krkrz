@@ -57,7 +57,7 @@ tTVPDSMixerVideoOverlay::~tTVPDSMixerVideoOverlay()
 //----------------------------------------------------------------------------
 void __stdcall tTVPDSMixerVideoOverlay::ReleaseAll()
 {
-	if( m_MediaControl.p != NULL )
+	if( m_MediaControl )
 	{
 		m_MediaControl->Stop();
 	}
@@ -69,16 +69,16 @@ void __stdcall tTVPDSMixerVideoOverlay::ReleaseAll()
 		m_AllocatorPresenter = NULL;
 	}
 
-	if( m_VMR9SurfAllocNotify.p )
+	if( m_VMR9SurfAllocNotify )
 		m_VMR9SurfAllocNotify.Release();
 
-	if( m_VMR9MixerCtrl.p )
+	if( m_VMR9MixerCtrl )
 		m_VMR9MixerCtrl.Release();
 
-	if( m_VMR9MixerBmp.p )
+	if( m_VMR9MixerBmp )
 		m_VMR9MixerBmp.Release();
 
-//	if( m_VMR9WinLessCtrl.p )
+//	if( m_VMR9WinLessCtrl )
 //		m_VMR9WinLessCtrl.Release();
 
 	tTVPDSMovie::ReleaseAll();
@@ -103,7 +103,7 @@ void __stdcall tTVPDSMixerVideoOverlay::BuildGraph( HWND callbackwin, IStream *s
 			ThrowDShowException(TJS_W("Failed to call CoInitializeEx."), hr);
 
 		// create IFilterGraph instance
-		if( FAILED(hr = m_GraphBuilder.CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_INPROC)) )
+		if( FAILED(hr = m_GraphBuilder.CreateInstance(CLSID_FilterGraph, NULL, CLSCTX_INPROC)) )
 			ThrowDShowException(TJS_W("Failed to create FilterGraph."), hr);
 
 		// Register to ROT
@@ -122,13 +122,13 @@ void __stdcall tTVPDSMixerVideoOverlay::BuildGraph( HWND callbackwin, IStream *s
 		m_AllocatorPresenter->Initialize();
 		if( IsWindowsMediaFile(type) )
 		{
-			CComPtr<IBaseFilter>	pVMR9;
+			IBaseFilterPtr	pVMR9;
 			AddVMR9Filer( pVMR9 );
 			BuildWMVGraph( pVMR9, stream );
 
-			if( FAILED(hr = pVMR9.QueryInterface( &m_VMR9MixerCtrl ) ) )
+			if( FAILED(hr = pVMR9.QueryInterface( IID_IVMRMixerControl9, &m_VMR9MixerCtrl ) ) )
 				ThrowDShowException(TJS_W("Failed to query IVMRMixerControl9."), hr);
-			if( FAILED(hr = pVMR9.QueryInterface( &m_VMR9MixerBmp ) ) )
+			if( FAILED(hr = pVMR9.QueryInterface( IID_IVMRMixerBitmap9, &m_VMR9MixerBmp ) ) )
 				ThrowDShowException(TJS_W("Failed to query IVMRMixerBitmap9."), hr);
 		}
 		else
@@ -158,15 +158,15 @@ void __stdcall tTVPDSMixerVideoOverlay::BuildGraph( HWND callbackwin, IStream *s
 				if( FAILED(hr = GraphBuilder()->Render(m_Reader->GetPin(0))) )
 					ThrowDShowException(TJS_W("Failed to call IGraphBuilder::Render."), hr);
 	
-				CComPtr<IBaseFilter>	pRender;
+				IBaseFilterPtr	pRender;
 				if( FAILED(hr = FindVideoRenderer( &pRender ) ) )
 					ThrowDShowException(TJS_W("Failed to call FindVideoRenderer( &pRender )."), hr);
 	
-				CComPtr<IPin>	pRenderPin;
+				IPinPtr	pRenderPin;
 				pRenderPin = GetInPin(pRender, 0);
 	
 				// get decoder output pin
-				CComPtr<IPin>			pDecoderPinOut;
+				IPinPtr			pDecoderPinOut;
 				if( FAILED(hr = pRenderPin->ConnectedTo( &pDecoderPinOut )) )
 					ThrowDShowException(TJS_W("Failed to call pRenderPin->ConnectedTo( &pDecoderPinOut )."), hr);
 	
@@ -180,30 +180,30 @@ void __stdcall tTVPDSMixerVideoOverlay::BuildGraph( HWND callbackwin, IStream *s
 				if( FAILED(hr = GraphBuilder()->RemoveFilter( pRender ) ) )
 					ThrowDShowException(TJS_W("Failed to call GraphBuilder->RemoveFilter(pRenderPin)."), hr);
 
-				CComPtr<IBaseFilter>	pVMR9;
+				IBaseFilterPtr	pVMR9;
 				AddVMR9Filer( pVMR9 );
 	
-				CComPtr<IPin>	pRdrPinIn;
+				IPinPtr	pRdrPinIn;
 				pRdrPinIn = GetInPin(pVMR9, 0);
 	
 				if( FAILED(hr = GraphBuilder()->ConnectDirect( pDecoderPinOut, pRdrPinIn, NULL )) )
 					ThrowDShowException(TJS_W("Failed to call GraphBuilder()->ConnectDirect( pDecoderPinOut, pRdrPinIn, NULL )."), hr);
 	
-				if( FAILED(hr = pVMR9.QueryInterface( &m_VMR9MixerCtrl ) ) )
+				if( FAILED(hr = pVMR9.QueryInterface( IID_IVMRMixerControl9, &m_VMR9MixerCtrl ) ) )
 					ThrowDShowException(TJS_W("Failed to query IVMRMixerControl9."), hr);
-				if( FAILED(hr = pVMR9.QueryInterface( &m_VMR9MixerBmp ) ) )
+				if( FAILED(hr = pVMR9.QueryInterface( IID_IVMRMixerBitmap9, &m_VMR9MixerBmp ) ) )
 					ThrowDShowException(TJS_W("Failed to query IVMRMixerBitmap9."), hr);
 			}
 #ifdef ENABLE_THEORA
 			else if( mt.subtype == MEDIASUBTYPE_Ogg )
 			{
-				CComPtr<IBaseFilter>	pVMR9;
+				IBaseFilterPtr	pVMR9;
 				AddVMR9Filer( pVMR9 );
 				BuildTheoraGraph( pVMR9, m_Reader); // may throw an exception
 	
-				if( FAILED(hr = pVMR9.QueryInterface( &m_VMR9MixerCtrl ) ) )
+				if( FAILED(hr = pVMR9.QueryInterface( IID_IVMRMixerControl9, &m_VMR9MixerCtrl ) ) )
 					ThrowDShowException(TJS_W("Failed to query IVMRMixerControl9."), hr);
-				if( FAILED(hr = pVMR9.QueryInterface( &m_VMR9MixerBmp ) ) )
+				if( FAILED(hr = pVMR9.QueryInterface( IID_IVMRMixerBitmap9, &m_VMR9MixerBmp ) ) )
 					ThrowDShowException(TJS_W("Failed to query IVMRMixerBitmap9."), hr);
 			}
 #endif
@@ -212,36 +212,36 @@ void __stdcall tTVPDSMixerVideoOverlay::BuildGraph( HWND callbackwin, IStream *s
 				tTVPDSFilterHandlerType* handler = TVPGetDSFilterHandler( mt.subtype );
 				if( handler )
 				{
-					CComPtr<IBaseFilter>	pVMR9;
+					IBaseFilterPtr	pVMR9;
 					AddVMR9Filer( pVMR9 );
 					BuildPluginGraph( handler, pVMR9, m_Reader );
 
-					if( FAILED(hr = pVMR9.QueryInterface( &m_VMR9MixerCtrl ) ) )
+					if( FAILED(hr = pVMR9.QueryInterface( IID_IVMRMixerControl9, &m_VMR9MixerCtrl ) ) )
 						ThrowDShowException(TJS_W("Failed to query IVMRMixerControl9."), hr);
-					if( FAILED(hr = pVMR9.QueryInterface( &m_VMR9MixerBmp ) ) )
+					if( FAILED(hr = pVMR9.QueryInterface( IID_IVMRMixerBitmap9, &m_VMR9MixerBmp ) ) )
 						ThrowDShowException(TJS_W("Failed to query IVMRMixerBitmap9."), hr);
 
 				}
 				else
 				{
-					CComPtr<IBaseFilter>	pVMR9;
+					IBaseFilterPtr	pVMR9;
 					AddVMR9Filer( pVMR9 );
 					BuildMPEGGraph( pVMR9, m_Reader); // may throw an exception
 		
-					if( FAILED(hr = pVMR9.QueryInterface( &m_VMR9MixerCtrl ) ) )
+					if( FAILED(hr = pVMR9.QueryInterface( IID_IVMRMixerControl9, &m_VMR9MixerCtrl ) ) )
 						ThrowDShowException(TJS_W("Failed to query IVMRMixerControl9."), hr);
-					if( FAILED(hr = pVMR9.QueryInterface( &m_VMR9MixerBmp ) ) )
+					if( FAILED(hr = pVMR9.QueryInterface( IID_IVMRMixerBitmap9, &m_VMR9MixerBmp ) ) )
 						ThrowDShowException(TJS_W("Failed to query IVMRMixerBitmap9."), hr);
 				}
 			}
 		}
 #if 1
 		{	// 平均フレーム表示時間を取得する
-			CComPtr<IBaseFilter>	pRender;
+			IBaseFilterPtr	pRender;
 			if( FAILED(hr = FindVideoRenderer( &pRender ) ) )
 				ThrowDShowException(TJS_W("Failed to call FindVideoRenderer( &pRender )."), hr);
 
-			CComPtr<IPin>	pRenderPin;
+			IPinPtr	pRenderPin;
 			pRenderPin = GetInPin(pRender, 0);
 
 			AM_MEDIA_TYPE mt;
@@ -265,16 +265,16 @@ void __stdcall tTVPDSMixerVideoOverlay::BuildGraph( HWND callbackwin, IStream *s
 		}
 #endif
 		// query each interfaces
-		if( FAILED(hr = m_GraphBuilder.QueryInterface( &m_MediaControl )) )
+		if( FAILED(hr = m_GraphBuilder.QueryInterface( IID_IMediaControl, &m_MediaControl )) )
 			ThrowDShowException(TJS_W("Failed to query IMediaControl"), hr);
-		if( FAILED(hr = m_GraphBuilder.QueryInterface( &m_MediaPosition )) )
+		if( FAILED(hr = m_GraphBuilder.QueryInterface( IID_IMediaPosition, &m_MediaPosition )) )
 			ThrowDShowException(TJS_W("Failed to query IMediaPosition"), hr);
-		if( FAILED(hr = m_GraphBuilder.QueryInterface( &m_MediaSeeking )) )
+		if( FAILED(hr = m_GraphBuilder.QueryInterface( IID_IMediaSeeking, &m_MediaSeeking )) )
 			ThrowDShowException(TJS_W("Failed to query IMediaSeeking"), hr);
-		if( FAILED(hr = m_GraphBuilder.QueryInterface( &m_MediaEventEx )) )
+		if( FAILED(hr = m_GraphBuilder.QueryInterface( IID_IMediaEventEx, &m_MediaEventEx )) )
 			ThrowDShowException(TJS_W("Failed to query IMediaEventEx"), hr);
 
-		if( FAILED(hr = m_GraphBuilder.QueryInterface( &m_BasicAudio )) )
+		if( FAILED(hr = m_GraphBuilder.QueryInterface( IID_IBasicAudio, &m_BasicAudio )) )
 			ThrowDShowException(TJS_W("Failed to query IBasicAudio"), hr);
 
 		// set notify event
@@ -306,18 +306,18 @@ void __stdcall tTVPDSMixerVideoOverlay::BuildGraph( HWND callbackwin, IStream *s
 //! @brief	  	VMR9フィルタをフィルタグラフへ追加する
 //! @param 		pVMR9 : VMR9フィルタ
 //----------------------------------------------------------------------------
-void tTVPDSMixerVideoOverlay::AddVMR9Filer( CComPtr<IBaseFilter> &pVMR9 )
+void tTVPDSMixerVideoOverlay::AddVMR9Filer( IBaseFilterPtr &pVMR9 )
 {
 	HRESULT			hr = S_OK;
-	if( FAILED(hr = pVMR9.CoCreateInstance(CLSID_VideoMixingRenderer9, NULL, CLSCTX_INPROC) ) )
+	if( FAILED(hr = pVMR9.CreateInstance(CLSID_VideoMixingRenderer9, NULL, CLSCTX_INPROC) ) )
 		ThrowDShowException(TJS_W("Failed to create VMR9 Filter. This component requires DirectX9."), hr);
 
 	if( FAILED(hr = GraphBuilder()->AddFilter( pVMR9, TJS_W("Video Mixing Render 9"))) )
 		ThrowDShowException(TJS_W("Failed to call GraphBuilder()->AddFilter( pVMR9, L\"Video Mixing Render 9\")."), hr);
 
 	{
-		CComPtr<IVMRFilterConfig9>	pConfig;
-		if( FAILED(hr = pVMR9.QueryInterface(&pConfig) ) )
+		IVMRFilterConfig9Ptr	pConfig;
+		if( FAILED(hr = pVMR9.QueryInterface(IID_IVMRFilterConfig9, &pConfig) ) )
 			ThrowDShowException(TJS_W("Failed to query IVMRFilterConfig9."), hr);
 
 		if( FAILED(hr = pConfig->SetNumberOfStreams(1) ) )
@@ -326,11 +326,11 @@ void tTVPDSMixerVideoOverlay::AddVMR9Filer( CComPtr<IBaseFilter> &pVMR9 )
 			ThrowDShowException(TJS_W("Failed to call IVMRFilterConfig9::SetRenderingMode(VMR9Mode_Renderless)."), hr);
 
 		// Negotiate Renderless mode
-		if( FAILED(hr = pVMR9.QueryInterface( &m_VMR9SurfAllocNotify ) ) )
+		if( FAILED(hr = pVMR9.QueryInterface( IID_IVMRSurfaceAllocatorNotify9, &m_VMR9SurfAllocNotify ) ) )
 			ThrowDShowException(TJS_W("Failed to query IVMRSurfaceAllocatorNotify9."), hr);
 
-		CComPtr<IVMRSurfaceAllocator9>	alloc;
-		if( FAILED(hr = AllocatorPresenter()->QueryInterface( IID_IVMRSurfaceAllocator9, reinterpret_cast<void**>(&alloc.p) ) ) )
+		IVMRSurfaceAllocator9Ptr	alloc;
+		if( FAILED(hr = AllocatorPresenter()->QueryInterface( IID_IVMRSurfaceAllocator9, reinterpret_cast<void**>(&alloc) ) ) )
 			ThrowDShowException(TJS_W("Failed to query IVMRSurfaceAllocator9."), hr);
 		if( FAILED(hr = AllocatorNotify()->AdviseSurfaceAllocator( reinterpret_cast<DWORD_PTR>(this), alloc ) ) )
 			ThrowDShowException(TJS_W("Failed to call IVMRSurfaceAllocatorNotify9::AdviseSurfaceAllocator()."), hr);

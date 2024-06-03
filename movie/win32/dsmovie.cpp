@@ -109,30 +109,30 @@ void __stdcall tTVPDSMovie::ReleaseAll()
 	if( m_RegisteredROT )	// 登録がまだ解除されていない時はここで解除
 		RemoveFromROT( m_dwROTReg );
 
-	if( m_MediaControl.p != NULL )
+	if( m_MediaControl )
 	{
 		m_MediaControl->Stop();
 		m_MediaControl.Release();
 	}
-	if( m_MediaPosition.p != NULL )
+	if( m_MediaPosition )
 		m_MediaPosition.Release();
 
-	if( m_MediaSeeking.p != NULL )
+	if( m_MediaSeeking )
 		m_MediaSeeking.Release();
 
-	if( m_MediaEventEx.p != NULL )
+	if( m_MediaEventEx )
 		m_MediaEventEx.Release();
 
-	if( m_StreamSelect.p != NULL )
+	if( m_StreamSelect )
 		m_StreamSelect.Release();
 
-	if( m_BasicAudio.p != NULL )
+	if( m_BasicAudio )
 		m_BasicAudio.Release();
 
-	if( m_BasicVideo.p != NULL )
+	if( m_BasicVideo )
 		m_BasicVideo.Release();
 
-	if( m_GraphBuilder.p != NULL )
+	if( m_GraphBuilder )
 		m_GraphBuilder.Release();
 
 	if( m_Proxy )
@@ -1246,7 +1246,7 @@ void tTVPDSMovie::UtilDeleteMediaType( AM_MEDIA_TYPE *pmt )
 void tTVPDSMovie::DebugOutputPinMediaType( IPin *pPin )
 {
 	if( pPin == NULL ) return;
-	CComPtr< IEnumMediaTypes > pMediaEnum;
+	IEnumMediaTypesPtr pMediaEnum;
 	pPin->EnumMediaTypes(&pMediaEnum);
 	if( pMediaEnum )
 	{
@@ -1401,7 +1401,7 @@ HRESULT tTVPDSMovie::FindVideoRenderer( IBaseFilter **ppFilter)
 //----------------------------------------------------------------------------
 HRESULT tTVPDSMovie::GetPin( IBaseFilter * pFilter, PIN_DIRECTION dirrequired, int iNum, IPin **ppPin)
 {
-	CComPtr< IEnumPins > pEnum;
+	IEnumPinsPtr pEnum;
 	*ppPin = NULL;
 
 	if( !pFilter )
@@ -1442,7 +1442,7 @@ HRESULT tTVPDSMovie::GetPin( IBaseFilter * pFilter, PIN_DIRECTION dirrequired, i
 //----------------------------------------------------------------------------
 IPin *tTVPDSMovie::GetInPin( IBaseFilter * pFilter, int nPin )
 {
-	CComPtr<IPin> pComPin;
+	IPinPtr pComPin;
 	GetPin(pFilter, PINDIR_INPUT, nPin, &pComPin);
 	return pComPin;
 }
@@ -1454,7 +1454,7 @@ IPin *tTVPDSMovie::GetInPin( IBaseFilter * pFilter, int nPin )
 //----------------------------------------------------------------------------
 IPin *tTVPDSMovie::GetOutPin( IBaseFilter * pFilter, int nPin )
 {
-    CComPtr<IPin> pComPin;
+    IPinPtr pComPin;
     GetPin(pFilter, PINDIR_OUTPUT, nPin, &pComPin);
     return pComPin;
 }
@@ -1512,9 +1512,9 @@ void tTVPDSMovie::BuildMPEGGraph( IBaseFilter *pRdr, IBaseFilter *pSrc )
 	HRESULT	hr;
 
 	// Connect to MPEG 1 splitter filter
-	CComPtr<IBaseFilter>	pMPEG1Splitter;	// for MPEG 1 splitter filter
+	IBaseFilterPtr	pMPEG1Splitter;	// for MPEG 1 splitter filter
 
-	if( FAILED(hr = pMPEG1Splitter.CoCreateInstance(CLSID_MPEG1Splitter, NULL, CLSCTX_INPROC_SERVER)) )
+	if( FAILED(hr = pMPEG1Splitter.CreateInstance(CLSID_MPEG1Splitter, NULL, CLSCTX_INPROC_SERVER)) )
 		ThrowDShowException(TJS_W("Failed to create MPEG 1 splitter filter object."), hr);
 	if( FAILED(hr = GraphBuilder()->AddFilter(pMPEG1Splitter, TJS_W("MPEG-I Stream Splitter"))) )
 		ThrowDShowException(TJS_W("Failed to call GraphBuilder()->AddFilter(pMPEG1Splitter, L\"MPEG-I Stream Splitter\")."), hr);
@@ -1522,8 +1522,8 @@ void tTVPDSMovie::BuildMPEGGraph( IBaseFilter *pRdr, IBaseFilter *pSrc )
 		ThrowDShowException(TJS_W("Failed to call ConnectFilters( pSrc, pMPEG1Splitter )."), hr);
 
 	// Connect to MPEG 1 video codec filter
-	CComPtr<IBaseFilter>	pMPEGVideoCodec;	// for MPEG 1 video codec filter
-	if( FAILED(hr = pMPEGVideoCodec.CoCreateInstance(CLSID_CMpegVideoCodec, NULL, CLSCTX_INPROC_SERVER)) )
+	IBaseFilterPtr	pMPEGVideoCodec;	// for MPEG 1 video codec filter
+	if( FAILED(hr = pMPEGVideoCodec.CreateInstance(CLSID_CMpegVideoCodec, NULL, CLSCTX_INPROC_SERVER)) )
 		ThrowDShowException(TJS_W("Failed to create MPEG 1 video codec filter object."), hr);
 	if( FAILED(hr = GraphBuilder()->AddFilter(pMPEGVideoCodec, TJS_W("MPEG Video Decoder"))) )
 		ThrowDShowException(TJS_W("Failed to call GraphBuilder()->AddFilter(pMPEGVideoCodec, L\"MPEG Video Decoder\")."), hr);
@@ -1535,8 +1535,8 @@ void tTVPDSMovie::BuildMPEGGraph( IBaseFilter *pRdr, IBaseFilter *pSrc )
 		ThrowDShowException(TJS_W("Failed to call ConnectFilters( pMPEGVideoCodec, pRdr )."), hr);
 
 	// Connect to MPEG audio codec filter
-	CComPtr<IBaseFilter>	pMPEGAudioCodec;	// for MPEG audio codec filter
-	if( FAILED(hr = pMPEGAudioCodec.CoCreateInstance(CLSID_CMpegAudioCodec, NULL, CLSCTX_INPROC_SERVER)) )
+	IBaseFilterPtr	pMPEGAudioCodec;	// for MPEG audio codec filter
+	if( FAILED(hr = pMPEGAudioCodec.CreateInstance(CLSID_CMpegAudioCodec, NULL, CLSCTX_INPROC_SERVER)) )
 		ThrowDShowException(TJS_W("Failed to create MPEG audio codec filter object."), hr);
 	if( FAILED(hr = GraphBuilder()->AddFilter(pMPEGAudioCodec, TJS_W("MPEG Audio Decoder"))) )
 		ThrowDShowException(TJS_W("Failed to call GraphBuilder()->AddFilter(pMPEGAudioCodec, L\"MPEG Audio Decoder\")."), hr);
@@ -1548,8 +1548,8 @@ void tTVPDSMovie::BuildMPEGGraph( IBaseFilter *pRdr, IBaseFilter *pSrc )
 	}
 
 	// Connect to DDS render filter
-	CComPtr<IBaseFilter>	pDDSRenderer;	// for sound renderer filter
-	if( FAILED(hr = pDDSRenderer.CoCreateInstance(CLSID_DSoundRender, NULL, CLSCTX_INPROC_SERVER)) )
+	IBaseFilterPtr	pDDSRenderer;	// for sound renderer filter
+	if( FAILED(hr = pDDSRenderer.CreateInstance(CLSID_DSoundRender, NULL, CLSCTX_INPROC_SERVER)) )
 		ThrowDShowException(TJS_W("Failed to create sound render filter object."), hr);
 	if( FAILED(hr = GraphBuilder()->AddFilter(pDDSRenderer, TJS_W("Sound Renderer"))) )
 		ThrowDShowException(TJS_W("Failed to call GraphBuilder()->AddFilter(pDDSRenderer, L\"Sound Renderer\")."), hr);
@@ -1562,7 +1562,7 @@ void tTVPDSMovie::BuildMPEGGraph( IBaseFilter *pRdr, IBaseFilter *pSrc )
 	}
 	else
 	{	// This MPEG file have a audio stream.
-		if( FAILED(hr = pMPEG1Splitter.QueryInterface( &m_StreamSelect ) ) )
+		if( FAILED(hr = pMPEG1Splitter.QueryInterface( IID_IAMStreamSelect, &m_StreamSelect ) ) )
 			ThrowDShowException(TJS_W("Failed to query IAMStreamSelect."), hr);
 
 		DWORD	numOfStream;
@@ -1604,7 +1604,7 @@ void tTVPDSMovie::BuildWMVGraph( IBaseFilter *pRdr, IStream *pStream )
 {
 	HRESULT	hr = S_OK;
 
-	CComPtr<IBaseFilter>	pWMSource;
+	IBaseFilterPtr	pWMSource;
 	CWMReader		*pReader = new CWMReader();
 	CDemuxSource	*pWMAS = new CDemuxSource(NULL, &hr, pReader, CLSID_WMReaderSource );
 	if( FAILED(hr) )
@@ -1617,13 +1617,13 @@ void tTVPDSMovie::BuildWMVGraph( IBaseFilter *pRdr, IStream *pStream )
 	if( FAILED(hr = GraphBuilder()->AddFilter( pWMSource, TJS_W("Windows Media stream source"))) )
 		ThrowDShowException(TJS_W("Failed to call GraphBuilder()->AddFilter( pWMSource, L\"Windows Media stream source\")."), hr);
 
-	CComPtr<IBaseFilter>	pWMVDec;
-	if( FAILED(pWMVDec.CoCreateInstance(CLSID_DMOWrapperFilter, NULL, CLSCTX_INPROC_SERVER )) )
+	IBaseFilterPtr	pWMVDec;
+	if( FAILED(pWMVDec.CreateInstance(CLSID_DMOWrapperFilter, NULL, CLSCTX_INPROC_SERVER )) )
 		ThrowDShowException(TJS_W("Failed to create DMOWrapperFilter."), hr);
 
 	{	// Set WMV Decoder DMO
-		CComPtr<IDMOWrapperFilter>	pWmvDmoWrapper;
-		if( FAILED(hr = pWMVDec.QueryInterface( &pWmvDmoWrapper )) )
+		IDMOWrapperFilterPtr	pWmvDmoWrapper;
+		if( FAILED(hr = pWMVDec.QueryInterface( IID_IDMOWrapperFilter, &pWmvDmoWrapper )) )
 			ThrowDShowException(TJS_W("Failed to query IDMOWrapperFilter."), hr);
 		if( FAILED(hr = pWmvDmoWrapper->Init(CLSID_WMVDecoderDMO, DMOCATEGORY_VIDEO_DECODER)) )
 			ThrowDShowException(TJS_W("Failed to call IDMOWrapperFilter::Init."), hr);
@@ -1639,13 +1639,13 @@ void tTVPDSMovie::BuildWMVGraph( IBaseFilter *pRdr, IStream *pStream )
 	if( FAILED(hr = ConnectFilters( pWMVDec, pRdr )) )
 		ThrowDShowException(TJS_W("Failed to call ConnectFilters( pWMVDec, pRdr )."), hr);
 
-	CComPtr<IBaseFilter>	pWMADec;
-	if( FAILED(pWMADec.CoCreateInstance(CLSID_DMOWrapperFilter, NULL, CLSCTX_INPROC_SERVER )) )
+	IBaseFilterPtr	pWMADec;
+	if( FAILED(pWMADec.CreateInstance(CLSID_DMOWrapperFilter, NULL, CLSCTX_INPROC_SERVER )) )
 		ThrowDShowException(TJS_W("Failed to create DMOWrapperFilter."), hr);
 
 	{	// Set WMA Decoder DMO
-		CComPtr<IDMOWrapperFilter>	pWmaDmoWrapper;
-		if( FAILED(hr = pWMADec.QueryInterface( &pWmaDmoWrapper )) )
+		IDMOWrapperFilterPtr	pWmaDmoWrapper;
+		if( FAILED(hr = pWMADec.QueryInterface( IID_IDMOWrapperFilter, &pWmaDmoWrapper )) )
 			ThrowDShowException(TJS_W("Failed to query IDMOWrapperFilter."), hr);
 		if( FAILED(hr = pWmaDmoWrapper->Init(CLSID_WMADecoderDMO, DMOCATEGORY_AUDIO_DECODER)) )
 			ThrowDShowException(TJS_W("Failed to call IDMOWrapperFilter::Init."), hr);
@@ -1661,8 +1661,8 @@ void tTVPDSMovie::BuildWMVGraph( IBaseFilter *pRdr, IStream *pStream )
 		return;
 	}
 
-	CComPtr<IBaseFilter>	pDDSRenderer;	// for sound renderer filter
-	if( FAILED(hr = pDDSRenderer.CoCreateInstance(CLSID_DSoundRender, NULL, CLSCTX_INPROC_SERVER)) )
+	IBaseFilterPtr	pDDSRenderer;	// for sound renderer filter
+	if( FAILED(hr = pDDSRenderer.CreateInstance(CLSID_DSoundRender, NULL, CLSCTX_INPROC_SERVER)) )
 		ThrowDShowException(TJS_W("Failed to create sound render filter object."), hr);
 	if( FAILED(hr = GraphBuilder()->AddFilter(pDDSRenderer, TJS_W("Sound Renderer"))) )
 		ThrowDShowException(TJS_W("Failed to call GraphBuilder()->AddFilter(pDDSRenderer, L\"Sound Renderer\")."), hr);
@@ -1680,7 +1680,7 @@ void tTVPDSMovie::BuildPluginGraph( struct tTVPDSFilterHandlerType* handler, IBa
 	HRESULT	hr;
 
 	// Connect to splitter filter
-	CComPtr<IBaseFilter>	pSplitter( (IBaseFilter*)handler->SplitterHander(handler->FormatData) );	// for splitter filter
+	IBaseFilterPtr	pSplitter( (IBaseFilter*)handler->SplitterHander(handler->FormatData) );	// for splitter filter
 
 	if( FAILED(hr = GraphBuilder()->AddFilter(pSplitter, TJS_W("Plugin Stream Splitter"))) )
 		ThrowDShowException(TJS_W("Failed to call GraphBuilder()->AddFilter(pSplitter, L\"Stream Splitter\")."), hr);
@@ -1688,7 +1688,7 @@ void tTVPDSMovie::BuildPluginGraph( struct tTVPDSFilterHandlerType* handler, IBa
 		ThrowDShowException(TJS_W("Failed to call ConnectFilters( pSrc, pSplitter )."), hr);
 
 	// Connect to video codec filter
-	CComPtr<IBaseFilter>	pVideoCodec( (IBaseFilter*)handler->VideoHander(handler->FormatData) );	// for video codec filter
+	IBaseFilterPtr	pVideoCodec( (IBaseFilter*)handler->VideoHander(handler->FormatData) );	// for video codec filter
 	if( FAILED(hr = GraphBuilder()->AddFilter(pVideoCodec, TJS_W("Plugin Video Decoder"))) )
 		ThrowDShowException(TJS_W("Failed to call GraphBuilder()->AddFilter(pVideoCodec, L\"Video Decoder\")."), hr);
 	if( FAILED(hr = ConnectFilters( pSplitter, pVideoCodec )) )
@@ -1699,7 +1699,7 @@ void tTVPDSMovie::BuildPluginGraph( struct tTVPDSFilterHandlerType* handler, IBa
 		ThrowDShowException(TJS_W("Failed to call ConnectFilters( pVideoCodec, pRdr )."), hr);
 
 	// Connect to audio codec filter
-	CComPtr<IBaseFilter>	pAudioCodec( (IBaseFilter*)handler->AudioHander(handler->FormatData) );	// for audio codec filter
+	IBaseFilterPtr	pAudioCodec( (IBaseFilter*)handler->AudioHander(handler->FormatData) );	// for audio codec filter
 	if( FAILED(hr = GraphBuilder()->AddFilter(pAudioCodec, TJS_W("Plugin Audio Decoder"))) )
 		ThrowDShowException(TJS_W("Failed to call GraphBuilder()->AddFilter(pAudioCodec, L\"Audio Decoder\")."), hr);
 	if( FAILED(hr = ConnectFilters( pSplitter, pAudioCodec )) )
@@ -1710,8 +1710,8 @@ void tTVPDSMovie::BuildPluginGraph( struct tTVPDSFilterHandlerType* handler, IBa
 	}
 
 	// Connect to DDS render filter
-	CComPtr<IBaseFilter>	pDDSRenderer;	// for sound renderer filter
-	if( FAILED(hr = pDDSRenderer.CoCreateInstance(CLSID_DSoundRender, NULL, CLSCTX_INPROC_SERVER)) )
+	IBaseFilterPtr	pDDSRenderer;	// for sound renderer filter
+	if( FAILED(hr = pDDSRenderer.CreateInstance(CLSID_DSoundRender, NULL, CLSCTX_INPROC_SERVER)) )
 		ThrowDShowException(TJS_W("Failed to create sound render filter object."), hr);
 	if( FAILED(hr = GraphBuilder()->AddFilter(pDDSRenderer, TJS_W("Sound Renderer"))) )
 		ThrowDShowException(TJS_W("Failed to call GraphBuilder()->AddFilter(pDDSRenderer, L\"Sound Renderer\")."), hr);
@@ -1734,7 +1734,7 @@ void tTVPDSMovie::BuildTheoraGraph( IBaseFilter *pRdr, IBaseFilter *pSrc )
 	HRESULT	hr;
 
 	// Connect to Ogg splitter filter
-	CComPtr<IBaseFilter>	pOggSplitter( CreateOggSplitter() );	// for Ogg splitter filter
+	IBaseFilterPtr	pOggSplitter( CreateOggSplitter() );	// for Ogg splitter filter
 
 	if( FAILED(hr = GraphBuilder()->AddFilter(pOggSplitter, TJS_W("Ogg Stream Splitter"))) )
 		ThrowDShowException(TJS_W("Failed to call GraphBuilder()->AddFilter(pOggSplitter, L\"Ogg Stream Splitter\")."), hr);
@@ -1742,7 +1742,7 @@ void tTVPDSMovie::BuildTheoraGraph( IBaseFilter *pRdr, IBaseFilter *pSrc )
 		ThrowDShowException(TJS_W("Failed to call ConnectFilters( pSrc, pOggSplitter )."), hr);
 
 	// Connect to Theora video codec filter
-	CComPtr<IBaseFilter>	pTheoraVideoCodec( CreateTheoraDecoder() );	// for Theora video codec filter
+	IBaseFilterPtr	pTheoraVideoCodec( CreateTheoraDecoder() );	// for Theora video codec filter
 	if( FAILED(hr = GraphBuilder()->AddFilter(pTheoraVideoCodec, TJS_W("Theora Video Decoder"))) )
 		ThrowDShowException(TJS_W("Failed to call GraphBuilder()->AddFilter(pTheoraVideoCodec, L\"Theora Video Decoder\")."), hr);
 	if( FAILED(hr = ConnectFilters( pOggSplitter, pTheoraVideoCodec )) )
@@ -1753,7 +1753,7 @@ void tTVPDSMovie::BuildTheoraGraph( IBaseFilter *pRdr, IBaseFilter *pSrc )
 		ThrowDShowException(TJS_W("Failed to call ConnectFilters( pTheoraVideoCodec, pRdr )."), hr);
 
 	// Connect to Vorbis audio codec filter
-	CComPtr<IBaseFilter>	pVorbisAudioCodec( CreateVorbisDecoder() );	// for Vorbis audio codec filter
+	IBaseFilterPtr	pVorbisAudioCodec( CreateVorbisDecoder() );	// for Vorbis audio codec filter
 	if( FAILED(hr = GraphBuilder()->AddFilter(pVorbisAudioCodec, TJS_W("Vorbis Audio Decoder"))) )
 		ThrowDShowException(TJS_W("Failed to call GraphBuilder()->AddFilter(pVorbisAudioCodec, L\"Vorbis Audio Decoder\")."), hr);
 	if( FAILED(hr = ConnectFilters( pOggSplitter, pVorbisAudioCodec )) )
@@ -1764,8 +1764,8 @@ void tTVPDSMovie::BuildTheoraGraph( IBaseFilter *pRdr, IBaseFilter *pSrc )
 	}
 
 	// Connect to DDS render filter
-	CComPtr<IBaseFilter>	pDDSRenderer;	// for sound renderer filter
-	if( FAILED(hr = pDDSRenderer.CoCreateInstance(CLSID_DSoundRender, NULL, CLSCTX_INPROC_SERVER)) )
+	IBaseFilterPtr	pDDSRenderer;	// for sound renderer filter
+	if( FAILED(hr = pDDSRenderer.CreateInstance(CLSID_DSoundRender, NULL, CLSCTX_INPROC_SERVER)) )
 		ThrowDShowException(TJS_W("Failed to create sound render filter object."), hr);
 	if( FAILED(hr = GraphBuilder()->AddFilter(pDDSRenderer, TJS_W("Sound Renderer"))) )
 		ThrowDShowException(TJS_W("Failed to call GraphBuilder()->AddFilter(pDDSRenderer, L\"Sound Renderer\")."), hr);
@@ -1789,7 +1789,7 @@ void tTVPDSMovie::BuildTheoraGraph( IBaseFilter *pRdr, IBaseFilter *pSrc )
 HRESULT tTVPDSMovie::ConnectFilters( IBaseFilter* pFilterUpstream, IBaseFilter* pFilterDownstream )
 {
 	HRESULT			hr = E_FAIL;
-	CComPtr<IPin>	pIPinUpstream;
+	IPinPtr	pIPinUpstream;
 	PIN_INFO		PinInfoUpstream;
 	PIN_INFO		PinInfoDownstream;
 #if _DEBUG
@@ -1801,7 +1801,7 @@ HRESULT tTVPDSMovie::ConnectFilters( IBaseFilter* pFilterUpstream, IBaseFilter* 
 	ASSERT(pFilterDownstream);
 
 	// grab upstream filter's enumerator
-	CComPtr<IEnumPins> pIEnumPinsUpstream;
+	IEnumPinsPtr pIEnumPinsUpstream;
 	if( FAILED(hr = pFilterUpstream->EnumPins(&pIEnumPinsUpstream)) )
 		ThrowDShowException(TJS_W("Failed to call pFilterUpstream->EnumPins(&pIEnumPinsUpstream)."), hr);
 
@@ -1817,7 +1817,7 @@ HRESULT tTVPDSMovie::ConnectFilters( IBaseFilter* pFilterUpstream, IBaseFilter* 
 		DebugOutputPinMediaType(pIPinUpstream);
 #endif
 
-		CComPtr<IPin>	 pPinDown;
+		IPinPtr	 pPinDown;
 		pIPinUpstream->ConnectedTo( &pPinDown );
 
 		// bail if pins are connected
@@ -1825,11 +1825,11 @@ HRESULT tTVPDSMovie::ConnectFilters( IBaseFilter* pFilterUpstream, IBaseFilter* 
 		if( (PINDIR_OUTPUT == PinInfoUpstream.dir) && (pPinDown == NULL) )
 		{
 			// grab downstream filter's enumerator
-			CComPtr<IEnumPins>	pIEnumPinsDownstream;
+			IEnumPinsPtr	pIEnumPinsDownstream;
 			hr = pFilterDownstream->EnumPins (&pIEnumPinsDownstream);
 
 			// iterate through downstream filter's pins
-			CComPtr<IPin>	pIPinDownstream;
+			IPinPtr	pIPinDownstream;
 			while( pIEnumPinsDownstream->Next (1, &pIPinDownstream, 0) == S_OK )
 			{
 				// make sure it is an input pin
@@ -1841,7 +1841,7 @@ HRESULT tTVPDSMovie::ConnectFilters( IBaseFilter* pFilterUpstream, IBaseFilter* 
 
 					DebugOutputPinMediaType(pIPinDownstream);
 #endif
-					CComPtr<IPin>	 pPinUp;
+					IPinPtr	 pPinUp;
 					pIPinDownstream->ConnectedTo( &pPinUp );
 					if( (PINDIR_INPUT == PinInfoDownstream.dir) && (pPinUp == NULL) )
 					{
