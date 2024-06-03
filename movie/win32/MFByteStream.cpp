@@ -25,7 +25,7 @@ https://www.timbreofprogram.info/blog/archives/460
 
 #include <windows.h>
 
-#include <Mfidl.h>
+#include <mfidl.h>
 #include <mfapi.h>
 #include <mferror.h>
 #include <streams.h>
