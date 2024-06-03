@@ -177,7 +177,7 @@ void __stdcall tTVPDSVideoOverlay::BuildGraph( HWND callbackwin, IStream *stream
 		// set notify event
 		if(callbackwin)
 		{
-			if(FAILED(hr = Event()->SetNotifyWindow((OAHWND)callbackwin, WM_GRAPHNOTIFY, (long)(this))))
+			if(FAILED(hr = Event()->SetNotifyWindow((OAHWND)callbackwin, WM_GRAPHNOTIFY, (LONG_PTR)(this))))
 				ThrowDShowException(TJS_W("Failed to set IMediaEventEx::SetNotifyWindow."), hr);
 		}
 	}

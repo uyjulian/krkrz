@@ -280,7 +280,7 @@ void __stdcall tTVPDSMixerVideoOverlay::BuildGraph( HWND callbackwin, IStream *s
 		// set notify event
 		if(callbackwin)
 		{
-			if(FAILED(hr = Event()->SetNotifyWindow((OAHWND)callbackwin, WM_GRAPHNOTIFY, (long)(this))))
+			if(FAILED(hr = Event()->SetNotifyWindow((OAHWND)callbackwin, WM_GRAPHNOTIFY, (LONG_PTR)(this))))
 				ThrowDShowException(TJS_W("Failed to set IMediaEventEx::SetNotifyWindow."), hr);
 		}
 	}

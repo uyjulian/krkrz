@@ -156,7 +156,7 @@ CAsyncIo::Request(
     if (bAligned) {
         if (!IsAligned(llPos) ||
     	!IsAligned(lLength) ||
-    	!IsAligned((LONG) pBuffer)) {
+    	!IsAligned((LONG_PTR) pBuffer)) {
             return VFW_E_BADALIGN;
         }
     }
@@ -267,7 +267,7 @@ CAsyncIo::SyncReadAligned(
 {
     if (!IsAligned(llPos) ||
 	!IsAligned(lLength) ||
-	!IsAligned((LONG) pBuffer)) {
+	!IsAligned((LONG_PTR) pBuffer)) {
             return VFW_E_BADALIGN;
     }
 
@@ -609,7 +609,7 @@ CAsyncIo::SyncRead(
 {
     if (IsAligned(llPos) &&
 	IsAligned(lLength) &&
-	IsAligned((LONG) pBuffer)) {
+	IsAligned((LONG_PTR) pBuffer)) {
             LONG cbUnused;
 	    return SyncReadAligned(llPos, lLength, pBuffer, &cbUnused, NULL);
     }

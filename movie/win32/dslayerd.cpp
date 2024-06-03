@@ -277,7 +277,7 @@ void __stdcall tTVPDSLayerVideo::BuildGraph( HWND callbackwin, IStream *stream,
 		// set notify event
 		if(callbackwin)
 		{
-			if(FAILED(Event()->SetNotifyWindow((OAHWND)callbackwin, WM_GRAPHNOTIFY, (long)(this))))
+			if(FAILED(Event()->SetNotifyWindow((OAHWND)callbackwin, WM_GRAPHNOTIFY, (LONG_PTR)(this))))
 				ThrowDShowException(TJS_W("Failed to set IMediaEventEx::SetNotifyWindow."), hr);
 		}
 	}
