@@ -20,7 +20,7 @@
 //----------------------------------------------------------------------------
 //! @brief	  	DShowException constructor
 //----------------------------------------------------------------------------
-DShowException::DShowException()
+DShowException::DShowException() throw()
 : m_Hr(S_OK)
 {
 	AMGetErrorText( m_Hr, m_ErrorMes, MAX_ERROR_TEXT_LEN );
@@ -29,7 +29,7 @@ DShowException::DShowException()
 //! @brief	  	DShowException constructor
 //! @param 		hr : DirectShowの関数の返値
 //----------------------------------------------------------------------------
-DShowException::DShowException( HRESULT hr ) : m_Hr(hr)
+DShowException::DShowException( HRESULT hr ) throw() : m_Hr(hr)
 {
 	AMGetErrorText( m_Hr, m_ErrorMes, MAX_ERROR_TEXT_LEN );
 }
@@ -38,7 +38,7 @@ DShowException::DShowException( HRESULT hr ) : m_Hr(hr)
 //! @brief	  	DShowException constructor
 //! @param 		right : コピーもと
 //----------------------------------------------------------------------------
-DShowException::DShowException(const DShowException& right)
+DShowException::DShowException(const DShowException& right) throw()
 {
 	*this = right;
 }
@@ -48,7 +48,7 @@ DShowException::DShowException(const DShowException& right)
 //! @param 		right : コピーもと
 //! @return		自身
 //----------------------------------------------------------------------------
-DShowException& DShowException::operator=(const DShowException& right)
+DShowException& DShowException::operator=(const DShowException& right) throw()
 {
 	m_Hr = right.m_Hr;
 	AMGetErrorText( m_Hr, m_ErrorMes, MAX_ERROR_TEXT_LEN );
@@ -61,7 +61,7 @@ DShowException& DShowException::operator=(const DShowException& right)
 //! @param 		right : コピーもと
 //! @return		自身
 //----------------------------------------------------------------------------
-void DShowException::SetHResult( HRESULT hr )
+void DShowException::SetHResult( HRESULT hr ) throw()
 {
 	m_Hr = hr;
 	AMGetErrorText( m_Hr, m_ErrorMes, MAX_ERROR_TEXT_LEN );
@@ -78,7 +78,7 @@ DShowException::~DShowException()
 //! @brief	  	エラーの詳細を問い合わせる
 //! @return		エラーメッセージ
 //----------------------------------------------------------------------------
-const TCHAR *DShowException::what( ) const
+const TCHAR *DShowException::what( ) const throw()
 {
 	return m_ErrorMes;
 }
