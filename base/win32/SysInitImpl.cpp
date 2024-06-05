@@ -468,13 +468,17 @@ void TVPDumpOSContext(const CONTEXT &ctx)
 		line += TJS_W("CONTEXT_DEBUG_REGISTERS ");
 	if(ctx.ContextFlags & CONTEXT_FLOATING_POINT)
 		line += TJS_W("CONTEXT_FLOATING_POINT ");
+#if defined(_M_IX86) || defined(_M_X64) || defined(__i386__) || defined(__x86_64__)
 	if(ctx.ContextFlags & CONTEXT_SEGMENTS)
 		line += TJS_W("CONTEXT_SEGMENTS ");
+#endif
 	if(ctx.ContextFlags & CONTEXT_INTEGER)
 		line += TJS_W("CONTEXT_INTEGER ");
 	if(ctx.ContextFlags & CONTEXT_CONTROL)
 		line += TJS_W("CONTEXT_CONTROL ");
 #ifndef TJS_64BIT_OS
+#endif
+#if defined(_M_IX86) || defined(__i386__)
 	if(ctx.ContextFlags & CONTEXT_EXTENDED_REGISTERS)
 		line += TJS_W("CONTEXT_EXTENDED_REGISTERS ");
 #endif
@@ -485,6 +489,8 @@ void TVPDumpOSContext(const CONTEXT &ctx)
 
 	// - debug registers
 #ifndef TJS_64BIT_OS
+#endif
+#if defined(_M_IX86) || defined(__i386__)
 	TJS_snprintf(buf, BUF_SIZE,
 		TJS_W("Debug Registers   : ")
 		TJS_W("0:0x%08X  ")
@@ -495,6 +501,8 @@ void TVPDumpOSContext(const CONTEXT &ctx)
 		TJS_W("7:0x%08X  "),
 			ctx.Dr0, ctx.Dr1, ctx.Dr2, ctx.Dr3, ctx.Dr6, ctx.Dr7);
 #else
+#endif
+#if defined(_M_X64) || defined(__x86_64__)
 	TJS_snprintf(buf, BUF_SIZE,
 		TJS_W("Debug Registers   : ")
 		TJS_W("0:0x%016lx  ")
@@ -505,16 +513,22 @@ void TVPDumpOSContext(const CONTEXT &ctx)
 		TJS_W("7:0x%016lx  "),
 			ctx.Dr0, ctx.Dr1, ctx.Dr2, ctx.Dr3, ctx.Dr6, ctx.Dr7);
 #endif
+#if defined(_M_IX86) || defined(_M_X64) || defined(__i386__) || defined(__x86_64__)
 	TVPAddLog(buf);
+#endif
 
 
+#if defined(_M_IX86) || defined(_M_X64) || defined(__i386__) || defined(__x86_64__)
 	// - Segment registers
 	TJS_snprintf(buf, BUF_SIZE, TJS_W("Segment Registers : GS:0x%04X  FS:0x%04X  ES:0x%04X  DS:0x%04X  CS:0x%04X  SS:0x%04X"),
 		ctx.SegGs, ctx.SegFs, ctx.SegEs, ctx.SegDs, ctx.SegCs, ctx.SegSs);
 	TVPAddLog(buf);
+#endif
 
 	// - Generic Integer Registers
 #ifdef TJS_64BIT_OS
+#endif
+#if defined(_M_X64) || defined(__x86_64__)
 	TJS_snprintf(buf, BUF_SIZE, TJS_W("Integer Registers : RAX:0x%016lx  RBX:0x%016lx  RCX:0x%016lx  RDX:0x%016lx"),
 		ctx.Rax, ctx.Rbx, ctx.Rcx, ctx.Rdx);
 	TVPAddLog(buf);
@@ -524,6 +538,8 @@ void TVPDumpOSContext(const CONTEXT &ctx)
 	TJS_snprintf(buf, BUF_SIZE, TJS_W("R12:0x%016lx  R13:0x%016lx  R14:0x%016lx  R15:0x%016lx"), ctx.R12, ctx.R13, ctx.R14, ctx.R15);
 	TVPAddLog(buf);
 #else
+#endif
+#if defined(_M_IX86) || defined(__i386__)
 	TJS_snprintf(buf, BUF_SIZE, TJS_W("Integer Registers : EAX:0x%08X  EBX:0x%08X  ECX:0x%08X  EDX:0x%08X"),
 		ctx.Eax, ctx.Ebx, ctx.Ecx, ctx.Edx);
 	TVPAddLog(buf);
@@ -531,24 +547,37 @@ void TVPDumpOSContext(const CONTEXT &ctx)
 
 	// - Index Registers
 #ifdef TJS_64BIT_OS
+#endif
+#if defined(_M_X64) || defined(__x86_64__)
 	TJS_snprintf(buf, BUF_SIZE, TJS_W("Index Registers   : RSI:0x%016lx  RDI:0x%016lx"),
 		ctx.Rsi, ctx.Rdi);
 #else
+#endif
+#if defined(_M_IX86) || defined(__i386__)
 	TJS_snprintf(buf, BUF_SIZE, TJS_W("Index Registers   : ESI:0x%08X  EDI:0x%08X"),
 		ctx.Esi, ctx.Edi);
 #endif
+#if defined(_M_IX86) || defined(_M_X64) || defined(__i386__) || defined(__x86_64__)
 	TVPAddLog(buf);
+#endif
 
 	// - Pointer Registers
 #ifdef TJS_64BIT_OS
+#endif
+#if defined(_M_X64) || defined(__x86_64__)
 	TJS_snprintf(buf, BUF_SIZE, TJS_W("Pointer Registers : RBP:0x%016lx  RSP:0x%016lx  RIP:0x%016lx"),
 		ctx.Rbp, ctx.Rsp, ctx.Rip);
 #else
+#endif
+#if defined(_M_IX86) || defined(__i386__)
 	TJS_snprintf(buf, BUF_SIZE, TJS_W("Pointer Registers : EBP:0x%08X  ESP:0x%08X  EIP:0x%08X"),
 		ctx.Ebp, ctx.Esp, ctx.Eip);
 #endif
+#if defined(_M_IX86) || defined(_M_X64) || defined(__i386__) || defined(__x86_64__)
 	TVPAddLog(buf);
+#endif
 
+#if defined(_M_IX86) || defined(_M_X64) || defined(__i386__) || defined(__x86_64__)
 	// - Flag Register
 	TJS_snprintf(buf, BUF_SIZE, TJS_W("Flag Register     : 0x%08X [ "),
 		ctx.EFlags);
@@ -573,11 +602,14 @@ void TVPDumpOSContext(const CONTEXT &ctx)
 	TVPDumpCPUFlags(line, ctx.EFlags, (1<<21), TJS_W("ID"));
 	line += TJS_W("]");
 	TVPAddLog(line);
+#endif
 
 	// - FP registers
 
 	// -- control words
 #ifdef TJS_64BIT_OS
+#endif
+#if defined(_M_X64) || defined(__x86_64__)
 	TJS_snprintf(buf, BUF_SIZE, TJS_W("FP Control Word : 0x%08X   FP Status Word : 0x%08X   FP Tag Word : 0x%08X"),
 		ctx.FltSave.ControlWord, ctx.FltSave.StatusWord, ctx.FltSave.TagWord);
 	TVPAddLog(buf);
@@ -602,6 +634,8 @@ void TVPDumpOSContext(const CONTEXT &ctx)
 	TJS_snprintf(buf, BUF_SIZE,TJS_W("FP MX CSR   : 0x%08X"), ctx.FltSave.MxCsr);	//
 	TVPAddLog(buf);
 #else
+#endif
+#if defined(_M_IX86) || defined(__i386__)
 	TJS_snprintf(buf, BUF_SIZE, TJS_W("FP Control Word : 0x%08X   FP Status Word : 0x%08X   FP Tag Word : 0x%08X"),
 		ctx.FloatSave.ControlWord, ctx.FloatSave.StatusWord, ctx.FloatSave.TagWord);
 	TVPAddLog(buf);
@@ -629,6 +663,8 @@ void TVPDumpOSContext(const CONTEXT &ctx)
 
 	// -- SSE/SSE2 registers
 #ifdef TJS_64BIT_OS
+#endif
+#if defined(_M_X64) || defined(__x86_64__)
 	TJS_snprintf(buf, BUF_SIZE, TJS_W("XMM  0 : 0x%016lx 0x%016lx"),ctx.Xmm0.High, ctx.Xmm0.Low);
 	TVPAddLog(buf);
 	TJS_snprintf(buf, BUF_SIZE, TJS_W("XMM  1 : 0x%016lx 0x%016lx"),ctx.Xmm1.High, ctx.Xmm1.Low);
@@ -665,6 +701,8 @@ void TVPDumpOSContext(const CONTEXT &ctx)
 	TJS_snprintf(buf,BUF_SIZE,  TJS_W("MXCSR : 0x%08x"), ctx.MxCsr );
 	TVPAddLog(buf);
 #else
+#endif
+#if defined(_M_IX86) || defined(__i386__)
 	if(ctx.ContextFlags & CONTEXT_EXTENDED_REGISTERS)
 	{
 		// ExtendedRegisters is a area which meets fxsave and fxrstor instruction?
