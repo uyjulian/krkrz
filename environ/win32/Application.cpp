@@ -7,6 +7,9 @@
 #include <assert.h>
 
 #include <eh.h>
+#if 1
+#include <setjmp.h>
+#endif
 
 #define DIRECTINPUT_VERSION 0x0500
 #include <dinput.h>
@@ -250,7 +253,7 @@ tTVPApplication::~tTVPApplication() {
 	}
 	windows_list_.clear();
 }
-#if 0
+#ifdef TVP_REPORT_HW_EXCEPTION
 struct SEHException {
 	unsigned int Code;
 	_EXCEPTION_POINTERS* ExceptionPointers;
@@ -291,10 +294,14 @@ void se_translator_function(unsigned int code, struct _EXCEPTION_POINTERS* ep) {
 	if( !TVPIsHandledHWException ) {
 		//ShowStackTrace( ep->ContextRecord );
 		TVPWriteHWEDumpFile( ep );
+#if defined(_M_ARM) || defined(__arm__) || defined(_M_ARM64) || defined(__aarch64__)
+		TVPHandleSEHException( code, ep->ExceptionRecord, ep->ContextRecord->Sp, ep->ContextRecord );
+#else
 #ifdef TJS_64BIT_OS
 		TVPHandleSEHException( code, ep->ExceptionRecord, ep->ContextRecord->Rsp, ep->ContextRecord );
 #else
 		TVPHandleSEHException( code, ep->ExceptionRecord, ep->ContextRecord->Esp, ep->ContextRecord );
+#endif
 #endif
 		TVPIsHandledHWException = true;
 	}
@@ -328,11 +335,37 @@ const tjs_char* SECodeToMessage( unsigned int code ) {
 	}
 	return TJS_W("Unknown");
 }
+static jmp_buf exception_jump_buf;
+static bool exception_jump_buf_inited = false;
+static struct _EXCEPTION_POINTERS* exception_last_ep;
+static LONG __stdcall unhandled_exception_function(struct _EXCEPTION_POINTERS* ep) {
+	if( !TVPIsHandledHWException ) {
+		//ShowStackTrace( ep->ContextRecord );
+		TVPWriteHWEDumpFile( ep );
+#if defined(_M_ARM) || defined(__arm__) || defined(_M_ARM64) || defined(__aarch64__)
+		TVPHandleSEHException( ep->ExceptionRecord->ExceptionCode, ep->ExceptionRecord, ep->ContextRecord->Sp, ep->ContextRecord );
+#else
+#ifdef TJS_64BIT_OS
+		TVPHandleSEHException( ep->ExceptionRecord->ExceptionCode, ep->ExceptionRecord, ep->ContextRecord->Rsp, ep->ContextRecord );
+#else
+		TVPHandleSEHException( ep->ExceptionRecord->ExceptionCode, ep->ExceptionRecord, ep->ContextRecord->Esp, ep->ContextRecord );
+#endif
+#endif
+		TVPIsHandledHWException = true;
+	}
+	exception_last_ep = ep;
+	if (exception_jump_buf_inited)
+	{
+		longjmp(exception_jump_buf, 1);
+	}
+	return EXCEPTION_CONTINUE_SEARCH;
+}
 #endif
 
 bool tTVPApplication::StartApplication( int argc, tjs_char* argv[] ) {
-#if 0
-#if (defined(__GNUC__) && defined(__SEH__)) || (!defined(__GNUC__))
+#ifdef TVP_REPORT_HW_EXCEPTION
+	LPTOP_LEVEL_EXCEPTION_FILTER old_handler = SetUnhandledExceptionFilter(unhandled_exception_function);
+#ifdef _MSC_VER
 	_set_se_translator(se_translator_function);
 #endif
 #endif
@@ -351,6 +384,21 @@ bool tTVPApplication::StartApplication( int argc, tjs_char* argv[] ) {
 	// try starting the program!
 	bool engine_init = false;
 	try {
+#ifdef TVP_REPORT_HW_EXCEPTION
+		exception_jump_buf_inited = true;
+		if (setjmp(exception_jump_buf) != 0)
+		{
+			if (exception_last_ep == NULL)
+			{
+				throw TJS_W("Exception occurred but last ep not specified");
+			}
+			if (exception_last_ep->ExceptionRecord == NULL)
+			{
+				throw TJS_W("Exception occurred but exception record not specified");
+			}
+			throw SEHException(exception_last_ep->ExceptionRecord->ExceptionCode,exception_last_ep);
+		}
+#endif
 		if(TVPCheckProcessLog()) return true; // sub-process for processing object hash map log
 
 		TVPInitScriptEngine();
@@ -420,7 +468,7 @@ bool tTVPApplication::StartApplication( int argc, tjs_char* argv[] ) {
 		ShowException( ttstr(e).c_str() );
 	} catch( const tjs_char* e ) {
 		ShowException( e );
-#if 0
+#ifdef TVP_REPORT_HW_EXCEPTION
 	} catch( const SEHException& e ) {
 		PEXCEPTION_RECORD rec = e.ExceptionPointers->ExceptionRecord;
 		tjs_string text(SECodeToMessage(e.Code));
@@ -433,6 +481,10 @@ bool tTVPApplication::StartApplication( int argc, tjs_char* argv[] ) {
 	} catch(...) {
 		ShowException( (const tjs_char*)TVPUnknownError );
 	}
+#ifdef TVP_REPORT_HW_EXCEPTION
+	exception_jump_buf_inited = false;
+	SetUnhandledExceptionFilter(old_handler);
+#endif
 
 	if(engine_init) TVPUninitScriptEngine();
 
