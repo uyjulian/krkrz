@@ -55,9 +55,22 @@ bool TVPAcceptSaveAsJXR(void* formatdata, const ttstr & type, class iTJSDispatch
 // Windows 組み込み機能で JPEG XR を開く場合はこちら
 #include <wincodec.h>
 #include <wincodecsdk.h>
+#if 0
 #include <atlbase.h>
+#endif
 #include <comutil.h>
 #include "StorageImpl.h"
+#if 1
+#include <comdef.h>
+_COM_SMARTPTR_TYPEDEF(IPropertyBag2,__uuidof(IPropertyBag2));
+_COM_SMARTPTR_TYPEDEF(IWICBitmapDecoder,__uuidof(IWICBitmapDecoder));
+_COM_SMARTPTR_TYPEDEF(IWICBitmapEncoder,__uuidof(IWICBitmapEncoder));
+_COM_SMARTPTR_TYPEDEF(IWICBitmapFrameDecode,__uuidof(IWICBitmapFrameDecode));
+_COM_SMARTPTR_TYPEDEF(IWICBitmapFrameEncode,__uuidof(IWICBitmapFrameEncode));
+_COM_SMARTPTR_TYPEDEF(IWICFormatConverter,__uuidof(IWICFormatConverter));
+_COM_SMARTPTR_TYPEDEF(IWICImagingFactory,__uuidof(IWICImagingFactory));
+_COM_SMARTPTR_TYPEDEF(IStream,__uuidof(IStream));
+#endif
 #pragma comment(lib, "WindowsCodecs.lib")
 #ifdef _DEBUG
 #pragma comment(lib, "comsuppwd.lib")
@@ -74,16 +87,16 @@ void TVPLoadJXR(void* formatdata, void *callbackdata, tTVPGraphicSizeCallback si
 	CoInitialize(NULL);
 	{
 		tTVPIStreamAdapter* s = new tTVPIStreamAdapter( src );
-		CComPtr<tTVPIStreamAdapter> stream( s );
+		IStreamPtr stream( s );
 		s->Release();
 		{
-			CComPtr<IWICBitmapDecoder> decoder;
-			HRESULT hr = decoder.CoCreateInstance(CLSID_WICWmpDecoder);
+			IWICBitmapDecoderPtr decoder;
+			HRESULT hr = decoder.CreateInstance(CLSID_WICWmpDecoder, NULL, CLSCTX_ALL);
 			hr = decoder->Initialize( stream, WICDecodeMetadataCacheOnDemand);
 			UINT frameCount = 0;
 			hr = decoder->GetFrameCount(&frameCount);
 			for( UINT index = 0; index < frameCount; ++index ) {
-				CComPtr<IWICBitmapFrameDecode> frame;
+				IWICBitmapFrameDecodePtr frame;
 				hr = decoder->GetFrame(index, &frame);
 				UINT width = 0;
 				UINT height = 0;
@@ -100,9 +113,9 @@ void TVPLoadJXR(void* formatdata, void *callbackdata, tTVPGraphicSizeCallback si
 				sizecallback(callbackdata, width, height);
 				WICRect rect = {0, 0, static_cast<INT>(width), static_cast<INT>(height) };
 				if( !IsEqualGUID( pixelFormat, GUID_WICPixelFormat32bppBGRA) ) {
-					CComPtr<IWICFormatConverter> converter;
-					CComPtr<IWICImagingFactory> wicFactory;
-					hr = wicFactory.CoCreateInstance( CLSID_WICImagingFactory );
+					IWICFormatConverterPtr converter;
+					IWICImagingFactoryPtr wicFactory;
+					hr = wicFactory.CreateInstance( CLSID_WICImagingFactory , NULL, CLSCTX_ALL);
 					wicFactory->CreateFormatConverter(&converter);
 					converter->Initialize(frame, GUID_WICPixelFormat32bppBGRA,WICBitmapDitherTypeNone, NULL, 0.0f, WICBitmapPaletteTypeCustom);
 					hr = converter->CopyPixels( &rect, stride, stride*height, (BYTE*)&buff[0] );
@@ -128,7 +141,7 @@ void TVPLoadJXR(void* formatdata, void *callbackdata, tTVPGraphicSizeCallback si
 				break;
 			}
 		}
-		if( stream ) stream->ClearStream();
+		if( stream ) ((tTVPIStreamAdapter*)(IStream *)stream)->ClearStream();
 	}
 	CoUninitialize();
 }
@@ -138,14 +151,14 @@ void TVPSaveAsJXR(void* formatdata, tTJSBinaryStream* dst, const class tTVPBaseB
 	CoInitialize(NULL);
 	{
 		tTVPIStreamAdapter* s = new tTVPIStreamAdapter( dst );
-		CComPtr<tTVPIStreamAdapter> stream( s );
+		IStreamPtr stream( s );
 		s->Release();
 		{
-			CComPtr<IWICBitmapEncoder> encoder;
-			HRESULT hr = encoder.CoCreateInstance(CLSID_WICWmpEncoder);
+			IWICBitmapEncoderPtr encoder;
+			HRESULT hr = encoder.CreateInstance(CLSID_WICWmpEncoder, NULL, CLSCTX_ALL);
 			if( SUCCEEDED(hr) ) hr = encoder->Initialize(stream, WICBitmapEncoderNoCache);
-			CComPtr<IPropertyBag2> property;
-			CComPtr<IWICBitmapFrameEncode> frame;
+			IPropertyBag2Ptr property;
+			IWICBitmapFrameEncodePtr frame;
 			if( SUCCEEDED(hr) ) hr = encoder->CreateNewFrame( &frame, &property );
 			WICPixelFormatGUID format = GUID_WICPixelFormat32bppBGRA;
 			if( SUCCEEDED(hr) && meta ) {
@@ -247,7 +260,7 @@ void TVPSaveAsJXR(void* formatdata, tTJSBinaryStream* dst, const class tTVPBaseB
 			if( SUCCEEDED(hr) ) hr = frame->Commit();
 			if( SUCCEEDED(hr) ) hr = encoder->Commit();
 		}
-		if( stream ) stream->ClearStream();
+		if( stream ) ((tTVPIStreamAdapter*)(IStream *)stream)->ClearStream();
 	}
 	CoUninitialize();
 }
@@ -257,10 +270,10 @@ void TVPLoadHeaderJXR(void* formatdata, tTJSBinaryStream *src, iTJSDispatch2** d
 	CoInitialize(NULL);
 	{
 		tTVPIStreamAdapter* s = new tTVPIStreamAdapter( src );
-		CComPtr<tTVPIStreamAdapter> stream( s );
+		IStreamPtr stream( s );
 		s->Release();
-		CComPtr<IWICBitmapDecoder> decoder;
-		HRESULT hr = decoder.CoCreateInstance(CLSID_WICWmpDecoder);
+		IWICBitmapDecoderPtr decoder;
+		HRESULT hr = decoder.CreateInstance(CLSID_WICWmpDecoder, NULL, CLSCTX_ALL);
 		if( SUCCEEDED(hr) ) hr = decoder->Initialize( stream, WICDecodeMetadataCacheOnDemand);
 		UINT frameCount = 0;
 		if( SUCCEEDED(hr) ) hr = decoder->GetFrameCount(&frameCount);
@@ -272,7 +285,7 @@ void TVPLoadHeaderJXR(void* formatdata, tTJSBinaryStream *src, iTJSDispatch2** d
 				GUID pixelFormat = { 0 };
 				double dpiX = 0.0;
 				double dpiY = 0.0;
-				CComPtr<IWICBitmapFrameDecode> frame;
+				IWICBitmapFrameDecodePtr frame;
 				if( SUCCEEDED(hr) ) hr = decoder->GetFrame(index, &frame);
 				if( SUCCEEDED(hr) ) hr = frame->GetPixelFormat(&pixelFormat);
 				if( SUCCEEDED(hr) ) hr = frame->GetSize(&width, &height);
@@ -398,7 +411,7 @@ void TVPLoadHeaderJXR(void* formatdata, tTJSBinaryStream *src, iTJSDispatch2** d
 				break;
 			}
 		}
-		if( stream ) stream->ClearStream();
+		if( stream ) ((tTVPIStreamAdapter*)(IStream *)stream)->ClearStream();
 	}
 	CoUninitialize();
 }
