@@ -476,7 +476,7 @@ static ERR JXR_get_pos( struct WMPStream* pWS, size_t* poffPos ) {
 }
 
 
-#define SAFE_CALL( func ) if( Failed(err = (func)) ) { TVPThrowExceptionMessage( TJS_W("JPEG XR read error/%1"), err ); }
+#define SAFE_CALL( func ) if( Failed(err = (func)) ) { TVPThrowExceptionMessage( TJS_W("JPEG XR read error/%1"), (tjs_int)err ); }
 //---------------------------------------------------------------------------
 void TVPLoadJXR(void* formatdata, void *callbackdata, tTVPGraphicSizeCallback sizecallback,
 	tTVPGraphicScanLineCallback scanlinecallback, tTVPMetaInfoPushCallback metainfopushcallback,
@@ -663,10 +663,10 @@ void TVPSaveAsJXR(void* formatdata, tTJSBinaryStream* dst, const class tTVPBaseB
 		//PI.pGUIDPixFmt = &GUID_PKPixelFormat32bppBGRA;
 		//PixelFormatLookup(&PI, LOOKUP_FORWARD);
 		
-		const UINT width = image->GetWidth();
-		const UINT height = image->GetHeight();
-		const UINT stride = width * sizeof(tjs_uint32);
-		const UINT buffersize = stride * height;
+		const tjs_uint32 width = image->GetWidth();
+		const tjs_uint32 height = image->GetHeight();
+		const tjs_uint32 stride = width * sizeof(tjs_uint32);
+		const tjs_uint32 buffersize = stride * height;
 		CWMIStrCodecParam wmiSCP;
 		
 		wmiSCP.bVerbose = FALSE;
@@ -729,7 +729,7 @@ void TVPSaveAsJXR(void* formatdata, tTJSBinaryStream* dst, const class tTVPBaseB
 		std::vector<tjs_uint8> buff;
 		buff.reserve(buffersize);
 #endif
-		for( UINT i = 0; i < height; i++ ) {
+		for( tjs_uint32 i = 0; i < height; i++ ) {
 			memcpy( &buff[i*stride], image->GetScanLine(i), stride );
 		}
 		pEncoder->WritePixels( pEncoder, height, &buff[0], stride );
