@@ -24,7 +24,7 @@
 	ignore = dirty
 [submodule "external/jxrlib"]
 	path = external/jxrlib
-	url = https://github.com/krkrz/jxrlib.git
+	url = https://github.com/uyjulian/jxrlib.git
 	ignore = dirty
 [submodule "external/angle"]
 	path = external/angle
