@@ -808,7 +808,6 @@ list(APPEND MY_LIBRARY_CXXFLAGS
 	${MY_LIBRARY_CFLAGS}
 	-Wno-reorder
 	-fpermissive
-	-std=gnu++14
 )
 list(APPEND MY_LIBRARY_LDFLAGS
 	-static
@@ -942,6 +941,8 @@ set_target_properties(${MY_LIBRARY_NAME} PROPERTIES OUTPUT_NAME tvpwin32)
 endif()
 set_target_properties(${MY_LIBRARY_NAME} PROPERTIES PREFIX "")
 set_target_properties(${MY_LIBRARY_NAME} PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+set_target_properties(${MY_LIBRARY_NAME} PROPERTIES C_STANDARD 11)
+set_target_properties(${MY_LIBRARY_NAME} PROPERTIES CXX_STANDARD 14)
 target_sources(${MY_LIBRARY_NAME} PRIVATE ${MY_LIBRARY_SRC})
 target_compile_options(${MY_LIBRARY_NAME} PUBLIC $<$<COMPILE_LANGUAGE:C>:${MY_LIBRARY_CFLAGS}>)
 target_compile_options(${MY_LIBRARY_NAME} PUBLIC $<$<COMPILE_LANGUAGE:CXX>:${MY_LIBRARY_CXXFLAGS}>)
