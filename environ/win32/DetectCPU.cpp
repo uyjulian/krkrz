@@ -239,6 +239,7 @@ void TVPDetectCPU()
 	if(TVPCPUChecked) return;
 	TVPCPUChecked = true;
 
+#if defined(_M_IX86) || defined(_M_X64) || defined(__i386__) || defined(__x86_64__)
 #ifdef TJS_64BIT_OS
 
 	// get process affinity mask
@@ -319,8 +320,11 @@ void TVPDetectCPU()
 		}
 	}
 #endif
+#endif
 	TVPCPUType &= ~ TVP_CPU_FEATURE_MASK;
+#if defined(_M_IX86) || defined(_M_X64) || defined(__i386__) || defined(__x86_64__)
 	TVPCPUType |= features;
+#endif
 
 	// Disable or enable cpu features by option
 	TVPDisableCPU(TVP_CPU_HAS_MMX,  TJS_W("-cpummx"));
@@ -341,10 +345,12 @@ void TVPDetectCPU()
 	TVPDisableCPU(TVP_CPU_HAS_FMA3, TJS_W("-cpufma3"));
 	TVPDisableCPU(TVP_CPU_HAS_AES, TJS_W("-cpuaes"));
 
+#if defined(_M_IX86) || defined(_M_X64) || defined(__i386__) || defined(__x86_64__)
 	if(TVPCPUType == 0)
 		throw Exception( TVPFormatMessage(TVPCpuCheckFailureNotSupprtedCpu, cpuinfo).c_str() );
 
 	TVPAddImportantLog( TVPFormatMessage(TVPInfoFinallyDetectedCpuFeatures,TVPDumpCPUFeatures(TVPCPUType)) );
+#endif
 }
 //---------------------------------------------------------------------------
 
