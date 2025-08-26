@@ -12,7 +12,12 @@ IMediaSeekingの呼び出しを代理する。
 @note
 *****************************************************************************/
 
+#ifndef BUILDING_KRMOVIE_DLL
 #include "tjsCommHead.h"
+#else
+#include <windows.h>
+#include "tp_stub.h"
+#endif
 #include "CMediaSeekingProxy.h"
 
 //#define ENABLE_SET

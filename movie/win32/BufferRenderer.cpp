@@ -12,7 +12,12 @@
 			2004/08/05	T.Imoto		
 *****************************************************************************/
 
+#ifndef BUILDING_KRMOVIE_DLL
 #include "tjsCommHead.h"
+#else
+#include <windows.h>
+#include "tp_stub.h"
+#endif
 #include <streams.h>
 #if 0
 #include <atlbase.h>

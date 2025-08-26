@@ -1,6 +1,11 @@
 
+#ifndef BUILDING_KRMOVIE_DLL
 #include "tjsCommHead.h"
 #include "MsgIntf.h"
+#else
+#include <windows.h>
+#include "tp_stub.h"
+#endif
 #include "PlayWindow.h"
 #include "DShowException.h"
 

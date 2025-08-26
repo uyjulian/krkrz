@@ -12,17 +12,24 @@
 *****************************************************************************/
 
 
+#ifndef BUILDING_KRMOVIE_DLL
 #include "tjsCommHead.h"
 #include "MsgIntf.h"
 #include "SysInitIntf.h"
 #include "PluginImpl.h"
+#else
+#include <windows.h>
+#include "tp_stub.h"
+#endif
 #include "dslayerd.h"
 #include "CIStream.h"
 
 #include "DShowException.h"
 #include "BufferRenderer.h"
 #include "OptionInfo.h"
+#ifndef BUILDING_KRMOVIE_DLL
 #include "TVPVideoOverlay.h"
+#endif
 
 //----------------------------------------------------------------------------
 //! @brief	  	m_BmpBitsにNULLを設定する
@@ -200,6 +207,7 @@ void __stdcall tTVPDSLayerVideo::BuildGraph( HWND callbackwin, IStream *stream,
 #endif
 			else
 			{
+#ifndef BUILDING_KRMOVIE_DLL
 				tTVPDSFilterHandlerType* handler = TVPGetDSFilterHandler( mt.subtype );
 				if( handler )
 				{
@@ -208,6 +216,7 @@ void __stdcall tTVPDSLayerVideo::BuildGraph( HWND callbackwin, IStream *stream,
 					BuildPluginGraph( handler, pBRender, m_Reader );
 				}
 				else
+#endif
 				{
 					if( FAILED(hr = GraphBuilder()->AddFilter( pBRender, TJS_W("Buffer Renderer"))) )
 						ThrowDShowException(TJS_W("Failed to call GraphBuilder()->AddFilter( pBRender, L\"Buffer Renderer\")."), hr);

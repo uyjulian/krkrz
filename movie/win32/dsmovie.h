@@ -208,7 +208,9 @@ protected:
 #ifdef ENABLE_THEORA
 	void BuildTheoraGraph( IBaseFilter *pRdr, IBaseFilter *pSrc );
 #endif
+#ifndef BUILDING_KRMOVIE_DLL
 	void BuildPluginGraph( struct tTVPDSFilterHandlerType* handler, IBaseFilter *pRdr, IBaseFilter *pSrc );
+#endif
 
 	HRESULT __stdcall AddToROT( DWORD ROTreg );
 	void __stdcall RemoveFromROT( DWORD ROTreg );

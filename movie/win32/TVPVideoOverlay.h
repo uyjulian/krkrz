@@ -2,18 +2,30 @@
 #ifndef __TVP_VIDEO_OVERLAY_H__
 #define __TVP_VIDEO_OVERLAY_H__
 
+#ifdef BUILDING_KRMOVIE_DLL
+extern "C" __declspec(dllexport)
+#endif
 extern void __stdcall GetVideoOverlayObject(
 	HWND callbackwin, struct IStream *stream, const tjs_char * streamname,
 	const tjs_char *type, unsigned __int64 size, class iTVPVideoOverlay **out);
 
+#ifdef BUILDING_KRMOVIE_DLL
+extern "C" __declspec(dllexport)
+#endif
 extern void __stdcall GetVideoLayerObject(
 	HWND callbackwin, struct IStream *stream, const tjs_char * streamname,
 	const tjs_char *type, unsigned __int64 size, class iTVPVideoOverlay **out);
 
+#ifdef BUILDING_KRMOVIE_DLL
+extern "C" __declspec(dllexport)
+#endif
 extern void __stdcall GetMixingVideoOverlayObject(
 	HWND callbackwin, struct IStream *stream, const tjs_char * streamname,
 	const tjs_char *type, unsigned __int64 size, class iTVPVideoOverlay **out);
 
+#ifdef BUILDING_KRMOVIE_DLL
+extern "C" __declspec(dllexport)
+#endif
 extern void __stdcall GetMFVideoOverlayObject(
 	HWND callbackwin, struct IStream *stream, const tjs_char * streamname,
 	const tjs_char *type, unsigned __int64 size, class iTVPVideoOverlay **out);

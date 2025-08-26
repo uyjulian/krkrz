@@ -11,9 +11,14 @@
 			2004/08/17	T.Imoto		
 *****************************************************************************/
 
+#ifndef BUILDING_KRMOVIE_DLL
 #include "tjsCommHead.h"
 #include "MsgIntf.h"
 #include "DebugIntf.h"
+#else
+#include <windows.h>
+#include "tp_stub.h"
+#endif
 #include "DShowException.h"
 
 #if defined(__arm__) || defined(_M_ARM) || defined(__aarch64__) || defined(_M_ARM64)

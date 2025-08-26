@@ -11,7 +11,12 @@
 @note
 *****************************************************************************/
 
+#ifndef BUILDING_KRMOVIE_DLL
 #include "tjsCommHead.h"
+#else
+#include <windows.h>
+#include "tp_stub.h"
+#endif
 #include <assert.h>
 #include <streams.h>
 #include "CDemuxSource.h"

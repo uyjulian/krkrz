@@ -14,10 +14,15 @@
 	Modified by T.Imoto <http://www.kaede-software.com>
 */
 
+#ifndef BUILDING_KRMOVIE_DLL
 #include "tjsCommHead.h"
 #include "MsgIntf.h"
 #include "SysInitIntf.h"
 #include "PluginImpl.h"
+#else
+#include <windows.h>
+#include "tp_stub.h"
+#endif
 #include "dsmovie.h"
 #include "CIStream.h"
 
@@ -28,10 +33,16 @@
 #include "CDemuxSource.h"
 #include "CWMReader.h"
 
+#ifndef BUILDING_KRMOVIE_DLL
 #include "TVPVideoOverlay.h"
+#endif
 
 #ifdef ENABLE_THEORA
+#ifndef BUILDING_KRMOVIE_DLL
 #include "OggFilterFactory.h"
+#else
+#include "ogg/OggFilterFactory.h"
+#endif
 #ifndef WINCE
 #pragma comment (lib, "winmm")
 #else
@@ -55,8 +66,10 @@ static const GUID CLSID_WMADecoderDMO =
 { 0x2eeb4adf, 0x4578, 0x4d10, { 0xbc, 0xa7, 0xbb, 0x95, 0x5f, 0x56, 0x32, 0x0a } };
 
 #ifdef ENABLE_THEORA
+#ifndef BUILDING_KRMOVIE_DLL
 const GUID MEDIASUBTYPE_Ogg = 
 { 0xdd142c1e, 0xc1e, 0x4381, { 0xa2, 0x4e, 0xb, 0x2d, 0x80, 0xb6, 0x9, 0x8a } };
+#endif
 #endif
 
 tTVPDSMovie::tTVPDSMovie()
@@ -1182,6 +1195,7 @@ void tTVPDSMovie::ParseVideoType( CMediaType &mt, const tjs_char *type )
 		mt.subtype = MEDIASUBTYPE_Avi;
 	else if (_wcsicmp(type, TJS_W(".mov")) == 0)
 		mt.subtype = MEDIASUBTYPE_QTMovie;
+#ifndef BUILDING_KRMOVIE_DLL
 	else {
 		tTVPDSFilterHandlerType* handler = TVPGetDSFilterHandler( ttstr(type) );
 		if( handler ) {
@@ -1190,6 +1204,18 @@ void tTVPDSMovie::ParseVideoType( CMediaType &mt, const tjs_char *type )
 			TVPThrowExceptionMessage(TJS_W("Unknown video format extension.")); // unknown format
 		}
 	}
+#else
+	//else if (_wcsicmp(type, TJS_W(".mp4")) == 0)
+	//	mt.subtype = MFVideoFormat_H264;
+//	else if (wcsicmp(type, TJS_W(".wmv")) == 0)
+//		mt.subtype = SubTypeGUID_WMV3;
+#ifdef ENABLE_THEORA
+	else if (_wcsicmp(type, TJS_W(".ogg")) == 0 || _wcsicmp(type, TJS_W(".ogv")) == 0)
+		mt.subtype = MEDIASUBTYPE_Ogg;
+#endif
+	else
+		TVPThrowExceptionMessage(TJS_W("Unknown video format extension.")); // unknown format
+#endif
 }
 //----------------------------------------------------------------------------
 //! @brief	  	拡張子からムービーがWindows Media Fileかどうか判別します
@@ -1670,6 +1696,7 @@ void tTVPDSMovie::BuildWMVGraph( IBaseFilter *pRdr, IStream *pStream )
 		ThrowDShowException(TJS_W("Failed to call ConnectFilters( pWMADec, pDDSRenderer )."), hr);
 
 }
+#ifndef BUILDING_KRMOVIE_DLL
 //----------------------------------------------------------------------------
 //! @brief	  	プラグインで登録されたフィルタでグラフを手動で構築する
 //! @param		pRdr : グラフに参加しているレンダーフィルタ
@@ -1723,6 +1750,7 @@ void tTVPDSMovie::BuildPluginGraph( struct tTVPDSFilterHandlerType* handler, IBa
 			ThrowDShowException(TJS_W("Failed to call GraphBuilder()->RemoveFilter( pDDSRenderer)."), hr);
 	}
 }
+#endif
 #ifdef ENABLE_THEORA
 //----------------------------------------------------------------------------
 //! @brief	  	Theora(ogg) 用のグラフを手動で構築する

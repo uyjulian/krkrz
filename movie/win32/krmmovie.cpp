@@ -12,9 +12,14 @@
 			2005/09/25	T.Imoto		作成
 *****************************************************************************/
 
+#ifndef BUILDING_KRMOVIE_DLL
 #include "tjsCommHead.h"
 #include "SysInitIntf.h"
 #include "PluginImpl.h"
+#else
+#include <windows.h>
+#include "tp_stub.h"
+#endif
 #include "dsmixer.h"
 #include "krmovie.h"
 
@@ -34,6 +39,9 @@
 //! @param		out : VideoOverlay Object
 //! @return		エラー文字列
 //----------------------------------------------------------------------------
+#ifdef BUILDING_KRMOVIE_DLL
+extern "C" __declspec(dllexport)
+#endif
 void __stdcall GetMixingVideoOverlayObject(
 	HWND callbackwin, IStream *stream, const tjs_char * streamname,
 	const tjs_char *type, unsigned __int64 size, iTVPVideoOverlay **out)

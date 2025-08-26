@@ -10,11 +10,16 @@
 @note
 *****************************************************************************/
 
+#ifndef BUILDING_KRMOVIE_DLL
 #include "tjsCommHead.h"
 #include "MsgIntf.h"
 #include "DebugIntf.h"
 #include "SysInitIntf.h"
 #include "PluginImpl.h"
+#else
+#include <windows.h>
+#include "tp_stub.h"
+#endif
 
 #include "CVMRCustomAllocatorPresenter9.h"
 #include "dsmixer.h"

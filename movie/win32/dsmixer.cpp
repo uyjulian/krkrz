@@ -13,10 +13,15 @@
 *****************************************************************************/
 
 
+#ifndef BUILDING_KRMOVIE_DLL
 #include "tjsCommHead.h"
 #include "MsgIntf.h"
 #include "SysInitIntf.h"
 #include "PluginImpl.h"
+#else
+#include <windows.h>
+#include "tp_stub.h"
+#endif
 
 //#define _WIN32_WINNT 0x0400
 //#define _WIN32_DCOM			// DCOM
@@ -29,7 +34,9 @@
 #include <windowsx.h>
 #include <objbase.h>
 #include "CVMRCustomAllocatorPresenter9.h"
+#ifndef BUILDING_KRMOVIE_DLL
 #include "TVPVideoOverlay.h"
+#endif
 
 //----------------------------------------------------------------------------
 //! @brief	  	初期化
@@ -209,6 +216,7 @@ void __stdcall tTVPDSMixerVideoOverlay::BuildGraph( HWND callbackwin, IStream *s
 #endif
 			else
 			{
+#ifndef BUILDING_KRMOVIE_DLL
 				tTVPDSFilterHandlerType* handler = TVPGetDSFilterHandler( mt.subtype );
 				if( handler )
 				{
@@ -223,6 +231,7 @@ void __stdcall tTVPDSMixerVideoOverlay::BuildGraph( HWND callbackwin, IStream *s
 
 				}
 				else
+#endif
 				{
 					IBaseFilterPtr	pVMR9;
 					AddVMR9Filer( pVMR9 );

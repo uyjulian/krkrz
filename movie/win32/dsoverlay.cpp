@@ -14,16 +14,23 @@
 	Modified by T.Imoto <http://www.kaede-software.com> 2004
 */
 
+#ifndef BUILDING_KRMOVIE_DLL
 #include "tjsCommHead.h"
 #include "MsgIntf.h"
 #include "SysInitIntf.h"
 #include "PluginImpl.h"
+#else
+#include <windows.h>
+#include "tp_stub.h"
+#endif
 #include "dsoverlay.h"
 #include "CIStream.h"
 
 #include "DShowException.h"
 #include "OptionInfo.h"
+#ifndef BUILDING_KRMOVIE_DLL
 #include "TVPVideoOverlay.h"
+#endif
 
 //----------------------------------------------------------------------------
 //! @brief	  	何もしない
@@ -119,6 +126,7 @@ void __stdcall tTVPDSVideoOverlay::BuildGraph( HWND callbackwin, IStream *stream
 #endif
 			else
 			{
+#ifndef BUILDING_KRMOVIE_DLL
 				tTVPDSFilterHandlerType* handler = TVPGetDSFilterHandler( mt.subtype );
 				if( handler )
 				{
@@ -131,6 +139,7 @@ void __stdcall tTVPDSVideoOverlay::BuildGraph( HWND callbackwin, IStream *stream
 					BuildPluginGraph( handler, pVRender, m_Reader );
 				}
 				else
+#endif
 				{
 					IBaseFilterPtr	pVRender;	// for video renderer filter
 					if( FAILED(hr = pVRender.CreateInstance(CLSID_VideoRenderer, NULL, CLSCTX_INPROC_SERVER)) )

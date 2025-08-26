@@ -23,6 +23,9 @@ https://www.timbreofprogram.info/blog/archives/458
 #ifndef __MF_BYTE_STREAM__H__
 #define __MF_BYTE_STREAM__H__
 
+#ifdef BUILDING_KRMOVIE_DLL
+#define tjs_string std::wstring
+#endif
 #include <list>
 #include <mfobjects.h>
 #include "AsyncCB.h"

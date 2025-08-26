@@ -2,6 +2,9 @@
 #ifndef __MF_PLAYER_H__
 #define __MF_PLAYER_H__
 
+#ifdef BUILDING_KRMOVIE_DLL
+#define tjs_string std::wstring
+#endif
 #include "PlayWindow.h"
 #include "CDLLLoader.h"
 

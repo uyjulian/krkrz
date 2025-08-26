@@ -1,7 +1,12 @@
 
+#ifndef BUILDING_KRMOVIE_DLL
 #include "tjsCommHead.h"
 #include "MsgIntf.h"
 #include "SysInitIntf.h"
+#else
+#include <windows.h>
+#include "tp_stub.h"
+#endif
 
 #include <windows.h>
 #include <assert.h>
@@ -10,6 +15,7 @@
 #include <propvarutil.h>
 #include <string>
 #include <vector>
+#include <memory>
 
 #include <mfidl.h>
 #include <mfapi.h>
@@ -39,8 +45,10 @@ _COM_SMARTPTR_TYPEDEF(IUnknown,__uuidof(IUnknown));
 #include "krmovie.h"
 #include "MFPlayer.h"
 #include "DShowException.h"
+#ifndef BUILDING_KRMOVIE_DLL
 #include "DebugIntf.h"
 #include "DShowException.h"
+#endif
 
 #include "MFByteStream.h"
 
@@ -62,6 +70,9 @@ _COM_SMARTPTR_TYPEDEF(IUnknown,__uuidof(IUnknown));
 //! @param		out : VideoOverlay Object
 //! @return		エラー文字列
 //----------------------------------------------------------------------------
+#ifdef BUILDING_KRMOVIE_DLL
+extern "C" __declspec(dllexport)
+#endif
 void __stdcall GetMFVideoOverlayObject(
 	HWND callbackwin, IStream *stream, const tjs_char * streamname,
 	const tjs_char *type, unsigned __int64 size, iTVPVideoOverlay **out)
